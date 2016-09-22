@@ -14,6 +14,8 @@ require([
     FeatureLayer
 ) {
 
+
+
     allLayers = [
         {
             "groupHeading": "Nutrient Model",
@@ -21,7 +23,7 @@ require([
             "includeInLayerList": true,
             "layers": {
                 "phosphorus":{
-                    "url" : "http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/",
+                    "url" : serviceBaseURL,
                     "visibleLayers": [0],
                     "options":{
                         "id": "PhosphorusLayer",
@@ -38,7 +40,7 @@ require([
                     }
                 },
                 "nitrogen": {
-                    "url" : "http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/",
+                    "url" : serviceBaseURL,
                     "visibleLayers": [2],
                     "options":{
                         "id": "NitrogenLayer",
@@ -61,7 +63,7 @@ require([
             "includeInLayerList": true,
             "layers": {
                 "Tennessee Mainstems" : {
-                    "url": "http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/",
+                    "url": serviceBaseURL,
                     "visibleLayers": [4],
                     "options": {
                         "id": "mainstems",
@@ -79,7 +81,7 @@ require([
                     }
                 },
                 "Tennessee Streams" : {
-                    "url": "http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/",
+                    "url": serviceBaseURL,
                     "visibleLayers": [5],
                     "options": {
                         "id": "streams",

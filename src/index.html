@@ -50,8 +50,12 @@
     <!-- build:js scripts/combined.js -->
     <script src="scripts/utilities.js"></script>
     <script src="scripts/layers.js"></script>
+    <script src="scripts/sparrow-config.js"></script>
+    <script src="scripts/select-logic.js"></script>
+    
     <script src="scripts/core.js"></script>
-    <script src="scripts/metric-definitions.js"></script>
+
+    
     <!-- endbuild -->
 
 </head>
@@ -227,6 +231,13 @@
                 </div>
                 <div id="filtersPanel" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="filtersPanelHeader">
                     <div class="panel-body collapse in" style="padding: 2px 2px;">
+                        <div class="select-label">
+                            <p>Area of Interest</p>
+                        </div>
+                            <select id="st-select" class="selectpicker 0" title="State" ></select>
+                            <select id="grp1-select" class="selectpicker 1" title="Independent Watershed"></select>
+                            <select id="grp2-select" class="selectpicker 2" title="HUC8" ></select>
+
                         <div class="select-label">
                             <p>Displayed Metric</p>
                         </div>

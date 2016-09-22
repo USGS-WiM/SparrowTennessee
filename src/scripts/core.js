@@ -13,9 +13,13 @@ var maxLegendDivHeight;
 var dragInfoWindows = true;
 var defaultMapCenter = [-86, 36];
 
+
+
 require([
     'esri/arcgis/utils',
     'esri/map',
+    'esri/tasks/QueryTask',
+    'esri/tasks/query',
     'esri/dijit/HomeButton',
     'esri/dijit/LocateButton',
     'esri/layers/ArcGISTiledMapServiceLayer',
@@ -35,6 +39,8 @@ require([
 ], function (
     arcgisUtils,
     Map,
+    QueryTask,
+    Query,
     HomeButton,
     LocateButton,
     ArcGISTiledMapServiceLayer,
@@ -55,34 +61,13 @@ require([
     //bring this line back after experiment////////////////////////////
     //allLayers = mapLayers;
 
-    $('.selectpicker').selectpicker();
+    //populate AOI select options
 
-    //Change Displayed Metric select options
-    function addMetricOptions(selectedIndex){
-        var metricOptions;
-        switch (selectedIndex){
-            case 0:
-                metricOptions = Group3;
-                break;
-            case 1:
-                metricOptions = Group2;
-                break;
-            case 2: 
-                metricOptions = Group1;
-                break;
-            case 3:
-                metricOptions = ST;
-                break;
-        }
-        $("#displayedMetricSelect").find('option').remove();
-        $.each(metricOptions, function(index, value){
-            $("#displayedMetricSelect").append(new Option(value.name, value.field));
-            $('#displayedMetricSelect').selectpicker('refresh');
-        });
-    }
+
+
 
     //set initial Displayed Metric options
-    $('#displayedMetricSelect').on('loaded.bs.select', function(){  
+    $('#groupResultsSelect').on('loaded.bs.select', function(){  
         addMetricOptions($("#groupResultsSelect")[0].selectedIndex);
     });
 
@@ -90,17 +75,64 @@ require([
     $("#groupResultsSelect").on('changed.bs.select', function(e){  
         addMetricOptions(e.currentTarget.selectedIndex);
     });
-    
 
-    
-    
-    
+
     map = Map('mapDiv', {
         basemap: 'gray',
         //center: [-95.6, 38.6],
         center: defaultMapCenter,
         zoom: 7
     });
+
+    //setupQueryTask("http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/3", ["ST"], "1=1");
+    setupQueryTask(serviceBaseURL + queryParameters[defaultSparrowLayer].serviceId, [queryParameters[defaultSparrowLayer].namefield], "1=1");
+
+    setupQueryTask(serviceBaseURL + queryParameters["grp1"].serviceId, [queryParameters["grp1"].namefield], "1=1");
+    setupQueryTask(serviceBaseURL + queryParameters["grp2"].serviceId, [queryParameters["grp2"].namefield], "1=1");
+    
+    function setupQueryTask(url, outFieldsArr, whereClause){
+        var queryTask;
+        queryTask = new esri.tasks.QueryTask(url);
+
+        var query = new esri.tasks.Query();
+        query.returnGeometry = false;
+        query.outFields = outFieldsArr;
+        query.where = whereClause;
+
+        queryTask.execute(query, populateAOI)
+    }
+
+    //need to remove hard coding somehow.
+    function populateAOI(response){
+
+        switch(response.displayFieldName){
+            case queryParameters["grp3"].nameField:
+                console.log("Currently no AOI for Group 3");
+                break
+            case queryParameters["grp2"].nameField:
+                $.each(response.features, function(index, feature){
+                    $("#grp2-select").append(new Option(feature.attributes["GRP_2_NAM"], feature.attributes["GRP_2_NUM"]));
+                    $('#grp2-select').selectpicker('refresh');
+                });
+                break;
+            case queryParameters["grp1"].nameField:
+                 $.each(response.features, function(index, feature){
+                    $("#grp1-select").append(new Option(feature.attributes["GRP_1_NAM"], feature.attributes["GRP_1_NUM"]));
+                    $('#grp1-select').selectpicker('refresh');
+                });
+                break;
+            case queryParameters["st"].nameField:
+                $.each(response.features, function(index, feature){
+                    $("#st-select").append(new Option(feature.attributes["ST"], feature.attributes["ST"]));
+                    $('#st-select').selectpicker('refresh');
+                });
+                break;
+        }
+    }
+
+    
+    
+    
 
     //button for returning to initial extent
     var home = new HomeButton({
@@ -152,6 +184,8 @@ require([
                 domClass.add(arrowNode, "hidden");
             }.bind(this));
         }
+
+
     });
     //displays map scale on scale change (i.e. zoom level)
     on(map, "zoom-end", function () {

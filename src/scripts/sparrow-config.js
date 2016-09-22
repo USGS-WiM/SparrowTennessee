@@ -1,3 +1,5 @@
+var serviceBaseURL = "http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/"
+
 
 //HUC10
 var Group3 = [
@@ -40,3 +42,40 @@ var ST = [
 ]
 
 
+var PhosLayerIds = [
+	{name: "GRP_2_NAM", serviceId: 1, selectId: "#GRP2-select", selectClass: "2"},
+	{name: "GRP_1_NAM", serviceId: 2, selectId: "#GRP1-select",  selectClass: "1"},
+	{name: "ST", serviceId: 3, selectId: "#ST-select",  selectClass: "0"}
+]
+
+var NitroLayerIds = [
+	{Group3: 0},
+	{Group2: 1},
+	{Group1: 3},
+	{State: 4}
+]
+
+var queryParameters = {
+    grp3: {idField: "GRP_3_NUM",
+        nameField: "GRP_3_NAM",
+        alias: "HUC10",
+        serviceId: 0
+    },
+    grp2: {idField: "GRP_2_NUM",
+        nameField: "GRP_2_NAM",
+        alias: "HUC8",
+        serviceId: 1
+    },
+    grp1: {idField: "GRP_1_NUM",
+        nameField: "GRP_1_NAM",
+        alias: "Independent Watershed",
+        serviceId: 2
+    },
+    st: {idField: "ST",
+        nameField: "ST",
+        alias: "State",
+        serviceId: 3
+    }
+} 
+
+defaultSparrowLayer = "st";
