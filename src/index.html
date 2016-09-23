@@ -230,7 +230,24 @@
                     </h4>
                 </div>
                 <div id="filtersPanel" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="filtersPanelHeader">
-                    <div class="panel-body collapse in" style="padding: 2px 2px;">
+                    <div class="panel-body collapse in" style="padding: 2px 2px; padding-left:25px;">
+                       <div class="select-label">
+                            <p>Nutrient Model</p>
+                        </div> 
+                        <div class="radio radio-primary active">
+                            <input type="radio" name="radio1" id="radio1" value="option1" checked="">
+                            <label for="radio1">
+                                Phosphorus
+                            </label>
+                        </div>
+                        <div class="radio radio-primary">
+                            <input type="radio" name="radio1" id="radio2" value="option2">
+                            <label for="radio2">
+                                Nitrogen
+                            </label>
+                        </div>
+
+
                         <div class="select-label">
                             <p>Area of Interest</p>
                         </div>
@@ -248,7 +265,7 @@
                         <div class="select-label">
                             <p>Group Results By</p>
                         </div>
-                            <select id="groupResultsSelect" class="selectpicker">
+                            <select id="groupResultsSelect" class="selectpicker" >
                               <option>HUC10</option>
                               <option>HUC8</option>
                               <option>Independent Watershed</option>

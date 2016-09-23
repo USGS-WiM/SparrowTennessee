@@ -63,7 +63,9 @@ require([
 
     //populate AOI select options
 
-
+    function updateSparrowVisibility(){
+        console.log()
+    }
 
 
     //set initial Displayed Metric options
