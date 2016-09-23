@@ -316,10 +316,12 @@ a.lgi-zoom:hover {
 .wim-sidebar-panel {
     margin-bottom: 2px;
 }
-
+/*needs the overflow and z-index for select overflow*/
 #sidebar {
     top: 50px;
     padding-bottom: 50px;
+    overflow:visible !important;
+    z-index:1000;
 }
 input[type="checkbox"], input[type="radio"] {
     float: left;

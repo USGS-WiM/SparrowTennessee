@@ -84,12 +84,13 @@ require([
         zoom: 7
     });
 
-    //setupQueryTask("http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/3", ["ST"], "1=1");
+    //TODO: WRAP IN FUNCTION SO YOU AREN"T REPEATING SELF
     setupQueryTask(serviceBaseURL + queryParameters[defaultSparrowLayer].serviceId, [queryParameters[defaultSparrowLayer].namefield], "1=1");
 
     setupQueryTask(serviceBaseURL + queryParameters["grp1"].serviceId, [queryParameters["grp1"].namefield], "1=1");
     setupQueryTask(serviceBaseURL + queryParameters["grp2"].serviceId, [queryParameters["grp2"].namefield], "1=1");
-    
+
+
     function setupQueryTask(url, outFieldsArr, whereClause){
         var queryTask;
         queryTask = new esri.tasks.QueryTask(url);

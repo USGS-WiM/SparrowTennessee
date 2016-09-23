@@ -82,7 +82,7 @@ gulp.task('clean', function (cb) {
 });
 
 // Build
-gulp.task('build', ['html', 'images', 'less']);
+gulp.task('build', ['html', 'images', 'styles', 'less']);
 
 // Default task
 //make sure download-esri-api (if needed) is run just after clean, but before build
