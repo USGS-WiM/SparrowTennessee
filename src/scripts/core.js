@@ -63,9 +63,14 @@ require([
 
     //populate AOI select options
 
-    function updateSparrowVisibility(){
-        console.log()
-    }
+    
+
+
+    $(".radio").on('change', function(e){
+        var groupBySelectedIndex = $("#groupResultsSelect")[0].selectedIndex;
+        var selectedRadio = this.firstElementChild.id;
+        checkSelectedAggregateGroup(groupBySelectedIndex, selectedRadio);   
+    });
 
 
     //set initial Displayed Metric options
@@ -76,6 +81,14 @@ require([
     //keep Displayed Metric options in sync
     $("#groupResultsSelect").on('changed.bs.select', function(e){  
         addMetricOptions(e.currentTarget.selectedIndex);
+        console.log($('#radio'));
+        checkSelectedAggregateGroup( e.currentTarget.selectedIndex, $(".radio input[type='radio']:checked")[0].id );
+    });
+
+    //TODO: find a reusable solution
+    $(".clearAOI").on('click', function(){
+        var id = '#' + this.classList[1];
+        $(id).selectpicker('deselectAll');
     });
 
 
@@ -105,7 +118,7 @@ require([
         queryTask.execute(query, populateAOI)
     }
 
-    //need to remove hard coding somehow.
+    //TODO: need to remove hard coding somehow.
     function populateAOI(response){
 
         switch(response.displayFieldName){
@@ -132,10 +145,6 @@ require([
                 break;
         }
     }
-
-    
-    
-    
 
     //button for returning to initial extent
     var home = new HomeButton({
@@ -785,7 +794,6 @@ require([
             }
         }
 
-
         //get visible and non visible layer lists
         function addMapServerLegend(layerName, layerDetails) {
 
@@ -902,7 +910,7 @@ require([
 
     });//end of require statement containing legend building code
 
-
+    
 });
 
 $(document).ready(function () {

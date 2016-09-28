@@ -31,7 +31,7 @@ require([
                     "url" : serviceBaseURL,
                     "visibleLayers": [sparrowOverlay],
                     "options":{
-                        "id": "PhosphorusLayer",
+                        "id": "SparrowRanking",
                         "opacity": 0.75,
                         "visible": true
                     },

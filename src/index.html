@@ -234,26 +234,50 @@
                        <div class="select-label">
                             <p>Nutrient Model</p>
                         </div> 
-                        <div class="radio radio-primary active">
-                            <input type="radio" name="radio1" id="radio1" value="option1" checked="">
-                            <label for="radio1">
-                                Phosphorus
-                            </label>
-                        </div>
-                        <div class="radio radio-primary">
-                            <input type="radio" name="radio1" id="radio2" value="option2">
-                            <label for="radio2">
-                                Nitrogen
-                            </label>
-                        </div>
-
+                        <!--<div id="nutrientRadio" class="btn-gorup" data-toggle="buttons">-->
+                            <div class="radio radio-primary active">
+                                <input type="radio" name="radio1" id="radio1" value="option1" checked="">
+                                <label for="radio1">
+                                    Phosphorus
+                                </label>
+                            </div>
+                            <div class="radio radio-primary">
+                                <input type="radio" name="radio1" id="radio2" value="option2">
+                                <label for="radio2">
+                                    Nitrogen
+                                </label>
+                            </div>
+                        <!--</div>--><!--END nutrientRadio div-->
 
                         <div class="select-label">
                             <p>Area of Interest</p>
                         </div>
-                            <select id="st-select" class="selectpicker 0" title="State" ></select>
-                            <select id="grp1-select" class="selectpicker 1" title="Independent Watershed"></select>
-                            <select id="grp2-select" class="selectpicker 2" title="HUC8" ></select>
+                            <div class='input-group' >
+                                <select id="st-select" class="selectpicker 0" title="State" ></select>
+                                <span class=''>
+                                    <a href="#" class="clearAOI st-select" style="display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </a>
+                                </span>
+                            </div>
+                             <div class='input-group'>
+                                <select id="grp1-select" class="selectpicker 1" title="Independent Watershed"></select>
+                                <span class=''>
+                                    <a href="#" class="clearAOI grp1-select" style="display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </a>
+                                </span>
+                            </div>
+                             <div class='input-group'>
+                                <select id="grp2-select" class="selectpicker 2" title="HUC8" ></select>
+                                <span class=''>
+                                    <a href="#" class="clearAOI grp2-select" style=" display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </a>
+                                </span>
+                            </div>
+                            
+                            
 
                         <div class="select-label">
                             <p>Displayed Metric</p>
