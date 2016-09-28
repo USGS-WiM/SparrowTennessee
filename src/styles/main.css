@@ -299,7 +299,7 @@ a.lgi-zoom:hover {
 [class*="col-"] {
     background-color: #eee;
     border: 1px solid #E7E7E7;
-    text-align: center;
+    /*text-align: center;*/
 }
 
 #wim_logo {
@@ -351,3 +351,11 @@ input[type="checkbox"], input[type="radio"] {
 .select-label{
     padding-top:20px;
 }
+
+/*.radio{
+    padding-left:25px;
+}
+
+.radio label {
+    padding-left:5px;
+}*/

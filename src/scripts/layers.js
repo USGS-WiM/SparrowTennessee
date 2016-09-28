@@ -14,7 +14,12 @@ require([
     FeatureLayer
 ) {
 
-
+    var SparrowOverlay;
+    if ($("#radio1")[0].checked == true){
+        sparrowOverlay = 0;
+    } else{
+        sparrowOverlay = 1;
+    }
 
     allLayers = [
         {
@@ -22,11 +27,11 @@ require([
             "showGroupHeading": true,
             "includeInLayerList": true,
             "layers": {
-                "phosphorus":{
+                "Nutrient Model Results Overlay":{
                     "url" : serviceBaseURL,
-                    "visibleLayers": [0],
+                    "visibleLayers": [sparrowOverlay],
                     "options":{
-                        "id": "PhosphorusLayer",
+                        "id": "SparrowRanking",
                         "opacity": 0.75,
                         "visible": true
                     },
@@ -34,25 +39,10 @@ require([
                         "type": "layer",
                         "layerType": "agisDynamic",
                         "includeInLayerList": true,
-                        "exclusiveGroupName":"Nutrient Model Results",
+                        "hasOpacitySlider": true,
+                        "hasZoomto" : true,
                         "includeLegend" : false
                         
-                    }
-                },
-                "nitrogen": {
-                    "url" : serviceBaseURL,
-                    "visibleLayers": [2],
-                    "options":{
-                        "id": "NitrogenLayer",
-                        "opacity": 0.75,
-                        "visible": false
-                    },
-                    "wimOptions": {
-                        "type": "layer",
-                        "layerType": "agisDynamic",
-                        "includeInLayerList": true,
-                        "exclusiveGroupName":"Nutrient Model Results",
-                        "includeLegend" : false
                     }
                 }
             }
