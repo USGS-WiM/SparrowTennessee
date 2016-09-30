@@ -12,6 +12,7 @@ var maxLegendHeight;
 var maxLegendDivHeight;
 var dragInfoWindows = true;
 var defaultMapCenter = [-86, 36];
+var queryParametersLength = Object.getOwnPropertyNames(queryParameters).length;
 
 
 
@@ -61,10 +62,8 @@ require([
     //bring this line back after experiment////////////////////////////
     //allLayers = mapLayers;
 
-    //populate AOI select options
 
     
-
 
     $(".radio").on('change', function(e){
         var groupBySelectedIndex = $("#groupResultsSelect")[0].selectedIndex;
@@ -99,12 +98,10 @@ require([
         zoom: 7
     });
 
-    //TODO: WRAP IN FUNCTION SO YOU AREN"T REPEATING SELF
-    setupQueryTask(serviceBaseURL + queryParameters[defaultSparrowLayer].serviceId, [queryParameters[defaultSparrowLayer].namefield], "1=1");
-
-    setupQueryTask(serviceBaseURL + queryParameters["grp1"].serviceId, [queryParameters["grp1"].namefield], "1=1");
-    setupQueryTask(serviceBaseURL + queryParameters["grp2"].serviceId, [queryParameters["grp2"].namefield], "1=1");
-
+    //TODO: FIGURE OUT HOW TO USE THE QUERY WHERECLAUSE     Call setupQueryTask for every layer inqueryParameters
+    for (var key in queryParameters){
+        setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, [queryParameters[key].namefield], "1=1");
+    }
 
     function setupQueryTask(url, outFieldsArr, whereClause){
         var queryTask;
