@@ -167,6 +167,21 @@
     </div> <!-- /.modal-dialog -->
 </div><!-- End About modal -->
 
+<div id="chartModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal Title</h4>
+      </div>
+      <div class="modal-body">
+          <p>Turn me in landscape mode, then in portrait mode back !</p>
+          <div id="graphcontainer1"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Begin page content -->
 <div class="container-fluid keepit100">
     <div class="row keepit100">
@@ -282,28 +297,33 @@
                         <div class="select-label">
                             <p>Displayed Metric</p>
                         </div>
-                            <select id="displayedMetricSelect" class="selectpicker" data-width="220px">
-                              
-                            </select>
+    
+                        <select id="displayedMetricSelect" class="selectpicker nonAOISelect" data-width="220px"></select>
 
                         <div class="select-label">
                             <p>Group Results By</p>
                         </div>
-                            <select id="groupResultsSelect" class="selectpicker" >
-                              <option>HUC10</option>
-                              <option>HUC8</option>
-                              <option>Independent Watershed</option>
-                              <option>State</option>
-                            </select>
+                        <select id="groupResultsSelect" class="selectpicker nonAOISelect" >
+                          <option>HUC10</option>
+                          <option>HUC8</option>
+                          <option>Independent Watershed</option>
+                          <option>State</option>
+                        </select>
+
+                        <div class="btn">
+                            <button type="button" class="btn btn-default"  id="chartButton">
+                                <span class="glyphicon glyphicon-signal"></span> Show Chart
+                            </button>
+                        </div>
 
 
-                    </div>
-                </div>
-            </div> <!--END filters panel-->
+                    </div><!--END panel body-->
+                </div><!--END filters panel-->
+            </div> 
             <!-- # closing div tag for accordion style panels -->
             <!--</div>-->
             <div class="identification pull-right">powered by  <a href="http://wim.usgs.gov/" target="_blank">WiM</a></div>
-        </div>
+        </div><!--end sidebar-->
         <div class="col-md-9 col-lg-10 col-md-offset-3 col-lg-offset-2 no-col-padding keepit100">
             <!-- legend, associated with legend buttons. to be removed if we stick with the in-map legend toggle -->
             <!--<div id="legend" class="legend" style="display: none" >-->

@@ -65,11 +65,7 @@ require([
 
     
 
-    $(".radio").on('change', function(e){
-        var groupBySelectedIndex = $("#groupResultsSelect")[0].selectedIndex;
-        var selectedRadio = this.firstElementChild.id;
-        checkSelectedAggregateGroup(groupBySelectedIndex, selectedRadio);   
-    });
+
 
 
     //set initial Displayed Metric options
@@ -396,6 +392,36 @@ require([
             });
     }
 
+    function createChartQuery(){
+        $('#chartModal').modal('show');
+        $("chartModal").on('shown.bs.modal', function(event){
+             $('#graphcontainer1').highcharts({
+              data: {
+                table: 'datatablegraph'
+              },
+              chart: {
+                type: 'column'
+              },
+              title: {
+                text: 'Data Title'
+              },
+              subtitle: {
+                text: 'Subtitle'
+              },
+              yAxis: {
+                allowDecimals: false
+              },
+              xAxis: {
+                type: 'category'
+              },
+              credits: {
+                enabled: false
+              }
+            });
+        });
+
+    }
+
     // Show modal dialog; handle legend sizing (both on doc ready)
     $(document).ready(function(){
         function showModal() {
@@ -433,6 +459,32 @@ require([
 
         $('#legendCollapse').on('hide.bs.collapse', function () {
             $('#legendElement').css('height', 'initial');
+        });
+
+        $('.radio').on('change', function(e){
+            var groupBySelectedIndex = $("#groupResultsSelect")[0].selectedIndex;
+            var selectedRadio = this.firstElementChild.id;
+            checkSelectedAggregateGroup(groupBySelectedIndex, selectedRadio);   
+        });
+
+        //enable/disable chart button based on #displayedMetricSelect and #groupResultsSelect
+        $('.nonAOISelect').on('change', function(){
+            if ($('#groupResultsSelect')[0].selectedIndex == 0){
+                if ($('#displayedMetricSelect')[0].selectedIndex == 4 || $('#displayedMetricSelect')[0].selectedIndex == 5){
+                    $("#chartButton").addClass('disabled');
+                    //TODO:  ALSO MAKE SURE YOU REMOVE ANY CHART MODALS FROM THE VIEW
+                } else{
+                    $("#chartButton").removeClass('disabled');
+                }
+            } else {
+                $("#chartButton").removeClass('disabled');
+            }
+        });
+
+    
+
+        $("#chartButton").on("click", function(){
+            createChartQuery();
         });
 
     });

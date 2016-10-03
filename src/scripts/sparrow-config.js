@@ -1,7 +1,7 @@
 var serviceBaseURL = "http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/"
 
 
-//HUC10
+//HUC10 Metric choices
 var Group3 = [
 
 	{field: "dl1_g3_tot", name: "Group Aggregate Load delivered to donwstream boundary"},
@@ -13,7 +13,7 @@ var Group3 = [
 
 ]
 
-//HUC8	
+//HUC8 Metric choices
 var Group2 = [
 
 	{field: "dl1_g2_tot", name: "Group Aggregate Load delivered to donwstream boundary"},
@@ -23,7 +23,7 @@ var Group2 = [
 
 ]
 
-//independent watershed
+//independent watershed Metric choices
 var Group1 = [
 
 	{field: "dl1_g1_tot", name: "Group Aggregate Load delivered to donwstream boundary"},
@@ -31,7 +31,7 @@ var Group1 = [
 
 ]
 
-//state
+//state metric choices
 var ST = [
 
 	{field: "dl1_ST_tot", name: "State Aggregate Load delivered to downstream boundary"},
@@ -42,18 +42,18 @@ var ST = [
 ]
 
 
-var PhosLayerIds = [
+/*var PhosLayerIds = [
 	{name: "GRP_2_NAM", serviceId: 1, selectId: "#GRP2-select", selectClass: "2"},
 	{name: "GRP_1_NAM", serviceId: 2, selectId: "#GRP1-select",  selectClass: "1"},
 	{name: "ST", serviceId: 3, selectId: "#ST-select",  selectClass: "0"}
-]
+]*/
 
-var NitroLayerIds = [
+/*var NitroLayerIds = [
 	{Group3: 0},
 	{Group2: 1},
 	{Group1: 3},
 	{State: 4}
-]
+]*/
 
 var queryParameters = {
     grp3: {idField: "GRP_3_NUM",
@@ -83,4 +83,4 @@ var queryParameters = {
     }
 } 
 
-defaultSparrowLayer = "st";
+//defaultSparrowLayer = "st";
