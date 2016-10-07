@@ -393,32 +393,18 @@ require([
     }
 
     function createChartQuery(){
+        var chartTitle = "notheing"
         $('#chartModal').modal('show');
+        var chart = $('#chartContainer').highcharts();
+        
+       /* $('#chartModal').on('show.bs.modal', function(){
+            $('#chartContainer').css('visibility', 'hidden');
+        })
+
         $("chartModal").on('shown.bs.modal', function(event){
-             $('#graphcontainer1').highcharts({
-              data: {
-                table: 'datatablegraph'
-              },
-              chart: {
-                type: 'column'
-              },
-              title: {
-                text: 'Data Title'
-              },
-              subtitle: {
-                text: 'Subtitle'
-              },
-              yAxis: {
-                allowDecimals: false
-              },
-              xAxis: {
-                type: 'category'
-              },
-              credits: {
-                enabled: false
-              }
-            });
-        });
+            $("#chartContainer").css('visibility', 'initial');
+            chart.reflow();
+        });*/
 
     }
 
@@ -481,11 +467,8 @@ require([
             }
         });
 
-    
-
-        $("#chartButton").on("click", function(){
-            createChartQuery();
-        });
+        $("#chartButton").on("click", createChartQuery);
+        
 
     });
 
