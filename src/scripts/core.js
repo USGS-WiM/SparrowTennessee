@@ -393,7 +393,32 @@ require([
     }
 
     function createChartQuery(){
-        var chartTitle = "notheing"
+        console.log('creating chart query');
+        var chartQueryTask;
+        //var sparrowLayerId = map.getLayer('SparrowRanking').visibleLayers[0];
+        //var SparrowRankingUrl = serviceBaseURL + sparrowLayerId;
+        var SparrowRankingUrl = serviceBaseURL + map.getLayer('SparrowRanking').visibleLayers[0];
+        
+        chartQueryTask = new esri.tasks.QueryTask(SparrowRankingUrl);
+        
+        var chartFieldsArr = ["dl1_g2_sc1"];
+        chartFieldsArr.push( $("#displayedMetricSelect").val() );
+
+        var chartQuery = new esri.tasks.Query();
+        chartQuery.returnGeometry = false;
+        chartQuery.outFields = chartFieldsArr;
+        chartQuery.where = "1=1";
+
+        chartQueryTask.execute(chartQuery, showChart);
+
+    }
+
+    function showChart(response){
+        //console.log(response);
+        $.each(response.features, function(index, feature){
+            console.log(index, feature.attributes);
+        });
+        
         $('#chartModal').modal('show');
         var chart = $('#chartContainer').highcharts();
         
@@ -405,7 +430,6 @@ require([
             $("#chartContainer").css('visibility', 'initial');
             chart.reflow();
         });*/
-
     }
 
     // Show modal dialog; handle legend sizing (both on doc ready)

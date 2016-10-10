@@ -71,13 +71,3 @@ function checkSelectedAggregateGroup(groupBySelectedIndex, selectedRadio){
 
 }
 
-
-//TO REMOVE__________________________________________________________________DEL
-/*function chartInfo(){
-    if($('#modelResultsRadio input:radio:checked').val() == 'option1'){
-        return "Phosphorus";
-    } else{
-        return "Nitrogen";
-    }
-}
-*/
