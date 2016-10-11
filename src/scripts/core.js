@@ -395,42 +395,26 @@ require([
     function createChartQuery(){
         console.log('creating chart query');
         var chartQueryTask;
-        //var sparrowLayerId = map.getLayer('SparrowRanking').visibleLayers[0];
-        //var SparrowRankingUrl = serviceBaseURL + sparrowLayerId;
-        var SparrowRankingUrl = serviceBaseURL + map.getLayer('SparrowRanking').visibleLayers[0];
-        
+        var sparrowLayerId = map.getLayer('SparrowRanking').visibleLayers[0];
+
+        var SparrowRankingUrl = serviceBaseURL + sparrowLayerId;
         chartQueryTask = new esri.tasks.QueryTask(SparrowRankingUrl);
+
         
-        var chartFieldsArr = ["dl1_g2_sc1"];
-        chartFieldsArr.push( $("#displayedMetricSelect").val() );
+        
+        /*var chartFieldsArr = ["dl1_g2_sc1"];
+        chartFieldsArr.push( $("#displayedMetricSelect").val() );*/
 
         var chartQuery = new esri.tasks.Query();
         chartQuery.returnGeometry = false;
-        chartQuery.outFields = chartFieldsArr;
+        chartQuery.outFields = getChartOutfields(sparrowLayerId);
         chartQuery.where = "1=1";
 
         chartQueryTask.execute(chartQuery, showChart);
 
     }
 
-    function showChart(response){
-        //console.log(response);
-        $.each(response.features, function(index, feature){
-            console.log(index, feature.attributes);
-        });
-        
-        $('#chartModal').modal('show');
-        var chart = $('#chartContainer').highcharts();
-        
-       /* $('#chartModal').on('show.bs.modal', function(){
-            $('#chartContainer').css('visibility', 'hidden');
-        })
 
-        $("chartModal").on('shown.bs.modal', function(event){
-            $("#chartContainer").css('visibility', 'initial');
-            chart.reflow();
-        });*/
-    }
 
     // Show modal dialog; handle legend sizing (both on doc ready)
     $(document).ready(function(){
