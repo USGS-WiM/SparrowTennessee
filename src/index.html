@@ -38,6 +38,7 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/bootstrap-sidebar/dist/js/sidebar.js"></script>
     <script src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <script src="bower_components/highcharts/highcharts.js"></script>
 
     
     <!-- endbower -->
@@ -52,6 +53,7 @@
     <script src="scripts/layers.js"></script>
     <script src="scripts/sparrow-config.js"></script>
     <script src="scripts/select-logic.js"></script>
+    <script src="scripts/chart-window.js"></script>
     
     <script src="scripts/core.js"></script>
 
@@ -172,11 +174,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal Title</h4>
+        <h4 class="modal-title" id="myModalLabel">Dynamic Title</h4>
       </div>
       <div class="modal-body">
-          <p>Turn me in landscape mode, then in portrait mode back !</p>
-          <div id="graphcontainer1"></div>
+          <div id="chartContainer"></div>
       </div>
     </div>
   </div>
@@ -250,7 +251,7 @@
                             <p>Nutrient Model</p>
                         </div> 
                         <!--<div id="nutrientRadio" class="btn-gorup" data-toggle="buttons">-->
-                            <div class="radio radio-primary active">
+                            <div class="radio radio-primary active" id="modelResultsRadio">
                                 <input type="radio" name="radio1" id="radio1" value="option1" checked="">
                                 <label for="radio1">
                                     Phosphorus
@@ -311,7 +312,7 @@
                         </select>
 
                         <div class="btn">
-                            <button type="button" class="btn btn-default"  id="chartButton">
+                            <button type="button" class="btn btn-default" data-target="chartModal" id="chartButton">
                                 <span class="glyphicon glyphicon-signal"></span> Show Chart
                             </button>
                         </div>

@@ -393,34 +393,28 @@ require([
     }
 
     function createChartQuery(){
-        $('#chartModal').modal('show');
-        $("chartModal").on('shown.bs.modal', function(event){
-             $('#graphcontainer1').highcharts({
-              data: {
-                table: 'datatablegraph'
-              },
-              chart: {
-                type: 'column'
-              },
-              title: {
-                text: 'Data Title'
-              },
-              subtitle: {
-                text: 'Subtitle'
-              },
-              yAxis: {
-                allowDecimals: false
-              },
-              xAxis: {
-                type: 'category'
-              },
-              credits: {
-                enabled: false
-              }
-            });
-        });
+        console.log('creating chart query');
+        var chartQueryTask;
+        var sparrowLayerId = map.getLayer('SparrowRanking').visibleLayers[0];
+
+        var SparrowRankingUrl = serviceBaseURL + sparrowLayerId;
+        chartQueryTask = new esri.tasks.QueryTask(SparrowRankingUrl);
+
+        
+        
+        /*var chartFieldsArr = ["dl1_g2_sc1"];
+        chartFieldsArr.push( $("#displayedMetricSelect").val() );*/
+
+        var chartQuery = new esri.tasks.Query();
+        chartQuery.returnGeometry = false;
+        chartQuery.outFields = getChartOutfields(sparrowLayerId);
+        chartQuery.where = "1=1";
+
+        chartQueryTask.execute(chartQuery, showChart);
 
     }
+
+
 
     // Show modal dialog; handle legend sizing (both on doc ready)
     $(document).ready(function(){
@@ -481,11 +475,8 @@ require([
             }
         });
 
-    
-
-        $("#chartButton").on("click", function(){
-            createChartQuery();
-        });
+        $("#chartButton").on("click", createChartQuery);
+        
 
     });
 
