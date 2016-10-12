@@ -1,29 +1,52 @@
 function showChart(response){
     //console.log(response);
-    var columns = [];
+    var columnLabels = [];
     var labely;
     var labelx;
     var chartTitle;
     var categories = [];
+    var data = [];
+    var series = [];
+    
+   $.each(response.features, function(index, feature){
 
-/*    var displayField = response.displayFieldName;
-    $.each(response, function(index, obj){
-        console.log(obj);
-    });*/
-    $.each(response.features, function(index, feature, displayField){
-        console.log(index, feature.attributes);
-        var array = $.map(feature.attributes, function(index, value){
-        return [value];
+        
+        var fieldNamesArr = $.map(feature.attributes, function(value, key){
+            return [key];
         });
-        console.log(array);
+        var valuesArr = $.map(feature.attributes, function(value, key){
+            return [value];
+        });
+
+        fieldNamesArr.shift();
+        columnLabels.push( valuesArr.shift() );
+        categories = fieldNamesArr;
+        data.push(valuesArr);
     });
 
-    var array = $.map(response.features.attributes, function(index, value){
-        return [value];
-    });
-    console.log(array);
+   console.log("data", data);
+   console.log("categories", categories);
+   console.log("columnLabels", columnLabels);
 
-    columns = ['Manitoba', 'North Dakota', 'Minnesota', 'South Dakota', 'Saskatchewan', 'Manitoba', 'North Dakota', 'Minnesota', 'South Dakota', 'Saskatchewan'];
+  $.each(categories, function(index, value){
+    series.push( {name: value});
+  });  
+  /* $.each(data, function(index, value){
+        console.log(index, value);
+        series.push( {name: categories[index], data: data[index]} );
+   });*/
+
+    //for (i=0; i < data.length; i++){
+        /*$.each(data[i], function(index, value){
+            console.log("inner function", index, value);
+            series.push()
+        });*/
+        //series.push ( new addSeries(categories[i], data[i]) );
+    //}
+
+    console.log(series);
+
+    //columnLabels = ['Manitoba', 'North Dakota', 'Minnesota', 'South Dakota'];
 
     labely = "Delivered Aggregated Load(kg)"
 
@@ -31,13 +54,33 @@ function showChart(response){
 
     chartTitle = ( $('#modelResultsRadio input:radio:checked').val() == 'option1' ? "Phosphorus" : "Nitrogen")
     
-    categories = ['Fertilizer', 'Manure', 'Forest/Wetland', 'Sewerage Point Sources'];
+    //categories = ['Fertilizer', 'Manure', 'Forest/Wetland', 'Sewerage Point Sources'];
 
-    var data = [
-        [5, 3, 4, 7, 2, 5, 3, 4, 7, 2],
-        [2, 2, 3, 2, 1, 2, 2, 3, 2, 1],
-        [3, 4, 4, 2, 5, 3, 4, 4, 2, 5],
-    ]
+    /*var series = [{
+        name: 'dl1_ST_sc1',
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+    },
+    {
+        name: 'dl1_ST_sc2',
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+    },
+    {
+        name: 'dl1_ST_sc3',
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+    },
+    {
+        name: 'dl1_ST_sc4',
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+    },
+    {
+        name: 'dl1_ST_sc5',
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+    },
+    {
+        name: 'dl1_ST_sc6',
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+    }
+    ]*/
     
     $('#chartModal').modal('show');
     var chart = $('#chartContainer').highcharts();
@@ -55,7 +98,7 @@ function showChart(response){
                 text: chartTitle
             },
             xAxis: {
-                categories: columns,
+                categories: columnLabels,
                 title: {
                     text: labelx
                 },
@@ -100,28 +143,19 @@ function showChart(response){
             credits: {
                 enabled: false
             },
-            series: [{
-                name: categories[0],
-                data: data[0]
-            }, {
-                name: categories[1],
-                data: data[1]
-            }, {
-                name: categories[2],
-                data: data[2]
-            }]
+            series: series
         });
     });
 
         
-       /* $('#chartModal').on('show.bs.modal', function(){
+        $('#chartModal').on('show.bs.modal', function(){
             $('#chartContainer').css('visibility', 'hidden');
         })
 
         $("chartModal").on('shown.bs.modal', function(event){
             $("#chartContainer").css('visibility', 'initial');
             chart.reflow();
-        });*/
+        });
 }
 
 
