@@ -393,6 +393,7 @@ require([
     }
 
     function createChartQuery(){
+        $("#chartContainer").empty();
         console.log('creating chart query');
         var chartQueryTask;
         var sparrowLayerId = map.getLayer('SparrowRanking').visibleLayers[0];
