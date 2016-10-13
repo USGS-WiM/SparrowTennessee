@@ -5,60 +5,23 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <!-- build:css styles/vendor.css -->
-    <!-- bower:css -->
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="bower_components/bootstrap-select/dist/css/bootstrap-select.min.css">
-
-    
-    <link rel="stylesheet" href="bower_components/bootstrap-map-js/dist/css/bootstrapmap.min.css">
-    
-    <link rel="stylesheet" href="bower_components/bootstrap-sidebar/dist/css/sidebar.css">
-    
-    <!-- endbower -->
-    <!-- endbuild -->
+    <link rel="stylesheet" href="styles/vendor.css">
     <!-- CSS for the mapping components -->
     <link rel="stylesheet" href="http://js.arcgis.com/3.13/esri/css/esri.css">
 
-    <!-- build:css styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
-    <!-- endbuild -->
     <!-- <link rel="stylesheet" href="styles/base.css"> -->
-    <!-- build:css styles/base.css -->
-    <link rel="stylesheet" href="bower_components/wim-styles/template/css/base.css">
-    <!-- endbuild -->
+    <link rel="stylesheet" href="styles/base.css">
 
     <link rel="shortcut icon" href="/favicon.ico">
 
-    <!-- build:js scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/jquery.nicescroll/dist/jquery.nicescroll.min.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="bower_components/bootstrap-sidebar/dist/js/sidebar.js"></script>
-    <script src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-    <script src="bower_components/highcharts/highcharts.js"></script>
-
-    
-    <!-- endbower -->
-    <!-- endbuild -->
+    <script src="scripts/vendor.js"></script>
 
     
     <script src="http://js.arcgis.com/3.13/"></script>
     
 
-    <!-- build:js scripts/combined.js -->
-    <script src="scripts/utilities.js"></script>
-    <script src="scripts/layers.js"></script>
-    <script src="scripts/sparrow-config.js"></script>
-    <script src="scripts/select-logic.js"></script>
-    <script src="scripts/chart-window.js"></script>
-    
-    <script src="scripts/core.js"></script>
-
-    
-    <!-- endbuild -->
+    <script src="scripts/combined.js"></script>
 
 </head>
 <body>
@@ -174,7 +137,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="chartModalTitle">Dynamic Title</h4>
+        <h4 class="modal-title" id="myModalLabel">Dynamic Title</h4>
       </div>
       <div class="modal-body">
           <div id="chartContainer"></div>

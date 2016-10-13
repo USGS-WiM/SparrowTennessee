@@ -36,7 +36,7 @@ var ST = [
 
 	{field: "dl1_ST_tot", name: "State Aggregate Load delivered to downstream boundary", chartOutfields: ["ST", "dl1_ST_sc1", "dl1_ST_sc2", "dl1_ST_sc3", "dl1_ST_sc4", "dl1_ST_sc5", "dl1_ST_sc6"]},
 	{field: "dy1_ST_tot", name: "State Aggregate Yield delivered to downstream boundary", chartOutfields: ["ST", "dy1_ST_sc1", "dy1_ST_sc2", "dy1_ST_sc3", "dy1_ST_sc4", "dy1_ST_sc5", "dy1_ST_sc6"]},
-	{field: "I_ST_tot", name: "State Aggregate Load", chartOutfields: ["ST", "I_ST_sc1", "I_ST_sc2", "I_ST_sc3", "I_ST_sc4", "I_ST_sc5", "I_ST_sc6"]},
+	{field: "I_ST_tot", name: "State Aggregate Load", chartOutfields: ["ST", "l_ST_sc1", "l_ST_sc2", "l_ST_sc3", "l_ST_sc4", "l_ST_sc5", "l_ST_sc6"]},
 	{field: "y_ST_tot", name: "State Aggregate Yield", chartOutfields: ["ST", "y_ST_sc1", "y_ST_sc2", "y_ST_sc3", "y_ST_sc4", "y_ST_sc5", "y_ST_sc6"]}
 
 ]
