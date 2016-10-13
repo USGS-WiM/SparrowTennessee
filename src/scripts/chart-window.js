@@ -5,54 +5,58 @@ function showChart(response){
     var labelx;
     var chartTitle;
     var categories = [];
-    var data = [];
+    var chartArr = [];
     var series = [];
-    
-   $.each(response.features, function(index, feature){
 
-        
-        var fieldNamesArr = $.map(feature.attributes, function(value, key){
-            return [key];
-        });
-        var valuesArr = $.map(feature.attributes, function(value, key){
-            return [value];
-        });
+    /*for (i=0; i < response.features[0].attributes.length; i++){
+        console.log('STOP');
+    }*/
 
-        fieldNamesArr.shift();
-        columnLabels.push( valuesArr.shift() );
-        categories = fieldNamesArr;
-        data.push(valuesArr);
+    $.each(response.features[0].attributes, function(key, value){
+        console.log(key, value);
+        categories.push(key);
     });
 
-   console.log("data", data);
+    $.each(categories, function(index, value){
+        var data = [];
+        $.each(response.features, function(innnerIndex, feature){
+            console.log(value, feature.attributes);
+            data.push( feature.attributes[value] );
+        });
+        chartArr.push( data );
+    });
+
+    //remove feature Identifiers for use as column labels
+    columnLabels = chartArr.shift();
+
+    //removes 'group by' from categories
+    categories.shift();
+
+
+   console.log("chartArr", chartArr);
    console.log("categories", categories);
    console.log("columnLabels", columnLabels);
 
   $.each(categories, function(index, value){
     series.push( {name: value});
   });  
-  /* $.each(data, function(index, value){
-        console.log(index, value);
-        series.push( {name: categories[index], data: data[index]} );
-   });*/
 
-    //for (i=0; i < data.length; i++){
-        /*$.each(data[i], function(index, value){
-            console.log("inner function", index, value);
-            series.push()
-        });*/
-        //series.push ( new addSeries(categories[i], data[i]) );
-    //}
+  $.each(chartArr, function(index, value){
+    series[index].data = chartArr[index];
+  });
+
 
     console.log(series);
 
-    //columnLabels = ['Manitoba', 'North Dakota', 'Minnesota', 'South Dakota'];
+    
 
     labely = "Delivered Aggregated Load(kg)"
 
     labelx = "Ranked By Province/State"
 
-    chartTitle = ( $('#modelResultsRadio input:radio:checked').val() == 'option1' ? "Phosphorus" : "Nitrogen")
+    chartTitle = ( $('#modelResultsRadio input:radio:checked').val() == 'option1' ? "Phosphorus" : "Nitrogen");
+
+    //columnLabels = ['Manitoba', 'North Dakota', 'Minnesota', 'South Dakota'];
     
     //categories = ['Fertilizer', 'Manure', 'Forest/Wetland', 'Sewerage Point Sources'];
 
@@ -84,8 +88,6 @@ function showChart(response){
     
     $('#chartModal').modal('show');
     var chart = $('#chartContainer').highcharts();
-
-
 
 
     $(function () {
@@ -148,14 +150,14 @@ function showChart(response){
     });
 
         
-        $('#chartModal').on('show.bs.modal', function(){
+       /* $('#chartModal').on('show.bs.modal', function(){
             $('#chartContainer').css('visibility', 'hidden');
         })
 
         $("chartModal").on('shown.bs.modal', function(event){
             $("#chartContainer").css('visibility', 'initial');
             chart.reflow();
-        });
+        });*/
 }
 
 
