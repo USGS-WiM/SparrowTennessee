@@ -402,13 +402,17 @@ require([
         chartQueryTask = new esri.tasks.QueryTask(SparrowRankingUrl);
 
         
+        var outfieldsArr = [];
+        var chartFieldsObj = getChartOutfields(sparrowLayerId);
         
-        /*var chartFieldsArr = ["dl1_g2_sc1"];
-        chartFieldsArr.push( $("#displayedMetricSelect").val() );*/
+        $.each(chartFieldsObj, function(index, obj){
+            outfieldsArr.push( obj.attribute );
+        });
+        /*chartFieldsArr.push( $("#displayedMetricSelect").val() );*/
 
         var chartQuery = new esri.tasks.Query();
         chartQuery.returnGeometry = false;
-        chartQuery.outFields = getChartOutfields(sparrowLayerId);
+        chartQuery.outFields = outfieldsArr;
         chartQuery.where = "1=1";
 
         chartQueryTask.execute(chartQuery, showChart);
