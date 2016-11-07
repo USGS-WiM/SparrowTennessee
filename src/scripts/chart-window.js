@@ -1,7 +1,11 @@
+/**
+ * Created by emyers 10/2016
+ */
+
+
 function showChart(response){
 
     var columnLabels = [];
-    //var labely;
     var chartTitle;
     var categories = [];
     var chartArr = [];
@@ -32,9 +36,19 @@ function showChart(response){
    //console.log("columnLabels", columnLabels);
 
    //push name object into series array
-    $.each(categories, function(index, value){
+    var sparrowLayerId = map.getLayer('SparrowRanking').visibleLayers[0];
+     var chartLabelsObj = getChartOutfields(sparrowLayerId);
+     var chartLabelsArr = [];
+     $.each(chartLabelsObj, function(index, obj){
+        chartLabelsArr.push( obj.label );
+     });
+    
+    chartLabelsArr.shift();
+
+    $.each(chartLabelsArr, function(index, value){
         series.push( {name: value});
     });  
+
 
     //add data property to each series category and populate it with the corresponding chartArr of data --  EACH value in the array will be 1 column.
     $.each(chartArr, function(index, value){
@@ -43,7 +57,7 @@ function showChart(response){
 
     console.log("Data Series", series);
 
-    //leave as hardcoded?
+    //TODO: DYNAMICALLY LABEL BASED ON DROPDOWN VALUES
     function labelxSelect(){
         var dropdown = $("#groupResultsSelect")[0].selectedIndex;
         switch ( dropdown ){
@@ -95,7 +109,7 @@ function showChart(response){
                });
                 break;
         }
-        return label + " (kg)";
+        return label + " (lb./yr.)";
     }
     
 
@@ -141,13 +155,41 @@ function showChart(response){
             chart: {
                 type: 'column',
                 width: 770,
-                height: 700
+                height: 700,
+                zoomType: "x",
+                events: {
+                    selection: function (e) {
+                        var xAxis = e.xAxis[0],
+                        flag = false; // first selected point should deselect old ones
+                        
+                        if(xAxis) {
+                            $.each(this.series, function (i, series) {
+                                $.each(series.points, function (j, point) {
+                                    if ( point.x >= xAxis.min && point.x <= xAxis.max ) {
+                                        point.select(true, flag);
+                                        if (!flag) {
+                                            flag = !flag; // all other points should include previous points
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                        return true; // Zoom to selected bars
+                        
+                    }
+                }
+            },
+            title:{
+                text: null
+            },
+            subtitle:{
+                text: null
             },
             xAxis: {
                 categories: columnLabels,
                 title: {
                     text: "Ranked by " + labelxSelect()
-                },
+                }
             },
             yAxis: {
                 min: 0,
@@ -163,11 +205,12 @@ function showChart(response){
                 }
             },
             legend: {
-                align: 'right',
-                x: -30,
+                align: 'center',
+                x: 10,
                 verticalAlign: 'top',
                 y: 0,
-                floating: true,
+                floating: false,
+                padding: 5,
                 backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
                 borderColor: '#CCC',
                 borderWidth: 1,
@@ -175,7 +218,7 @@ function showChart(response){
             },
             tooltip: {
                 headerFormat: '<b>'+ labelxSelect() + ': {point.x}</b><br/>',
-                pointFormat: '{series.name}: {point.y:,.2f}<br/>Total: {point.stackTotal:,.2f}'
+                pointFormat: '{series.name}: {point.y:,.2f}<br/>Total (lb./yr.): {point.stackTotal:,.2f}'
             },
             plotOptions: {
                 column: {
