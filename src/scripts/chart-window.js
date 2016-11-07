@@ -35,29 +35,61 @@ function showChart(response){
    //console.log("categories", categories);
    //console.log("columnLabels", columnLabels);
 
-   //push name object into series array
+   //get chartOutfields Object --i.e {attribute: "VALUE", label: "value"}
     var sparrowLayerId = map.getLayer('SparrowRanking').visibleLayers[0];
-     var chartLabelsObj = getChartOutfields(sparrowLayerId);
-     var chartLabelsArr = [];
-     $.each(chartLabelsObj, function(index, obj){
-        chartLabelsArr.push( obj.label );
-     });
+    var chartLabelsObj = getChartOutfields(sparrowLayerId);
+    var chartLabelsArr = [];
+    $.each(chartLabelsObj, function(index, obj){
+        chartLabelsArr.push( obj.label ); //get labels ONLY as arr
+    });
     
+    //removes 'group by' from labels  (MUST MATCH CATEGORIES)
     chartLabelsArr.shift();
 
+    //push label array into series
     $.each(chartLabelsArr, function(index, value){
         series.push( {name: value});
     });  
 
 
-    //add data property to each series category and populate it with the corresponding chartArr of data --  EACH value in the array will be 1 column.
+    //add data array to each series category and populate it with the corresponding index chartArr 
+
     $.each(chartArr, function(index, value){
         series[index].data = chartArr[index];
     });
 
+    //EACH value in the data array represents 1 COLUMN.
+    //EACH series represents a DIVISION in the column
     console.log("Data Series", series);
 
-    //TODO: DYNAMICALLY LABEL BASED ON DROPDOWN VALUES
+     ///SAMPLE DATA FORMAT
+    /*var series = [{
+        name: 'dl1_ST_sc1',
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+    },
+    {
+        name: 'dl1_ST_sc2',
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+    },
+    {
+        name: 'dl1_ST_sc3',
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+    },
+    {
+        name: 'dl1_ST_sc4',
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+    },
+    {
+        name: 'dl1_ST_sc5',
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+    },
+    {
+        name: 'dl1_ST_sc6',
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+    }
+    ]*/
+
+    //TODO: DYNAMICALLY LABEL BASED ON DROPDOWN VALUES????
     function labelxSelect(){
         var dropdown = $("#groupResultsSelect")[0].selectedIndex;
         switch ( dropdown ){
@@ -112,34 +144,7 @@ function showChart(response){
         return label + " (lb./yr.)";
     }
     
-
-    ///SAMPLE DATA FORMAT
-    /*var series = [{
-        name: 'dl1_ST_sc1',
-        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
-    },
-    {
-        name: 'dl1_ST_sc2',
-        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
-    },
-    {
-        name: 'dl1_ST_sc3',
-        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
-    },
-    {
-        name: 'dl1_ST_sc4',
-        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
-    },
-    {
-        name: 'dl1_ST_sc5',
-        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
-    },
-    {
-        name: 'dl1_ST_sc6',
-        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
-    }
-    ]*/
-    
+    //Show the Chart Modal
     $('#chartModal').modal('show');
     var chart = $('#chartContainer').highcharts(); 
 
@@ -165,18 +170,20 @@ function showChart(response){
                         if(xAxis) {
                             $.each(this.series, function (i, series) {
                                 $.each(series.points, function (j, point) {
-                                    if ( point.x >= xAxis.min && point.x <= xAxis.max ) {
+                                    console.log(j, point);
+                                   /* if ( point.x >= xAxis.min && point.x <= xAxis.max ) {
                                         point.select(true, flag);
                                         if (!flag) {
                                             flag = !flag; // all other points should include previous points
                                         }
-                                    }
+                                    }*/
                                 });
                             });
                         }
                         return true; // Zoom to selected bars
                         
                     }
+                    
                 }
             },
             title:{

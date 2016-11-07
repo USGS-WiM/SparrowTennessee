@@ -398,18 +398,22 @@ require([
         var chartQueryTask;
         var sparrowLayerId = map.getLayer('SparrowRanking').visibleLayers[0];
 
+        //add map layer ID to query URL
         var SparrowRankingUrl = serviceBaseURL + sparrowLayerId;
+
+        //setup QueryTask
         chartQueryTask = new esri.tasks.QueryTask(SparrowRankingUrl);
 
+        //Returns chartOutfields Object form config --i.e. {attribute: "VALUE", label: "VALUE"} 
+        var chartFieldsObj = getChartOutfields(sparrowLayerId); 
         
+        //grab attributes from chartOutfields object
         var outfieldsArr = [];
-        var chartFieldsObj = getChartOutfields(sparrowLayerId);
-        
         $.each(chartFieldsObj, function(index, obj){
-            outfieldsArr.push( obj.attribute );
+            outfieldsArr.push( obj.attribute ); //get attribute value ONLY
         });
-        /*chartFieldsArr.push( $("#displayedMetricSelect").val() );*/
 
+        //setup esri query
         var chartQuery = new esri.tasks.Query();
         chartQuery.returnGeometry = false;
         chartQuery.outFields = outfieldsArr;
@@ -418,7 +422,6 @@ require([
         chartQueryTask.execute(chartQuery, showChart);
 
     }
-
 
 
     // Show modal dialog; handle legend sizing (both on doc ready)
