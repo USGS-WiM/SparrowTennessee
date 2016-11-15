@@ -235,6 +235,7 @@ function showChart(response){
                                 });
                             });
                         }
+                        $("#resetButton").prop("disabled", false);
                         return true; // Zoom to selected bars
                         
                     }
@@ -316,6 +317,7 @@ function showChart(response){
     $('#resetButton').click(function() {
         var chart = $('#chartContainer').highcharts();
         chart.xAxis[0].setExtremes(null,null);
+        $("#resetButton").prop("disabled", true);
         //chart.resetZoomButton.hide();
     });
     
