@@ -1,4 +1,5 @@
-var serviceBaseURL = "http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/"
+var serviceBaseURL = "http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/";
+var chartUnits = " (lb./yr.)"
 
 
 //HUC10 Metric choices, service Id 0

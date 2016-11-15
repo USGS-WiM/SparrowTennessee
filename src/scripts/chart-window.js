@@ -12,30 +12,85 @@ function showChart(response){
     var series = [];
 
 
+
+    //EXPERIMENTAL SORT response by total
+    var featureSort = [];
+
+    $.each(response.features, function(index, feature){
+        featureSort.push(feature.attributes);
+    });
+
+    var sum = 0;
+    $.each(featureSort, function(index, obj){
+        $.each(obj, function(i, attribute){
+            if(jQuery.type(attribute) !== "string"){
+                sum += attribute;
+            }
+        });
+        obj.total = sum;
+    });
+    featureSort.sort(function(a, b){
+        var atotal = a.total;
+        var btotal = b.total;
+        if (atotal > btotal){
+            return 1;
+        }
+        if (atotal < btotal){
+            return -1;
+        }
+        return 0
+        //return parseFloat(b.total) - parseFloat(a.total);
+    });
+    console.log(featureSort);
+
+
+    //trying to sort feature.attributes by sum
+    /*$.each(response.features, function(index, feature){
+        console.log(index, feature.attributes);
+        
+        var sum = 0;
+        $.each(feature.attributes, function( i, attribute){
+            if (jQuery.type(attribute) !== "string" ){
+                sum += attribute;
+            }
+        });
+
+        console.log(sum);
+    });*/
+
+    //create array of field names
     $.each(response.features[0].attributes, function(key, value){
         categories.push(key);
     });
 
-    $.each(categories, function(index, value){
+    categories.pop();
+
+
+    //EXPERIMENTAL
+    $.each(categories, function(index, value){  
+        var data2 = [];
+        $.each(featureSort, function(innerIndex, feature){
+            data2.push( feature[value] );
+        });
+        chartArr.push(data2);
+    });
+
+    //create mulitidimensional array from query response
+    /*$.each(categories, function(index, value){
         var data = [];
         $.each(response.features, function(innnerIndex, feature){
             data.push( feature.attributes[value] );
         });
         chartArr.push( data );
-    });
+    });*/
 
-    //remove feature Identifiers for use as column labels
-    columnLabels = chartArr.shift();
-
-    //removes 'group by' from categories
+    //remove 1st field ('group by') from charting arrays
     categories.shift();
+        columnLabels = chartArr.shift(); //removes AND returns column labels ( chartArr[0] )
+    //chartArr.pop();
 
 
-   //console.log("chartArr", chartArr);
-   //console.log("categories", categories);
-   //console.log("columnLabels", columnLabels);
-
-   //get chartOutfields Object --i.e {attribute: "VALUE", label: "value"}
+   //get chartOutfields from config --i.e {attribute: "VALUE", label: "value"}
     var sparrowLayerId = map.getLayer('SparrowRanking').visibleLayers[0];
     var chartLabelsObj = getChartOutfields(sparrowLayerId);
     var chartLabelsArr = [];
@@ -52,40 +107,36 @@ function showChart(response){
     });  
 
 
-    //add data array to each series category and populate it with the corresponding index chartArr 
-
+    //chartArr is a multi-dimensional array.  Each item in chartArr is an array of series data.
     $.each(chartArr, function(index, value){
         series[index].data = chartArr[index];
     });
 
-    //EACH value in the data array represents 1 COLUMN.
-    //EACH series represents a DIVISION in the column
-    console.log("Data Series", series);
 
      ///SAMPLE DATA FORMAT
     /*var series = [{
         name: 'dl1_ST_sc1',
-        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3]
     },
     {
         name: 'dl1_ST_sc2',
-        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3]
     },
     {
         name: 'dl1_ST_sc3',
-        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3]
     },
     {
         name: 'dl1_ST_sc4',
-        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3]
     },
     {
         name: 'dl1_ST_sc5',
-        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3]
     },
     {
         name: 'dl1_ST_sc6',
-        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3,5, 3, 4, 7, 2, 5, 3]
+        data: [5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3, 5, 3, 4, 7, 2, 5, 3]
     }
     ]*/
 
@@ -141,7 +192,7 @@ function showChart(response){
                });
                 break;
         }
-        return label + " (lb./yr.)";
+        return label + chartUnits;
     }
     
     //Show the Chart Modal
@@ -149,7 +200,6 @@ function showChart(response){
     var chart = $('#chartContainer').highcharts(); 
 
     $(function () {
-
         Highcharts.setOptions({
             lang: {
                 thousandsSep: ','
@@ -162,6 +212,11 @@ function showChart(response){
                 width: 770,
                 height: 700,
                 zoomType: "x",
+                resetZoomButton: {
+                    theme: {
+                        display: 'none'
+                    }
+                },
                 events: {
                     selection: function (e) {
                         var xAxis = e.xAxis[0],
@@ -243,23 +298,34 @@ function showChart(response){
         });
     });
 
-        $("#chartModal").on('show.bs.modal', function(){
-            $("#chartModalTitle").empty();
-            $("#chartModalTitle").text("Phosphorus " + labelySelect() );
-        });
+    /*  _________________________________________CHART EVENTS________________________________________________________________ */
 
-        $("#chartModal").on('shown.bs.modal', function(){
-            $("#chartModalTitle").empty();
-            $("#chartModalTitle").text("Phosphorus " + labelySelect() );
-        });
-        
-       /* $('#chartModal').on('show.bs.modal', function(){
-            $('#chartContainer').css('visibility', 'hidden');
-        })
+    //initial showing
+    $("#chartModal").on('show.bs.modal', function(){
+        $("#chartModalTitle").empty();
+        $("#chartModalTitle").text("Phosphorus " + labelySelect() );
+    });
 
-        $("chartModal").on('shown.bs.modal', function(event){
-            $("#chartContainer").css('visibility', 'initial');
-            chart.reflow();
-        });*/
+    //after initial showing
+    $("#chartModal").on('shown.bs.modal', function(){
+        $("#chartModalTitle").empty();
+        $("#chartModalTitle").text("Phosphorus " + labelySelect() );
+    });
+
+    //Custom Reset button
+    $('#resetButton').click(function() {
+        var chart = $('#chartContainer').highcharts();
+        chart.xAxis[0].setExtremes(null,null);
+        //chart.resetZoomButton.hide();
+    });
+    
+   /* $('#chartModal').on('show.bs.modal', function(){
+        $('#chartContainer').css('visibility', 'hidden');
+    })
+
+    $("chartModal").on('shown.bs.modal', function(event){
+        $("#chartContainer").css('visibility', 'initial');
+        chart.reflow();
+    });*/
 }
 
