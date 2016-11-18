@@ -178,16 +178,6 @@ var Group1 = [
 
 ]
 
-//state metric choices, Service ID 3
-/*var ST = [
-
-	{field: "dl1_ST_tot", name: "State Aggregate Load delivered to downstream boundary", chartOutfields: ["ST", "dl1_ST_sc1", "dl1_ST_sc2", "dl1_ST_sc3", "dl1_ST_sc4", "dl1_ST_sc5", "dl1_ST_sc6"]},
-	{field: "dy1_ST_tot", name: "State Aggregate Yield delivered to downstream boundary", chartOutfields: ["ST", "dy1_ST_sc1", "dy1_ST_sc2", "dy1_ST_sc3", "dy1_ST_sc4", "dy1_ST_sc5", "dy1_ST_sc6"]},
-	{field: "I_ST_tot", name: "State Aggregate Load", chartOutfields: ["ST", "l_ST_sc1", "l_ST_sc2", "l_ST_sc3", "l_ST_sc4", "l_ST_sc5", "l_ST_sc6"]},
-	{field: "y_ST_tot", name: "State Aggregate Yield", chartOutfields: ["ST", "y_ST_sc1", "y_ST_sc2", "y_ST_sc3", "y_ST_sc4", "y_ST_sc5", "y_ST_sc6"]}
-
-]*/
-
 var ST = [
 
     {
@@ -274,61 +264,5 @@ var queryParameters = {
     }
 } 
 
-//defaultSparrowLayer = "st";
-
-function getChartOutfields(sparrowLayerId){
-    var chartFieldsArr = [];
-    var chartLabelsArr = [];
-    //chartFieldsArr.push( $("#displayedMetricSelect").val() );
-    switch(sparrowLayerId){
-        case 0:
-            //HUC10
-            $.each(Group3, function(index, item){
-                if( $("#displayedMetricSelect").val() == item.field ) {
-                     $.each(item.chartOutfields, function(i, fields) {
-                        chartFieldsArr.push( fields );
-
-                    });
-                }
-            });
-            return chartFieldsArr;
-            break;
-        case 1:
-            //HUC8
-            $.each(Group2, function(index, item){
-                if( $("#displayedMetricSelect").val() == item.field ) {
-                     $.each(item.chartOutfields, function(i, fields) {
-                        chartFieldsArr.push( fields );
-
-                    });
-                }
-            });
-            return chartFieldsArr;
-            break;
-        case 2:
-            //Independent Watershed
-             $.each(Group1, function(index, item){
-                if( $("#displayedMetricSelect").val() == item.field ) {
-                     $.each(item.chartOutfields, function(i, fields) {
-                        chartFieldsArr.push( fields );
-
-                    });
-                }
-            });
-            return chartFieldsArr;
-            break;
-        case 3:
-            //State
-            $.each(ST, function(index, item){
-                if( $("#displayedMetricSelect").val() == item.field ) {
-                    $.each(item.chartOutfields, function(i, fields) {
-                        chartFieldsArr.push( fields );
-
-                    });
-                }
-            });
-            return chartFieldsArr;
-            break;
-    }
-
-} //END getChartOutfields()
+//
+ 

@@ -63,28 +63,19 @@ require([
     //allLayers = mapLayers;
 
 
-    
-
-
-
-
     //set initial Displayed Metric options
     $('#groupResultsSelect').on('loaded.bs.select', function(){  
-        addMetricOptions($("#groupResultsSelect")[0].selectedIndex);
+        populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
     });
 
-    //keep Displayed Metric options in sync
+    //keep Displayed Metric options in sync -- can be moved to sidebar events lower in code
     $("#groupResultsSelect").on('changed.bs.select', function(e){  
-        addMetricOptions(e.currentTarget.selectedIndex);
-        console.log($('#radio'));
+        populateMetricOptions(e.currentTarget.selectedIndex);
         checkSelectedAggregateGroup( e.currentTarget.selectedIndex, $(".radio input[type='radio']:checked")[0].id );
+       
     });
 
-    //TODO: find a reusable solution
-    $(".clearAOI").on('click', function(){
-        var id = '#' + this.classList[1];
-        $(id).selectpicker('deselectAll');
-    });
+
 
 
     map = Map('mapDiv', {
@@ -96,7 +87,7 @@ require([
 
     //TODO: FIGURE OUT HOW TO USE THE QUERY WHERECLAUSE     Call setupQueryTask for every layer inqueryParameters
     for (var key in queryParameters){
-        setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, [queryParameters[key].namefield], "1=1");
+        setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, [queryParameters[key].nameField], "1=1");
     }
 
     function setupQueryTask(url, outFieldsArr, whereClause){
@@ -111,7 +102,8 @@ require([
         queryTask.execute(query, populateAOI)
     }
 
-    //TODO: need to remove hard coding somehow.
+    //WHEN UPDATING APP: check strings, especially ST
+    //Populates AOI Selects; uses queryParameters Object in config
     function populateAOI(response){
 
         switch(response.displayFieldName){
@@ -120,19 +112,22 @@ require([
                 break
             case queryParameters["grp2"].nameField:
                 $.each(response.features, function(index, feature){
-                    $("#grp2-select").append(new Option(feature.attributes["GRP_2_NAM"], feature.attributes["GRP_2_NUM"]));
+                    var attributeName = queryParameters["grp2"].nameField;
+                    $("#grp2-select").append(new Option(feature.attributes[attributeName], feature.attributes["GRP_2_NUM"]));
                     $('#grp2-select').selectpicker('refresh');
                 });
                 break;
             case queryParameters["grp1"].nameField:
                  $.each(response.features, function(index, feature){
-                    $("#grp1-select").append(new Option(feature.attributes["GRP_1_NAM"], feature.attributes["GRP_1_NUM"]));
+                    var attributeName = queryParameters["grp1"].nameField;
+                    $("#grp1-select").append(new Option(feature.attributes[attributeName], feature.attributes["GRP_1_NUM"]));
                     $('#grp1-select').selectpicker('refresh');
                 });
                 break;
             case queryParameters["st"].nameField:
                 $.each(response.features, function(index, feature){
-                    $("#st-select").append(new Option(feature.attributes["ST"], feature.attributes["ST"]));
+                    var attributeName = queryParameters["st"].nameField;
+                    $("#st-select").append(new Option(feature.attributes[attributeName], feature.attributes["ST"]));
                     $('#st-select').selectpicker('refresh');
                 });
                 break;
@@ -462,19 +457,75 @@ require([
         $('#legendCollapse').on('hide.bs.collapse', function () {
             $('#legendElement').css('height', 'initial');
         });
+        
 
+        /* HANDLE SIDEBAR UI EVENTS_____________________________________________________________*/
+
+        /*RADIO EVENTS*/
         $('.radio').on('change', function(e){
             var groupBySelectedIndex = $("#groupResultsSelect")[0].selectedIndex;
             var selectedRadio = this.firstElementChild.id;
             checkSelectedAggregateGroup(groupBySelectedIndex, selectedRadio);   
         });
 
-        //enable/disable chart button based on #displayedMetricSelect and #groupResultsSelect
+
+
+
+        /* AOI EVENTS */
+        $('.aoiSelect').on('change', function(e){
+            
+
+            var selectId = e.currentTarget.id;
+            var selectedItem = e.currentTarget.value;
+            var sparrowRankingId = map.getLayer('SparrowRanking').visibleLayers[0];
+            var groupResultsIndex = $("#groupResultsSelect")[0].selectedIndex;
+
+
+            var definitionString = null;
+            //map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
+            var layerDefs = [];
+            if(selectId == "grp1-select"){
+                definitionString = "GRP_1_NAM IN(" + "'" + selectedItem + "')";
+            } 
+            if(selectId == "grp2-select"){
+                definitionString = "GRP_2_NAM IN(" + "'" + selectedItem + "')";
+            }
+
+
+
+
+            //LayerDefs on Phosphorus Layers
+            if($("#radio1")[0].checked == true){
+                layerDefs[0] = definitionString;
+                layerDefs[1] = definitionString;
+                layerDefs[2] = definitionString;
+                layerDefs[3] = definitionString;
+            }
+            
+
+            console.log("Selected Item: " + selectedItem);
+            console.log("Select Id: " + selectId);
+            
+
+
+            map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, false);
+            //map.getLayer("SparrowRanking").refresh();
+        });
+
+
+        //TODO: find a reusable solution -- move lower into event handlers
+        $(".clearAOI").on('click', function(){
+            var id = '#' + this.classList[1];
+            $(id).selectpicker('deselectAll');
+        });
+
+
+        // enable/disable Show Chart button 
         $('.nonAOISelect').on('change', function(){
             if ($('#groupResultsSelect')[0].selectedIndex == 0){
                 if ($('#displayedMetricSelect')[0].selectedIndex == 4 || $('#displayedMetricSelect')[0].selectedIndex == 5){
                     $("#chartButton").addClass('disabled');
-                    //TODO:  ALSO MAKE SURE YOU REMOVE ANY CHART MODALS FROM THE VIEW
+                    //TODO:  ALSO MAKE SURE YOU REMOVE ANY CHART FROM THE VIEW (Lobipanel only, modal takes care of self.)
                 } else{
                     $("#chartButton").removeClass('disabled');
                 }
@@ -483,7 +534,11 @@ require([
             }
         });
 
+        //Start the Chart Chain of Events
         $("#chartButton").on("click", createChartQuery);
+
+        /* END UI SIDEBAR EVENTS______________________________________________________________*/
+
         
 
     });
@@ -776,6 +831,7 @@ require([
                             $(".opacityClose").click(function() {
                                 $(".opacitySlider").remove();
                             });
+
                             $('#slider').change(function(event) {
                                 //get the value of the slider with this call
                                 var o = ($('#slider')[0].value)/100;
@@ -958,7 +1014,6 @@ require([
 
     });//end of require statement containing legend building code
 
-    
 });
 
 $(document).ready(function () {

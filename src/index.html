@@ -33,29 +33,32 @@
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/jquery.nicescroll/dist/jquery.nicescroll.min.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="bower_components/bootstrap-sidebar/dist/js/sidebar.js"></script>
-    <script src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-    <script src="bower_components/highcharts/highcharts.js"></script>
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/jquery.nicescroll/dist/jquery.nicescroll.min.js"></script>
+    <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="bower_components/bootstrap-sidebar/dist/js/sidebar.js"></script>
+    <script type="text/javascript" src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript" src="bower_components/highcharts/highcharts.js"></script>
+
+    <!--<script src="./lib/highcharts-export-clientside/highcharts-export-clientside.js"></script>--> <!--Needs 4.2 version of highcharts-->
 
     
     <!-- endbower -->
     <!-- endbuild -->
 
     
-    <script src="http://js.arcgis.com/3.13/"></script>
+    <script type="text/javascript" src="http://js.arcgis.com/3.13/"></script>
+    <script type="text/javascript" src="http://highcharts.github.io/export-csv/export-csv.js"></script>
     
 
     <!-- build:js scripts/combined.js -->
-    <script src="scripts/utilities.js"></script>
-    <script src="scripts/layers.js"></script>
-    <script src="scripts/sparrow-config.js"></script>
-    <script src="scripts/select-logic.js"></script>
-    <script src="scripts/chart-window.js"></script>
+    <script type="text/javascript" src="scripts/utilities.js"></script>
+    <script type="text/javascript" src="scripts/layers.js"></script>
+    <script type="text/javascript" src="scripts/sparrow-config.js"></script>
+    <script type="text/javascript" src="scripts/select-logic.js"></script>
+    <script type="text/javascript" src="scripts/chart-window.js"></script>
     
-    <script src="scripts/core.js"></script>
+    <script type="text/javascript" src="scripts/core.js"></script>
 
     
     <!-- endbuild -->
@@ -178,7 +181,10 @@
       </div>
       <div class="modal-body">
           <div id="chartContainer"></div>
-          <button id="resetButton" class="btn btn-default" disabled>Reset Zoom</button>
+          <span>
+              <button id="downloadXLS" class="btn btn-default" data-type="application/vnd.ms-excel">Export Data</button>
+              <button id="resetButton" class="btn btn-default" disabled>Reset Zoom</button>
+          </span>
       </div>
     </div>
   </div>
@@ -270,7 +276,7 @@
                             <p>Area of Interest</p>
                         </div>
                             <div class='input-group' >
-                                <select id="st-select" class="selectpicker 0" title="State" ></select>
+                                <select id="st-select" class="selectpicker 0 aoiSelect" title="State" ></select>
                                 <span class=''>
                                     <a href="#" class="clearAOI st-select" style="display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
                                         <span class="glyphicon glyphicon-remove"></span>
@@ -278,7 +284,7 @@
                                 </span>
                             </div>
                              <div class='input-group'>
-                                <select id="grp1-select" class="selectpicker 1" title="Independent Watershed"></select>
+                                <select id="grp1-select" class="selectpicker 1 aoiSelect" title="Independent Watershed"></select>
                                 <span class=''>
                                     <a href="#" class="clearAOI grp1-select" style="display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
                                         <span class="glyphicon glyphicon-remove"></span>
@@ -286,7 +292,7 @@
                                 </span>
                             </div>
                              <div class='input-group'>
-                                <select id="grp2-select" class="selectpicker 2" title="HUC8" ></select>
+                                <select id="grp2-select" class="selectpicker 2 aoiSelect" title="HUC8" ></select>
                                 <span class=''>
                                     <a href="#" class="clearAOI grp2-select" style=" display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
                                         <span class="glyphicon glyphicon-remove"></span>
@@ -300,7 +306,7 @@
                             <p>Displayed Metric</p>
                         </div>
     
-                        <select id="displayedMetricSelect" class="selectpicker nonAOISelect" data-width="220px"></select>
+                        <select id="displayedMetricSelect" class="selectpicker nonAOISelect" data-width="280px"></select>
 
                         <div class="select-label">
                             <p>Group Results By</p>

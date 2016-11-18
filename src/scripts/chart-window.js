@@ -320,6 +320,11 @@ function showChart(response){
         $("#resetButton").prop("disabled", true);
         //chart.resetZoomButton.hide();
     });
+
+    $("#downloadXLS").click(function(){
+        var chart = $('#chartContainer').highcharts();
+        alert(chart.getCSV());
+    });
     
    /* $('#chartModal').on('show.bs.modal', function(){
         $('#chartContainer').css('visibility', 'hidden');
