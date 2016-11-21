@@ -392,7 +392,7 @@ require([
         console.log('creating chart query');
         var chartQueryTask;
         var sparrowLayerId = map.getLayer('SparrowRanking').visibleLayers[0];
-        if (map.getLayer('SparrowRanking').layerDefinitions.length > 0){
+        if (map.getLayer('SparrowRanking').layerDefinitions){
             var whereClause = map.getLayer('SparrowRanking').layerDefinitions[sparrowLayerId];
         } else{
             var whereClause = "1=1";

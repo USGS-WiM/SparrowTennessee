@@ -28,18 +28,19 @@ function showChart(response){
             }
         });
         obj.total = sum;
+        sum = 0;
     });
     featureSort.sort(function(a, b){
-        var atotal = a.total;
+        /*var atotal = a.total;
         var btotal = b.total;
-        if (atotal > btotal){
+        if (atotal < btotal){
             return 1;
         }
-        if (atotal < btotal){
+        if (atotal > btotal){
             return -1;
         }
-        return 0
-        //return parseFloat(b.total) - parseFloat(a.total);
+        return 0*/
+        return parseFloat(b.total) - parseFloat(a.total);
     });
     console.log(featureSort);
 
