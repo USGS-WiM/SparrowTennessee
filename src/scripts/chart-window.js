@@ -324,6 +324,7 @@ function showChart(response){
     $("#downloadXLS").click(function(){
         var chart = $('#chartContainer').highcharts();
         alert(chart.getCSV());
+        //window.open('data:application/vnd.ms-excel,' + chart.getTable() );
     });
     
    /* $('#chartModal').on('show.bs.modal', function(){

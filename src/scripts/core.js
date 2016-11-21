@@ -392,6 +392,11 @@ require([
         console.log('creating chart query');
         var chartQueryTask;
         var sparrowLayerId = map.getLayer('SparrowRanking').visibleLayers[0];
+        if (map.getLayer('SparrowRanking').layerDefinitions.length > 0){
+            var whereClause = map.getLayer('SparrowRanking').layerDefinitions[sparrowLayerId];
+        } else{
+            var whereClause = "1=1";
+        }
 
         //add map layer ID to query URL
         var SparrowRankingUrl = serviceBaseURL + sparrowLayerId;
@@ -412,7 +417,7 @@ require([
         var chartQuery = new esri.tasks.Query();
         chartQuery.returnGeometry = false;
         chartQuery.outFields = outfieldsArr;
-        chartQuery.where = "1=1";
+        chartQuery.where = whereClause;
 
         chartQueryTask.execute(chartQuery, showChart);
 
