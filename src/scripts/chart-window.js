@@ -282,10 +282,10 @@ function showChart(response){
             },
             tooltip: {
                 formatter: function(){
-                    var rank = this.point.index + 1;
-                    return '<b>'+ labelxSelect() + ': ' + this.point.category + '</b><br/>' + this.series.name + ': ' + this.point.y.toFixed(2)  + '<br/> Total (lb./yr.) ' + this.point.stackTotal.toFixed(2) + '<br/> Rank: ' + rank;
+                    var rank = this.point.index + 1; 
+                    return '<b>'+ labelxSelect() + ': ' + this.point.category + '</b><br/>' 
+                            + this.series.name + ': ' + this.point.y.toFixed(2)  + '<br/> Total (lb./yr.) ' + this.point.stackTotal.toFixed(2) + '<br/> Rank: ' + rank;
                 },
-               
             },
             plotOptions: {
                 column: {
@@ -302,8 +302,6 @@ function showChart(response){
             series: series
         });
     });
-
-    console.log(series[1].data.length);
 
     /*  _________________________________________CHART EVENTS________________________________________________________________ */
 
