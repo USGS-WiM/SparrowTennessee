@@ -87,7 +87,7 @@ function showChart(response){
 
     //remove 1st field ('group by') from charting arrays
     categories.shift();
-        columnLabels = chartArr.shift(); //removes AND returns column labels ( chartArr[0] )
+    columnLabels = chartArr.shift(); //removes AND returns column labels ( chartArr[0] )
     //chartArr.pop();
 
 
@@ -281,8 +281,11 @@ function showChart(response){
                 shadow: false
             },
             tooltip: {
-                headerFormat: '<b>'+ labelxSelect() + ': {point.x}</b><br/>',
-                pointFormat: '{series.name}: {point.y:,.2f}<br/>Total (lb./yr.): {point.stackTotal:,.2f}'
+                formatter: function(){
+                    var rank = this.point.index + 1;
+                    return '<b>'+ labelxSelect() + ': ' + this.point.category + '</b><br/>' + this.series.name + ': ' + this.point.y.toFixed(2)  + '<br/> Total (lb./yr.) ' + this.point.stackTotal.toFixed(2) + '<br/> Rank: ' + rank;
+                },
+               
             },
             plotOptions: {
                 column: {
@@ -299,6 +302,8 @@ function showChart(response){
             series: series
         });
     });
+
+    console.log(series[1].data.length);
 
     /*  _________________________________________CHART EVENTS________________________________________________________________ */
 

@@ -18,7 +18,8 @@
     <script src="scripts/vendor.js"></script>
 
     
-    <script src="http://js.arcgis.com/3.13/"></script>
+    <script type="text/javascript" src="http://js.arcgis.com/3.13/"></script>
+    <script type="text/javascript" src="http://highcharts.github.io/export-csv/export-csv.js"></script>
     
 
     <script src="scripts/combined.js"></script>
@@ -141,7 +142,10 @@
       </div>
       <div class="modal-body">
           <div id="chartContainer"></div>
-          <button id="resetButton" class="btn btn-default" disabled>Reset Zoom</button>
+          <span>
+              <button id="downloadXLS" class="btn btn-default" data-type="application/vnd.ms-excel">Export Data</button>
+              <button id="resetButton" class="btn btn-default" disabled>Reset Zoom</button>
+          </span>
       </div>
     </div>
   </div>
@@ -233,7 +237,7 @@
                             <p>Area of Interest</p>
                         </div>
                             <div class='input-group' >
-                                <select id="st-select" class="selectpicker 0" title="State" ></select>
+                                <select id="st-select" class="selectpicker 0 aoiSelect" title="State" ></select>
                                 <span class=''>
                                     <a href="#" class="clearAOI st-select" style="display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
                                         <span class="glyphicon glyphicon-remove"></span>
@@ -241,7 +245,7 @@
                                 </span>
                             </div>
                              <div class='input-group'>
-                                <select id="grp1-select" class="selectpicker 1" title="Independent Watershed"></select>
+                                <select id="grp1-select" class="selectpicker 1 aoiSelect" title="Independent Watershed"></select>
                                 <span class=''>
                                     <a href="#" class="clearAOI grp1-select" style="display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
                                         <span class="glyphicon glyphicon-remove"></span>
@@ -249,7 +253,7 @@
                                 </span>
                             </div>
                              <div class='input-group'>
-                                <select id="grp2-select" class="selectpicker 2" title="HUC8" ></select>
+                                <select id="grp2-select" class="selectpicker 2 aoiSelect" title="HUC8" ></select>
                                 <span class=''>
                                     <a href="#" class="clearAOI grp2-select" style=" display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
                                         <span class="glyphicon glyphicon-remove"></span>
@@ -263,7 +267,7 @@
                             <p>Displayed Metric</p>
                         </div>
     
-                        <select id="displayedMetricSelect" class="selectpicker nonAOISelect" data-width="220px"></select>
+                        <select id="displayedMetricSelect" class="selectpicker nonAOISelect" data-width="280px"></select>
 
                         <div class="select-label">
                             <p>Group Results By</p>
