@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="bower_components/bootstrap-select/dist/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="bower_components/lobipanel/dist/css/lobipanel.min.css">
 
     
     <link rel="stylesheet" href="bower_components/bootstrap-map-js/dist/css/bootstrapmap.min.css">
@@ -34,11 +35,13 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script type="text/javascript" src="bower_components/jquery.nicescroll/dist/jquery.nicescroll.min.js"></script>
     <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="bower_components/bootstrap-sidebar/dist/js/sidebar.js"></script>
     <script type="text/javascript" src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
     <script type="text/javascript" src="bower_components/highcharts/highcharts.js"></script>
+    <script type="text/javascript" src="bower_components/lobipanel/dist/js/lobipanel.min.js"></script>
 
     <!--<script src="./lib/highcharts-export-clientside/highcharts-export-clientside.js"></script>--> <!--Needs 4.2 version of highcharts-->
 
@@ -356,7 +359,24 @@
                     </div>
                 </div>
 
-            </div>
+                <!--LOBIPANEL EXPERIMENTAL________________________________________________________________________________________________________________________-->
+                <div id="chartWindowDiv" class="panel panel-default chartWindowClass">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <h4 id="chartWindowPanelTitle">LOBIPANEL TITLE</h4>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        PANEL BODY
+                        
+                    </div>
+                </div>
+
+
+
+                <!--LOBIPANEL EXPERIMENTAL________________________________________________________________________________________________________________________-->
+            
+            </div><!--END mapDiv-->
 
             <div id="homeButton"></div>
             <div id="locateButton"></div>

@@ -78,6 +78,8 @@ require([
 
 
 
+
+
     map = Map('mapDiv', {
         basemap: 'gray',
         //center: [-95.6, 38.6],
@@ -253,6 +255,19 @@ require([
     //end code for adding draggability to infoWindow
 
     on(map, "click", function(evt) {
+
+        $("#chartWindowDiv").lobiPanel({
+            unpin: false,
+            reload: false,
+            minimize: false,
+            close: false,
+            expand: false,
+            editTitle: false,
+            maxWidth: 800,
+            maxHeight: 500
+        });
+        $("#chartWindowDiv").css("visibility", "visible");            
+
         var graphic = new Graphic();
 
         var feature = graphic;
@@ -269,6 +284,8 @@ require([
 
         map.infoWindow.show();
     });
+
+
 
     var geocoder = new Geocoder({
         value: '',
