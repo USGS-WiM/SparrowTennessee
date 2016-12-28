@@ -38,13 +38,26 @@ function checkSelectedAggregateGroup(groupBySelectedIndex, selectedRadio){
         var layerArrayValue;
         switch (groupBySelectedIndex){
             case 0:
-                layerArrayValue = 0;
+                if( $("#st-select")[0].selectedIndex > 0){
+                    layerArrayValue = 4; //grp3 w/ state splits
+                } else{
+                    layerArrayValue = 0;
+                }
                 break;
             case 1:
-                layerArrayValue = 1;
+                if( $("#st-select")[0].selectedIndex > 0){
+                    layerArrayValue = 5; //grp2 w/ state splits
+                } else{
+                    layerArrayValue = 1;
+                }
+                
                 break;
             case 2: 
-                layerArrayValue = 2;
+                 if( $("#st-select")[0].selectedIndex > 0){
+                    layerArrayValue = 6;    //grp1 w/state splits
+                } else{
+                    layerArrayValue = 2;
+                }
                 break;
             case 3:
                 layerArrayValue = 3;
@@ -54,16 +67,16 @@ function checkSelectedAggregateGroup(groupBySelectedIndex, selectedRadio){
         var layerArrayValue;
         switch (groupBySelectedIndex){
             case 0:
-                layerArrayValue = 4;
+                layerArrayValue = 7;
                 break;
             case 1:
-                layerArrayValue = 5;
+                layerArrayValue = 8;
                 break;
             case 2: 
-                layerArrayValue = 6;
+                layerArrayValue = 9;
                 break;
             case 3:
-                layerArrayValue = 6;
+                layerArrayValue = 10;
                 break;
         }
     }
@@ -83,6 +96,66 @@ function checkAOI(){
 
 } //END checkAOI()
 
+function AOIChange(e){
+    var selectId = e.currentTarget.id;
+    var groupResultsIndex = $("#groupResultsSelect")[0].selectedIndex;
+    var selectedItem = e.currentTarget.value;
+    var sparrowRankingId = map.getLayer('SparrowRanking').visibleLayers[0];
+    var definitionString = null;
+    var layerDefs = [];
+
+    if (selectId == "st-select" && groupResultsIndex != 3){
+        //if not already on a state split layer, set one now.
+        if(map.getLayer('SparrowRanking').visibleLayers[0] < 4){
+            checkSelectedAggregateGroup( groupResultsIndex, $(".radio input[type='radio']:checked")[0].id );
+        }
+        setLayerDefs(selectId, definitionString, layerDefs, selectedItem);
+        
+    
+    }else{
+        
+        setLayerDefs(selectId, definitionString, layerDefs, selectedItem);
+        
+    }
+
+}
+
+function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
+
+        if(selectId == "grp1-select"){
+            definitionString = "GRP_1_NAM IN(" + "'" + selectedItem + "')";
+        } 
+        if(selectId == "grp2-select"){
+            definitionString = "GRP_2_NAM IN(" + "'" + selectedItem + "')";
+        }
+        if(selectId == "st-select"){
+            definitionString = "ST IN(" + "'" + selectedItem + "')";
+        }
+
+
+
+
+        //LayerDefs on Phosphorus Layers
+        if($("#radio1")[0].checked == true){
+            layerDefs[0] = definitionString;
+            layerDefs[1] = definitionString;
+            layerDefs[2] = definitionString;
+            layerDefs[3] = definitionString;
+            layerDefs[4] = definitionString;
+            layerDefs[5] = definitionString;
+            layerDefs[6] = definitionString;
+        }
+        
+
+        console.log("Selected Item: " + selectedItem);
+        console.log("Select Id: " + selectId);
+        
+
+
+        map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, false);
+        //map.getLayer("SparrowRanking").refresh();*/
+}
+
 
 function getChartOutfields(sparrowLayerId){
     var chartFieldsArr = [];
@@ -90,7 +163,7 @@ function getChartOutfields(sparrowLayerId){
     //var chartLabelsArr = [];
     //chartFieldsArr.push( $("#displayedMetricSelect").val() );
     switch(sparrowLayerId){
-        case 0:
+        case 0: case 4:
             //HUC10
             $.each(Group3, function(index, item){
                 if( $("#displayedMetricSelect").val() == item.field ) {
@@ -102,7 +175,7 @@ function getChartOutfields(sparrowLayerId){
             });
             return chartFieldsArr;
             break;
-        case 1:
+        case 1: case 5:
             //HUC8
             $.each(Group2, function(index, item){
                 if( $("#displayedMetricSelect").val() == item.field ) {
@@ -114,7 +187,7 @@ function getChartOutfields(sparrowLayerId){
             });
             return chartFieldsArr;
             break;
-        case 2:
+        case 2: case 6:
             //Independent Watershed
              $.each(Group1, function(index, item){
                 if( $("#displayedMetricSelect").val() == item.field ) {

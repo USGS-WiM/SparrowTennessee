@@ -75,11 +75,6 @@ require([
        
     });
 
-
-
-
-
-
     map = Map('mapDiv', {
         basemap: 'gray',
         //center: [-95.6, 38.6],
@@ -254,19 +249,7 @@ require([
 
     //end code for adding draggability to infoWindow
 
-    on(map, "click", function(evt) {
-
-        $("#chartWindowDiv").lobiPanel({
-            unpin: false,
-            reload: false,
-            minimize: false,
-            close: false,
-            expand: false,
-            editTitle: false,
-            maxWidth: 800,
-            maxHeight: 500
-        });
-        $("#chartWindowDiv").css("visibility", "visible");            
+    on(map, "click", function(evt) {         
 
         var graphic = new Graphic();
 
@@ -487,6 +470,7 @@ require([
         $('.radio').on('change', function(e){
             var groupBySelectedIndex = $("#groupResultsSelect")[0].selectedIndex;
             var selectedRadio = this.firstElementChild.id;
+            
             checkSelectedAggregateGroup(groupBySelectedIndex, selectedRadio);   
         });
 
@@ -494,45 +478,8 @@ require([
 
 
         /* AOI EVENTS */
-        $('.aoiSelect').on('change', function(e){
-            
 
-            var selectId = e.currentTarget.id;
-            var selectedItem = e.currentTarget.value;
-            var sparrowRankingId = map.getLayer('SparrowRanking').visibleLayers[0];
-            var groupResultsIndex = $("#groupResultsSelect")[0].selectedIndex;
-
-
-            var definitionString = null;
-            //map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
-            var layerDefs = [];
-            if(selectId == "grp1-select"){
-                definitionString = "GRP_1_NAM IN(" + "'" + selectedItem + "')";
-            } 
-            if(selectId == "grp2-select"){
-                definitionString = "GRP_2_NAM IN(" + "'" + selectedItem + "')";
-            }
-
-
-
-
-            //LayerDefs on Phosphorus Layers
-            if($("#radio1")[0].checked == true){
-                layerDefs[0] = definitionString;
-                layerDefs[1] = definitionString;
-                layerDefs[2] = definitionString;
-                layerDefs[3] = definitionString;
-            }
-            
-
-            console.log("Selected Item: " + selectedItem);
-            console.log("Select Id: " + selectId);
-            
-
-
-            map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, false);
-            //map.getLayer("SparrowRanking").refresh();
-        });
+        $('.aoiSelect').on('change', AOIChange);
 
 
         //TODO: find a reusable solution -- move lower into event handlers

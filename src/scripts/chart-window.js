@@ -10,10 +10,6 @@ function showChart(response){
     var categories = [];
     var chartArr = [];
     var series = [];
-
-
-
-    //EXPERIMENTAL SORT response by total
     var featureSort = [];
 
     $.each(response.features, function(index, feature){
@@ -31,33 +27,10 @@ function showChart(response){
         sum = 0;
     });
     featureSort.sort(function(a, b){
-        /*var atotal = a.total;
-        var btotal = b.total;
-        if (atotal < btotal){
-            return 1;
-        }
-        if (atotal > btotal){
-            return -1;
-        }
-        return 0*/
         return parseFloat(b.total) - parseFloat(a.total);
     });
-    console.log(featureSort);
-
-
-    //trying to sort feature.attributes by sum
-    /*$.each(response.features, function(index, feature){
-        console.log(index, feature.attributes);
-        
-        var sum = 0;
-        $.each(feature.attributes, function( i, attribute){
-            if (jQuery.type(attribute) !== "string" ){
-                sum += attribute;
-            }
-        });
-
-        console.log(sum);
-    });*/
+    
+    console.log("featureSort", featureSort);
 
     //create array of field names
     $.each(response.features[0].attributes, function(key, value){
@@ -67,23 +40,14 @@ function showChart(response){
     categories.pop();
 
 
-    //EXPERIMENTAL
+    //create multidimensional array from query response
     $.each(categories, function(index, value){  
-        var data2 = [];
-        $.each(featureSort, function(innerIndex, feature){
-            data2.push( feature[value] );
-        });
-        chartArr.push(data2);
-    });
-
-    //create mulitidimensional array from query response
-    /*$.each(categories, function(index, value){
         var data = [];
-        $.each(response.features, function(innnerIndex, feature){
-            data.push( feature.attributes[value] );
+        $.each(featureSort, function(innerIndex, feature){
+            data.push( feature[value] );
         });
-        chartArr.push( data );
-    });*/
+        chartArr.push(data);
+    });
 
     //remove 1st field ('group by') from charting arrays
     categories.shift();
@@ -195,10 +159,44 @@ function showChart(response){
         }
         return label + chartUnits;
     }
+
+    //START LOBIPANEL-------------------------------------------------------------------------------------------------------
+    $("#chartWindowDiv").lobiPanel({
+        unpin: false,
+        reload: false,
+        minimize: false,
+        close: false,
+        expand: false,
+        editTitle: false,
+        reload: false,
+        editTitle: false,
+        minWidth: 800,
+        minHeight: 800,
+        maxHeight: 1000
+        
+
+    });
+    $("#chartWindowDiv").css("visibility", "visible");   
+
+
+    $("#chartWindowDiv .dropdown").prepend("<div id='chartClose' title='close'><b>X</b></div>");
+    $("#chartWindowDiv .dropdown").prepend("<div id='chartMinimize' title='collapse'><b>_</b></div>");
+
+    var instance = $('#chartWindowDiv').data('lobiPanel');
+    instance.unpin();
+
+    //END LOBIPANEL-------------------------------------------------------------------------------------------------------
     
+    
+    //CHART WINDOW MODAL ____________________________________________________________________________________________________________________________
+
     //Show the Chart Modal
-    $('#chartModal').modal('show');
-    var chart = $('#chartContainer').highcharts(); 
+    //$('#chartModal').modal('show');
+    //var chart = $('#chartContainer').highcharts(); //element id must match in highcharts function below
+
+    //END CHART WINDOW MODAL ____________________________________________________________________________________________________________________________
+
+    var chart = $('#chartWindowContainer').highcharts(); 
 
     $(function () {
         Highcharts.setOptions({
@@ -207,7 +205,7 @@ function showChart(response){
             }
         });
         
-        $('#chartContainer').highcharts({
+        $('#chartWindowContainer').highcharts({
             chart: {
                 type: 'column',
                 width: 770,
@@ -305,8 +303,27 @@ function showChart(response){
 
     /*  _________________________________________CHART EVENTS________________________________________________________________ */
 
+    //LOBIPANEL______________________________________________
+
+     $("#chartMinimize").on('click', function(){
+        $("#chartWindowDiv").css("visibility", "hidden");
+        //map.getLayer("fimExtents").setVisibility(false);
+        //$("#flood-tools-alert").slideDown(250);
+    });
+
+    $("#chartClose").on('click', function(){
+        $("#chartWindowDiv").css("visibility", "hidden");
+        $("#chartWindowContainer").empty();
+    });
+
+    //END LOBIPANEL______________________________________________
+
+    
+
+    //CHART WINDOW MODAL ______________________________________________
+
     //initial showing
-    $("#chartModal").on('show.bs.modal', function(){
+    /*$("#chartModal").on('show.bs.modal', function(){
         $("#chartModalTitle").empty();
         $("#chartModalTitle").text("Phosphorus " + labelySelect() );
     });
@@ -316,6 +333,9 @@ function showChart(response){
         $("#chartModalTitle").empty();
         $("#chartModalTitle").text("Phosphorus " + labelySelect() );
     });
+
+     //END CHART WINDOW MODAL ____________________________________________
+
 
     //Custom Reset button
     $('#resetButton').click(function() {
@@ -329,7 +349,7 @@ function showChart(response){
         var chart = $('#chartContainer').highcharts();
         alert(chart.getCSV());
         //window.open('data:application/vnd.ms-excel,' + chart.getTable() );
-    });
+    });*/
     
    /* $('#chartModal').on('show.bs.modal', function(){
         $('#chartContainer').css('visibility', 'hidden');

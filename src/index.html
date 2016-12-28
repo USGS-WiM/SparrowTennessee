@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html5>
 <html>
 <head>
     <title>SPARROW Tennessee</title>
@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="bower_components/bootstrap-select/dist/css/bootstrap-select.min.css">
     <link rel="stylesheet" href="bower_components/lobipanel/dist/css/lobipanel.min.css">
+
+    <link rel="stylesheet" href="bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css"/> <!--recent Addition-->
 
     
     <link rel="stylesheet" href="bower_components/bootstrap-map-js/dist/css/bootstrapmap.min.css">
@@ -43,14 +45,18 @@
     <script type="text/javascript" src="bower_components/highcharts/highcharts.js"></script>
     <script type="text/javascript" src="bower_components/lobipanel/dist/js/lobipanel.min.js"></script>
 
+
     <!--<script src="./lib/highcharts-export-clientside/highcharts-export-clientside.js"></script>--> <!--Needs 4.2 version of highcharts-->
 
     
     <!-- endbower -->
+
     <!-- endbuild -->
 
     
     <script type="text/javascript" src="http://js.arcgis.com/3.13/"></script>
+
+    
     <script type="text/javascript" src="http://highcharts.github.io/export-csv/export-csv.js"></script>
     
 
@@ -280,27 +286,27 @@
                         </div>
                             <div class='input-group' >
                                 <select id="st-select" class="selectpicker 0 aoiSelect" title="State" ></select>
-                                <span class=''>
+                                <!--<span class=''>
                                     <a href="#" class="clearAOI st-select" style="display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
                                         <span class="glyphicon glyphicon-remove"></span>
                                     </a>
-                                </span>
+                                </span>-->
                             </div>
                              <div class='input-group'>
                                 <select id="grp1-select" class="selectpicker 1 aoiSelect" title="Independent Watershed"></select>
-                                <span class=''>
+                                <!--<span class=''>
                                     <a href="#" class="clearAOI grp1-select" style="display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
                                         <span class="glyphicon glyphicon-remove"></span>
                                     </a>
-                                </span>
+                                </span>-->
                             </div>
                              <div class='input-group'>
                                 <select id="grp2-select" class="selectpicker 2 aoiSelect" title="HUC8" ></select>
-                                <span class=''>
+                                <!--<span class=''>
                                     <a href="#" class="clearAOI grp2-select" style=" display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
                                         <span class="glyphicon glyphicon-remove"></span>
                                     </a>
-                                </span>
+                                </span>-->
                             </div>
                             
                             
@@ -360,14 +366,13 @@
                 </div>
 
                 <!--LOBIPANEL EXPERIMENTAL________________________________________________________________________________________________________________________-->
-                <div id="chartWindowDiv" class="panel panel-default chartWindowClass">
+                <div id="chartWindowDiv" class="panel panel-default chartWindowClass" x="35">
                     <div class="panel-heading">
                         <div class="panel-title">
                             <h4 id="chartWindowPanelTitle">LOBIPANEL TITLE</h4>
                         </div>
                     </div>
-                    <div class="panel-body">
-                        PANEL BODY
+                    <div class="panel-body" id="chartWindowContainer">
                         
                     </div>
                 </div>
