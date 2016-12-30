@@ -10,14 +10,27 @@ function populateMetricOptions(selectedIndex){
     var metricOptions;
     switch (selectedIndex){
         case 0:
-            metricOptions = Group3;
+            if( $("#st-select")[0].selectedIndex > 0){
+                metricOptions = Group3_st;
+            }else{
+                metricOptions = Group3;
+            }
             break;
         case 1:
-            metricOptions = Group2;
+            if( $("#st-select")[0].selectedIndex > 0){
+                metricOptions = Group2_st;
+            }else{
+                metricOptions = Group2;
+            }
             break;
         case 2: 
-            metricOptions = Group1;
+            if( $("#st-select")[0].selectedIndex > 0){
+                metricOptions = Group1_st;
+            }else{
+                metricOptions = Group1;
+            }
             break;
+            
         case 3:
             metricOptions = ST;
             break;
@@ -107,15 +120,13 @@ function AOIChange(e){
     if (selectId == "st-select" && groupResultsIndex != 3){
         //if not already on a state split layer, set one now.
         if(map.getLayer('SparrowRanking').visibleLayers[0] < 4){
+            populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
             checkSelectedAggregateGroup( groupResultsIndex, $(".radio input[type='radio']:checked")[0].id );
         }
         setLayerDefs(selectId, definitionString, layerDefs, selectedItem);
-        
     
     }else{
-        
-        setLayerDefs(selectId, definitionString, layerDefs, selectedItem);
-        
+        setLayerDefs(selectId, definitionString, layerDefs, selectedItem); 
     }
 
 }
@@ -132,10 +143,7 @@ function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
             definitionString = "ST IN(" + "'" + selectedItem + "')";
         }
 
-
-
-
-        //LayerDefs on Phosphorus Layers
+        //LayerDefs on ALL Phosphorus Layers
         if($("#radio1")[0].checked == true){
             layerDefs[0] = definitionString;
             layerDefs[1] = definitionString;
@@ -163,7 +171,7 @@ function getChartOutfields(sparrowLayerId){
     //var chartLabelsArr = [];
     //chartFieldsArr.push( $("#displayedMetricSelect").val() );
     switch(sparrowLayerId){
-        case 0: case 4:
+        case 0: 
             //HUC10
             $.each(Group3, function(index, item){
                 if( $("#displayedMetricSelect").val() == item.field ) {
@@ -175,7 +183,7 @@ function getChartOutfields(sparrowLayerId){
             });
             return chartFieldsArr;
             break;
-        case 1: case 5:
+        case 1:
             //HUC8
             $.each(Group2, function(index, item){
                 if( $("#displayedMetricSelect").val() == item.field ) {
@@ -187,7 +195,7 @@ function getChartOutfields(sparrowLayerId){
             });
             return chartFieldsArr;
             break;
-        case 2: case 6:
+        case 2: 
             //Independent Watershed
              $.each(Group1, function(index, item){
                 if( $("#displayedMetricSelect").val() == item.field ) {
@@ -211,7 +219,47 @@ function getChartOutfields(sparrowLayerId){
             });
             return chartFieldsArr;
             break;
+        case 4:
+            //grp3 w/ state divisions
+            $.each(Group3_st, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                    $.each(item.chartOutfields, function(i, fields) {
+                        chartFieldsArr.push( fields );
+
+                    });
+                }
+            });
+            return chartFieldsArr;
+            break;
+        case 5:
+            //grp 2 w/ state divisions
+            $.each(Group2_st, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                    $.each(item.chartOutfields, function(i, fields) {
+                        chartFieldsArr.push( fields );
+
+                    });
+                }
+            });
+            return chartFieldsArr;
+            break;
+        case 6:
+            //grp1 w/ state divisions
+            $.each(Group1_st, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                    $.each(item.chartOutfields, function(i, fields) {
+                        chartFieldsArr.push( fields );
+
+                    });
+                }
+            });
+            return chartFieldsArr;
+            break;
     }
 
 } //END getChartOutfields()
 
+
+function filterAOIOptions(){
+    console.log("in filterAOIOptions()");
+}
