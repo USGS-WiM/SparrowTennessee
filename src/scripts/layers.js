@@ -87,30 +87,6 @@ require([
                     }
                 }
             }
-        },
-        {
-            "groupHeading": "Graphics Layers",
-            "showGroupHeading": false,
-            "includeInLayerList": false,
-            "layers": {
-                "Graphics Overlay":{
-                    "url" : serviceBaseURL + "/" + sparrowOverlay,
-                    "options":{
-                        "id": "SparrowGraphics",
-                        "opacity": 0.75,
-                        "visible": true,
-                        "mode" : "FeatureLayer.MODE_SELECTION"
-                    },
-                    "wimOptions":{
-                        "type": "layer",
-                        "layerType": "agisFeature",
-                        "includeInLayerList": false,
-                        "hasOpacitySlider": false,
-                        "hasZoomto" : false,
-                        "includeLegend" : false  
-                    }
-                }
-            }
         }
     ]
 

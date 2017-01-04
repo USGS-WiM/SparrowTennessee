@@ -79,7 +79,7 @@ require([
     //keep Displayed Metric options in sync -- can be moved to sidebar events lower in code
     $("#groupResultsSelect").on('changed.bs.select', function(e){  
         populateMetricOptions(e.currentTarget.selectedIndex);
-        checkSelectedAggregateGroup( e.currentTarget.selectedIndex, $(".radio input[type='radio']:checked")[0].id );
+        setAggregateGroup( e.currentTarget.selectedIndex, $(".radio input[type='radio']:checked")[0].id );
        
     });
 
@@ -785,19 +785,18 @@ require([
                                         }
                                     }
 
-
-                                    var category = this.category;
+                                    //get everything needed for the query
+                                    var category = this.category;  //refers to the selected chart area
                                     var visibleLayers = map.getLayer('SparrowRanking').visibleLayers[0];
                                     var URL = map.getLayer('SparrowRanking').url;
-
                                     var fieldName = switchWhereField( $("#groupResultsSelect")[0].selectedIndex );
 
                                     var queryTask;
                                     queryTask = new esri.tasks.QueryTask(URL + visibleLayers.toString() );
 
                                     var graphicsQuery = new esri.tasks.Query();
-                                    graphicsQuery.returnGeometry = true;
-                                    graphicsQuery.outSpatialReference = map.spatialReference;
+                                    graphicsQuery.returnGeometry = true; //important!
+                                    graphicsQuery.outSpatialReference = map.spatialReference;  //important!
                                     graphicsQuery.outFields = ["*"];
                                     graphicsQuery.where = fieldName + "= '" + category + "'";
 
@@ -809,7 +808,7 @@ require([
                                         
                                         var feature = response.features[0];
                                         feature.setSymbol(new SimpleFillSymbol()
-                                            .setColor(new Color([209,23,23,0.5]))
+                                            .setColor(new Color([209,23,23,0.25]))
                                             .setOutline(null)
                                         );
                                         map.graphics.add(feature);
@@ -939,7 +938,7 @@ require([
             var groupBySelectedIndex = $("#groupResultsSelect")[0].selectedIndex;
             var selectedRadio = this.firstElementChild.id;
             
-            checkSelectedAggregateGroup(groupBySelectedIndex, selectedRadio);   
+            setAggregateGroup(groupBySelectedIndex, selectedRadio);   
         });
 
 

@@ -45,7 +45,7 @@ function populateMetricOptions(selectedIndex){
 
 
 //uses the #groupResultsSelect selected value and Selected radio to define the SparrowRanking display layer.
-function checkSelectedAggregateGroup(groupBySelectedIndex, selectedRadio){
+function setAggregateGroup(groupBySelectedIndex, selectedRadio){
 
     if (selectedRadio == 'radio1'){
         var layerArrayValue;
@@ -101,7 +101,7 @@ function checkSelectedAggregateGroup(groupBySelectedIndex, selectedRadio){
     //TODO: Call to check AOI, then generate renderer
         //NOTE: clear LayerDefs first?
     
-} //END checkSelectedAggregateGroup()
+} //END setAggregateGroup()
 
 
 function checkAOI(){
@@ -121,7 +121,7 @@ function AOIChange(e){
         //if not already on a state split layer, set one now.
         if(map.getLayer('SparrowRanking').visibleLayers[0] < 4){
             populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
-            checkSelectedAggregateGroup( groupResultsIndex, $(".radio input[type='radio']:checked")[0].id );
+            setAggregateGroup( groupResultsIndex, $(".radio input[type='radio']:checked")[0].id );
         }
         setLayerDefs(selectId, definitionString, layerDefs, selectedItem);
     
