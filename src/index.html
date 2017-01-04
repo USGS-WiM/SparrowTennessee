@@ -65,9 +65,10 @@
     <script type="text/javascript" src="scripts/layers.js"></script>
     <script type="text/javascript" src="scripts/sparrow-config.js"></script>
     <script type="text/javascript" src="scripts/select-logic.js"></script>
-    <script type="text/javascript" src="scripts/chart-window.js"></script>
+    <!--<script type="text/javascript" src="scripts/chart-window.js"></script>-->
     
     <script type="text/javascript" src="scripts/core.js"></script>
+   
 
     
     <!-- endbuild -->
@@ -181,6 +182,7 @@
     </div> <!-- /.modal-dialog -->
 </div><!-- End About modal -->
 
+<!--NO LONGER IN USE Switched Chart Modal to Lobipanel
 <div id="chartModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog  modal-lg">
     <div class="modal-content">
@@ -198,6 +200,7 @@
     </div>
   </div>
 </div>
+-->
 
 <!-- Begin page content -->
 <div class="container-fluid keepit100">
@@ -371,11 +374,21 @@
                         <div class="panel-title">
                             <h4 id="chartWindowPanelTitle">LOBIPANEL TITLE</h4>
                         </div>
+                        <span>
+                          <button id="downloadXLS" class="btn btn-default" data-type="application/vnd.ms-excel">Export Data</button>
+                          <button id="resetButton" class="btn btn-default" disable="true">Reset Zoom</button>
+                        </span>
+                    
                     </div>
                     <div class="panel-body" id="chartWindowContainer">
                         
                     </div>
+                    
+                        
+                    
+
                 </div>
+                
 
 
 

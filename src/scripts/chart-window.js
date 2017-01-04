@@ -3,7 +3,7 @@
  */
 
 
-function showChart(response){
+function showChart(response, selectionSymbol){
 
     var columnLabels = [];
     var chartTitle;
@@ -160,6 +160,30 @@ function showChart(response){
         return label + chartUnits;
     }
 
+
+     function highlightMapFeature(category){
+        var layerDefinitions = "GRP_3_NAM = '" + category + "'";
+
+
+
+        var selectionSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, 
+            new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
+            new Color([255, 0, 0]), 2), new Color([255,255, 0, 0.5]));
+
+        map.getLayer("SparrowGraphics").setDefinitionExpression(layerDefinitions);
+
+        map.getLayer("SparrowGraphics").setSelectionSymbol(selectionSymbol);
+    }
+
+
+    /*function highlightMapFeature(attributeString){
+        console.log('in highlightMapFeature()');
+
+        //TODO: need to query for geometry??? using attribute string?
+
+        var highlightGraphic = new Graphic(attributeString)
+    }*/
+
     //START LOBIPANEL-------------------------------------------------------------------------------------------------------
     $("#chartWindowDiv").lobiPanel({
         unpin: false,
@@ -292,6 +316,36 @@ function showChart(response){
                         enabled: false,
                         color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
                     }
+                },
+                series:{
+                    point:{
+                         events:{
+                            click: function(){
+                                var category = this.category;
+                                console.log("Category Value: " + category);
+                                highlightMapFeature(category);
+                                
+                                var layerDefinitions = "GRP_3_NAM = '" + category + "'";
+
+
+
+                                /*var selectionSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, 
+                                    new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
+                                    new Color([255, 0, 0]), 2), new Color([255,255, 0, 0.5]));*/
+
+                                map.getLayer("SparrowGraphics").setDefinitionExpression(layerDefinitions);
+
+                                map.getLayer("SparrowGraphics").setSelectionSymbol(selectionSymbol);
+
+                                
+
+                                
+
+                            }
+                            
+                        }
+                    }
+                   
                 }
             },
             credits: {
@@ -332,7 +386,7 @@ function showChart(response){
     $("#chartModal").on('shown.bs.modal', function(){
         $("#chartModalTitle").empty();
         $("#chartModalTitle").text("Phosphorus " + labelySelect() );
-    });
+    });*/
 
      //END CHART WINDOW MODAL ____________________________________________
 
@@ -349,9 +403,11 @@ function showChart(response){
         var chart = $('#chartContainer').highcharts();
         alert(chart.getCSV());
         //window.open('data:application/vnd.ms-excel,' + chart.getTable() );
-    });*/
+    });
+
+
     
-   /* $('#chartModal').on('show.bs.modal', function(){
+    /*$('#chartModal').on('show.bs.modal', function(){
         $('#chartContainer').css('visibility', 'hidden');
     })
 
@@ -359,5 +415,7 @@ function showChart(response){
         $("#chartContainer").css('visibility', 'initial');
         chart.reflow();
     });*/
+
+  
 }
 
