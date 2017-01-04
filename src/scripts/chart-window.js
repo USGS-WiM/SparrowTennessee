@@ -3,8 +3,9 @@
  */
 
 
-function showChart(response, selectionSymbol){
 
+    function showChart(response){
+        
     var columnLabels = [];
     var chartTitle;
     var categories = [];
@@ -320,29 +321,33 @@ function showChart(response, selectionSymbol){
                 series:{
                     point:{
                          events:{
-                            click: function(){
+                            mouseOver: function(){
+
                                 var category = this.category;
-                                console.log("Category Value: " + category);
-                                highlightMapFeature(category);
-                                
-                                var layerDefinitions = "GRP_3_NAM = '" + category + "'";
 
+                                var queryTask;
+                                queryTask = new esri.tasks.QueryTask('http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeTest/MapServer/0');
 
+                                var graphicsQuery = new esri.tasks.Query();
+                                graphicsQuery.returnGeometry = true;
+                                graphicsQuery.outSpatialReference = map.spatialReference;
+                                graphicsQuery.outFields = ["*"];
+                                graphicsQuery.where = "GRP_3_NAM = '" + category + "'";
 
-                                /*var selectionSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, 
-                                    new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
-                                    new Color([255, 0, 0]), 2), new Color([255,255, 0, 0.5]));*/
+                                                            
+                                queryTask.execute(graphicsQuery, responseHandler);
 
-                                map.getLayer("SparrowGraphics").setDefinitionExpression(layerDefinitions);
-
-                                map.getLayer("SparrowGraphics").setSelectionSymbol(selectionSymbol);
-
-                                
-
-                                
-
-                            }
-                            
+                                function responseHandler(response){
+                                    map.graphics.clear();
+                                    
+                                    var feature = response.features[0];
+                                    feature.setSymbol(new SimpleFillSymbol()
+                                        .setColor(new Color([209,23,23,0.5]))
+                                        .setOutline(null)
+                                    );
+                                    map.graphics.add(feature);
+                                }
+                            } 
                         }
                     }
                    
@@ -366,6 +371,7 @@ function showChart(response, selectionSymbol){
     });
 
     $("#chartClose").on('click', function(){
+        map.graphics.clear();
         $("#chartWindowDiv").css("visibility", "hidden");
         $("#chartWindowContainer").empty();
     });
