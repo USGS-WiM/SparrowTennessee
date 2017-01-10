@@ -43,6 +43,14 @@ function populateMetricOptions(selectedIndex){
 
 } // END populateMetricOptions
 
+//filter AOI options after AOI interaction
+function filterAOIOptions(selectedIndex1, selectedIndex2, selectedIndex3){
+        console.log("in filterAOI Options");
+
+        
+
+}//END filterAOIOptions
+
 
 //uses the #groupResultsSelect selected value and Selected radio to define the SparrowRanking display layer.
 function setAggregateGroup(groupBySelectedIndex, selectedRadio){
@@ -80,13 +88,25 @@ function setAggregateGroup(groupBySelectedIndex, selectedRadio){
         var layerArrayValue;
         switch (groupBySelectedIndex){
             case 0:
-                layerArrayValue = 7;
+                if( $("#st-select")[0].selectedIndex > 0){
+                    layerArrayValue = 11; //grp3 w/ state splits
+                } else{
+                    layerArrayValue = 7;
+                }
                 break;
             case 1:
-                layerArrayValue = 8;
+                if( $("#st-select")[0].selectedIndex > 0){
+                    layerArrayValue = 12; //grp2 w/ state splits
+                } else{
+                    layerArrayValue = 8;
+                }
                 break;
             case 2: 
-                layerArrayValue = 9;
+                if( $("#st-select")[0].selectedIndex > 0){
+                    layerArrayValue = 13; //grp1 w/ state splits
+                } else{
+                    layerArrayValue = 9;
+                }
                 break;
             case 3:
                 layerArrayValue = 10;
@@ -117,9 +137,10 @@ function AOIChange(e){
     var definitionString = null;
     var layerDefs = [];
 
-    if (selectId == "st-select" && groupResultsIndex != 3){
+    if (selectId == "st-select" && groupResultsIndex != 3) {
         //if not already on a state split layer, set one now.
-        if(map.getLayer('SparrowRanking').visibleLayers[0] < 4){
+        //TODO: figure out how you can access the current layers to see if you're on a split layer.  
+        if(map.getLayer('SparrowRanking').visibleLayers[0]){
             populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
             setAggregateGroup( groupResultsIndex, $(".radio input[type='radio']:checked")[0].id );
         }
@@ -143,16 +164,22 @@ function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
             definitionString = "ST IN(" + "'" + selectedItem + "')";
         }
 
-        //LayerDefs on ALL Phosphorus Layers
-        if($("#radio1")[0].checked == true){
-            layerDefs[0] = definitionString;
-            layerDefs[1] = definitionString;
-            layerDefs[2] = definitionString;
-            layerDefs[3] = definitionString;
-            layerDefs[4] = definitionString;
-            layerDefs[5] = definitionString;
-            layerDefs[6] = definitionString;
-        }
+        //LayerDefs on ALL Layers
+        layerDefs[0] = definitionString;
+        layerDefs[1] = definitionString;
+        layerDefs[2] = definitionString;
+        layerDefs[3] = definitionString;
+        layerDefs[4] = definitionString;
+        layerDefs[5] = definitionString;
+        layerDefs[6] = definitionString;
+        layerDefs[7] = definitionString;
+        layerDefs[8] = definitionString;
+        layerDefs[9] = definitionString;
+        layerDefs[10] = definitionString;
+        layerDefs[11] = definitionString;
+        layerDefs[12] = definitionString;
+        layerDefs[13] = definitionString;
+        
         
 
         console.log("Selected Item: " + selectedItem);
@@ -171,6 +198,7 @@ function getChartOutfields(sparrowLayerId){
     //var chartLabelsArr = [];
     //chartFieldsArr.push( $("#displayedMetricSelect").val() );
     switch(sparrowLayerId){
+        /////BEGIN PHOSPHORUS LAYERS___________________________________________________________
         case 0: 
             //HUC10
             $.each(Group3, function(index, item){
@@ -255,6 +283,93 @@ function getChartOutfields(sparrowLayerId){
             });
             return chartFieldsArr;
             break;
+        /////END PHOSPHORUS LAYERS___________________________________________________________
+        /////BEGIN NITROGEN LAYERS___________________________________________________________
+        case 7: 
+            //HUC10
+            $.each(Group3_tn, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                     $.each(item.chartOutfields, function(i, fields) {
+                        chartFieldsArr.push( fields );
+
+                    });
+                }
+            });
+            return chartFieldsArr;
+            break;
+        case 8:
+            //HUC8
+            $.each(Group2_tn, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                     $.each(item.chartOutfields, function(i, fields) {
+                        chartFieldsArr.push( fields );
+
+                    });
+                }
+            });
+            return chartFieldsArr;
+            break;
+        case 9: 
+            //Independent Watershed
+             $.each(Group1_tn, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                     $.each(item.chartOutfields, function(i, fields) {
+                        chartFieldsArr.push( fields );
+
+                    });
+                }
+            });
+            return chartFieldsArr;
+            break;
+        case 10:
+            //State
+            $.each(ST_tn, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                    $.each(item.chartOutfields, function(i, fields) {
+                        chartFieldsArr.push( fields );
+
+                    });
+                }
+            });
+            return chartFieldsArr;
+            break;
+        case 11:
+            //grp3 w/ state divisions
+            $.each(Group3_st_tn, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                    $.each(item.chartOutfields, function(i, fields) {
+                        chartFieldsArr.push( fields );
+
+                    });
+                }
+            });
+            return chartFieldsArr;
+            break;
+        case 12:
+            //grp 2 w/ state divisions
+            $.each(Group2_st_tn, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                    $.each(item.chartOutfields, function(i, fields) {
+                        chartFieldsArr.push( fields );
+
+                    });
+                }
+            });
+            return chartFieldsArr;
+            break;
+        case 13:
+            //grp1 w/ state divisions
+            $.each(Group1_st_tn, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                    $.each(item.chartOutfields, function(i, fields) {
+                        chartFieldsArr.push( fields );
+
+                    });
+                }
+            });
+            return chartFieldsArr;
+            break;
+        /////END NITROGEN LAYERS___________________________________________________________
     }
 
 } //END getChartOutfields()
