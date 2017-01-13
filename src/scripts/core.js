@@ -952,6 +952,7 @@ require([
             var groupBySelectedIndex = $("#groupResultsSelect")[0].selectedIndex;
             var selectedRadio = this.firstElementChild.id;
             
+            populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
             setAggregateGroup(groupBySelectedIndex, selectedRadio);   
         });
 
