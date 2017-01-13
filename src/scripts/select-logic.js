@@ -43,13 +43,34 @@ function populateMetricOptions(selectedIndex){
 
 } // END populateMetricOptions
 
-//filter AOI options after AOI interaction
-function filterAOIOptions(selectedIndex1, selectedIndex2, selectedIndex3){
-        console.log("in filterAOI Options");
 
+//used when clearing the AOI
+function returnDefaultLayer(sparrowId){
+    switch (sparrowId){
+        case 4:
+            return 0; 
+            break;
         
-
-}//END filterAOIOptions
+        case 5:
+            return 1;
+            break;
+        
+        case 6:     
+            return 2;
+            break;
+        case 11:
+            return 7; 
+            break;
+        
+        case 12:
+            return 8
+            break;
+        
+        case 13:     
+            return 9; 
+            break;
+    }
+}
 
 
 //uses the #groupResultsSelect selected value and Selected radio to define the SparrowRanking display layer.
@@ -118,16 +139,10 @@ function setAggregateGroup(groupBySelectedIndex, selectedRadio){
     sparrowRanking.setVisibleLayers(visibleLayerIds);
 
 
-    //TODO: Call to check AOI, then generate renderer
-        //NOTE: clear LayerDefs first?
+    //TODO: Call to check Renderer then generate renderer
+        
     
 } //END setAggregateGroup()
-
-
-function checkAOI(){
-    console.log('in check AOI function');
-
-} //END checkAOI()
 
 function AOIChange(e){
     var selectId = e.currentTarget.id;
@@ -135,34 +150,54 @@ function AOIChange(e){
     var selectedItem = e.currentTarget.value;
     var sparrowRankingId = map.getLayer('SparrowRanking').visibleLayers[0];
     var definitionString = null;
-    var layerDefs = [];
+    if (map.getLayer('SparrowRanking').layerDefinitions != undefined){
+        var tempDef = map.getLayer('SparrowRanking').layerDefinitions[0];
+        var layerDefs = [tempDef];
+    } else{
+        var layerDefs = [];
+    }
+    
+    
 
     if (selectId == "st-select" && groupResultsIndex != 3) {
         //if not already on a state split layer, set one now.
         //TODO: figure out how you can access the current layers to see if you're on a split layer.  
-        if(map.getLayer('SparrowRanking').visibleLayers[0]){
+        //if(map.getLayer('SparrowRanking').visibleLayers[0]){
             populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
             setAggregateGroup( groupResultsIndex, $(".radio input[type='radio']:checked")[0].id );
-        }
+        //}
         setLayerDefs(selectId, definitionString, layerDefs, selectedItem);
     
     }else{
         setLayerDefs(selectId, definitionString, layerDefs, selectedItem); 
     }
 
-}
+} //END AOIChange()
 
 function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
 
-        if(selectId == "grp1-select"){
-            definitionString = "GRP_1_NAM IN(" + "'" + selectedItem + "')";
-        } 
-        if(selectId == "grp2-select"){
-            definitionString = "GRP_2_NAM IN(" + "'" + selectedItem + "')";
-        }
-        if(selectId == "st-select"){
-            definitionString = "ST IN(" + "'" + selectedItem + "')";
-        }
+/*        if (layerDefs.length > 0){
+            if(selectId == "grp1-select"){
+                definitionString = layerDefs[0] + " and GRP_1_NAM IN(" + "'" + selectedItem + "')";
+            } 
+            if(selectId == "grp2-select"){
+                definitionString = layerDefs[0] + " and GRP_2_NAM IN(" + "'" + selectedItem + "')";
+            }
+            if(selectId == "st-select"){
+                definitionString = layerDefs[0] + " and ST IN(" + "'" + selectedItem + "')";
+            }
+        }else{*/
+            if(selectId == "grp1-select"){
+                definitionString = "GRP_1_NAM IN(" + "'" + selectedItem + "')";
+            } 
+            if(selectId == "grp2-select"){
+                definitionString = "GRP_2_NAM IN(" + "'" + selectedItem + "')";
+            }
+            if(selectId == "st-select"){
+                definitionString = "ST IN(" + "'" + selectedItem + "')";
+            }
+        //}
+        
 
         //LayerDefs on ALL Layers
         layerDefs[0] = definitionString;
@@ -185,11 +220,98 @@ function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
         console.log("Selected Item: " + selectedItem);
         console.log("Select Id: " + selectId);
         
-
-
         map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, false);
         //map.getLayer("SparrowRanking").refresh();*/
-}
+
+        //TODO: call generateRenderer
+
+        updateAOI(layerDefs[0], selectId);
+        
+
+} // END setLayerDefs()
+
+
+function updateAOI(layerDefs, selectId){
+    require([
+        'esri/tasks/FindTask',
+        'esri/tasks/FindParameters',
+        'dojo/dom',
+        'dojo/dom-class',
+        'dojo/on',
+        'dojo/domReady!'
+    ], function (
+        FindTask,
+        FindParameters,
+        dom,
+        domClass,
+        on
+    ) {
+        //var layerDefs = "GRP_1_NAM in ('Cumberland River')"
+        console.log('in updateAOI()');
+        console.log('layerDefs = ' + layerDefs);
+        console.log('selectId = ' + selectId);
+
+        switch (selectId){
+            case "st-select":
+                setupFindTask(serviceBaseURL, [5,6], $("#st-select")[0].value, layerDefs );
+                break;
+            
+            case "grp2-select":
+                setupFindTask(serviceBaseURL, [1,2], $("#grp2-select")[0].value, layerDefs );
+                break;
+            
+            case "grp1-select":     
+                setupFindTask(serviceBaseURL, [1,6], $("#grp1-select")[0].value, layerDefs );
+                break;
+        }
+
+        function setupFindTask(url, layerIds, searchText, layerDefs){
+            var findTask = new esri.tasks.FindTask(url);
+
+            var params = new FindParameters();
+            params.layerIds = layerIds;
+            params.layerDefinitions = [layerDefs];
+            params.searchText = searchText;
+            //Note: possible to add params.searchFields = ["fieldname1", "fieldname2"]  to speed search  https://developers.arcgis.com/javascript/3/jsapi/findparameters-amd.html#searchfields
+
+            findTask.execute(params, filterAOI);
+
+        } // END setupFindTask
+
+        function filterAOI(response){
+
+            $.each(response, function(index, feature){
+                //console.log(feature);
+                /*if (feature.layerId == 1){
+                    console.log("Huc8 = " + feature.feature.attributes.GRP_2_NAM);
+                } 
+                if(feature.layerId == 6){
+                    console.log("State = " + feature.feature.attributes.ST)
+                }*/
+                switch(feature.layerId){
+                    case 1:
+                        var item = feature.feature.attributes.GRP_2_NAM;
+                        console.log("huc8 " + item);
+                        $("#grp2-select").append('<option value="item">'+ item + '</option>').val(item);
+                        break;
+                    case 2:
+                        var item = feature.feature.attributes.GRP_1_NAM;
+                        console.log("independent watershed "+ item);
+                        break;
+                    case 5:
+                        var item = feature.feature.attributes.GRP_1_NAM;
+                         console.log("IND watershed " + item);
+                        break;
+                    case 6:
+                        var item = feature.feature.attributes.GRP_2_NAM;
+                        console.log("Huc8 " + item);
+                        break;
+                }
+
+            });
+        }//END filterAOI
+    }); //END dojo require
+} //END updateAOI()
 
 
 function getChartOutfields(sparrowLayerId){
@@ -375,6 +497,5 @@ function getChartOutfields(sparrowLayerId){
 } //END getChartOutfields()
 
 
-function filterAOIOptions(){
-    console.log("in filterAOIOptions()");
-}
+
+

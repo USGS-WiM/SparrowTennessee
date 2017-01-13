@@ -323,30 +323,50 @@
                          events:{
                             mouseOver: function(){
 
-                                var category = this.category;
+                                require([
+                                    'esri/tasks/QueryTask',
+                                    'esri/tasks/query',
+                                    'esri/symbols/SimpleFillSymbol',
+                                    'esri/SpatialReference',
+                                    'dojo/dom',
+                                    'dojo/dom-class',
+                                    'dojo/on',
+                                    'dojo/domReady!'
+                                ], function (
+                                    QueryTask,
+                                    Query,
+                                    SimpleFillSymbol,
+                                    SpatialReference,
+                                    dom,
+                                    domClass,
+                                    on
+                                ) { 
 
-                                var queryTask;
-                                queryTask = new esri.tasks.QueryTask('http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeTest/MapServer/0');
+                                    var category = this.category;
 
-                                var graphicsQuery = new esri.tasks.Query();
-                                graphicsQuery.returnGeometry = true;
-                                graphicsQuery.outSpatialReference = map.spatialReference;
-                                graphicsQuery.outFields = ["*"];
-                                graphicsQuery.where = "GRP_3_NAM = '" + category + "'";
+                                        var queryTask;
+                                        queryTask = new esri.tasks.QueryTask('http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeTest/MapServer/0');
 
-                                                            
-                                queryTask.execute(graphicsQuery, responseHandler);
+                                        var graphicsQuery = new esri.tasks.Query();
+                                        graphicsQuery.returnGeometry = true;
+                                        graphicsQuery.outSpatialReference = map.spatialReference;
+                                        graphicsQuery.outFields = ["*"];
+                                        graphicsQuery.where = "GRP_3_NAM = '" + category + "'";
 
-                                function responseHandler(response){
-                                    map.graphics.clear();
-                                    
-                                    var feature = response.features[0];
-                                    feature.setSymbol(new SimpleFillSymbol()
-                                        .setColor(new Color([209,23,23,0.5]))
-                                        .setOutline(null)
-                                    );
-                                    map.graphics.add(feature);
-                                }
+                                                                    
+                                        queryTask.execute(graphicsQuery, responseHandler);
+
+                                        function responseHandler(response){
+                                            map.graphics.clear();
+                                            
+                                            var feature = response.features[0];
+                                            feature.setSymbol(new SimpleFillSymbol()
+                                                .setColor(new Color([209,23,23,0.5]))
+                                                .setOutline(null)
+                                            );
+                                            map.graphics.add(feature);
+                                        }
+                                });
                             } 
                         }
                     }

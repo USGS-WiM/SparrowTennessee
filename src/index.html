@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="bower_components/wim-styles/template/css/base.css">
     <!-- endbuild -->
 
-    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel='icon' href='images/faviconsmall.png' type='image/png'/>
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
@@ -64,10 +64,12 @@
     <script type="text/javascript" src="scripts/utilities.js"></script>
     <script type="text/javascript" src="scripts/layers.js"></script>
     <script type="text/javascript" src="scripts/sparrow-config.js"></script>
-    <script type="text/javascript" src="scripts/select-logic.js"></script>
+    
     <!--<script type="text/javascript" src="scripts/chart-window.js"></script>-->
+    <!--<script type="text/javascript" src="scripts/chart-window-2.js"></script>-->
     
     <script type="text/javascript" src="scripts/core.js"></script>
+    <script type="text/javascript" src="scripts/select-logic.js"></script>
    
 
     
@@ -311,6 +313,11 @@
                                     </a>
                                 </span>-->
                             </div>
+                            <div class="btn">
+                                <button type="button" class="btn btn-default" id="clearAOIButton">
+                                    <span class="glyphicon glyphicon-remove"></span> Clear Area of Interest
+                                </button>
+                            </div>
                             
                             
 
@@ -331,7 +338,7 @@
                         </select>
 
                         <div class="btn">
-                            <button type="button" class="btn btn-default" data-target="chartModal" id="chartButton">
+                            <button type="button" class="btn btn-primary" data-target="chartModal" id="chartButton">
                                 <span class="glyphicon glyphicon-signal"></span> Show Chart
                             </button>
                         </div>

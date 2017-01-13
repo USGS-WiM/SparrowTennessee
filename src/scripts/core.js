@@ -2,9 +2,6 @@
 'use strict';
 // Generated on 2015-04-13 using generator-wim 0.0.1
 
-/**
- * Created by bdraper on 4/3/2015.
- */
 
 var map;
 var allLayers;
@@ -33,6 +30,10 @@ require([
     'esri/symbols/PictureMarkerSymbol',
     'esri/symbols/SimpleLineSymbol',
     'esri/symbols/SimpleFillSymbol',
+    'esri/tasks/ClassBreaksDefinition',
+    'esri/tasks/AlgorithmicColorRamp',
+    'esri/tasks/GenerateRendererParameters',
+    'esri/tasks/GenerateRendererTask',
     'esri/geometry/webMercatorUtils',
     'esri/SpatialReference',
     'dojo/dnd/Moveable',
@@ -58,6 +59,10 @@ require([
     PictureMarkerSymbol,
     SimpleLineSymbol,
     SimpleFillSymbol,
+    ClassBreaksDefinition,
+    AlgorithmicColorRamp,
+    GenerateRendererParameters,
+    GenerateRendererTask,
     webMercatorUtils,
     SpatialReference,
     Moveable,
@@ -95,6 +100,15 @@ require([
     for (var key in queryParameters){
         setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, [queryParameters[key].nameField], "1=1");
     }
+
+   /* function updateAOI(layerDefs){
+        var layerDefs = "GRP_1_NAM in ('Cumberland River')"
+        console.log('in updateAOI()');
+        console.log('layerDefs = ' + layerDefs);
+        for (var key in queryParameters){
+            setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, [queryParameters[key].nameField], layerDefs);
+        }
+    }*/
 
     function setupQueryTask(url, outFieldsArr, whereClause){
         var queryTask;
@@ -889,7 +903,7 @@ require([
         });*/
 
       
-    }
+    } //END ShowChart()
 
     // Show modal dialog; handle legend sizing (both on doc ready)
     $(document).ready(function(){
@@ -949,10 +963,30 @@ require([
         $('.aoiSelect').on('change', AOIChange);
 
 
-        //TODO: find a reusable solution -- move lower into event handlers
-        $(".clearAOI").on('click', function(){
-            var id = '#' + this.classList[1];
-            $(id).selectpicker('deselectAll');
+        //clear AOI selections
+        $("#clearAOIButton").on('click', function(){
+            var sparrowId = map.getLayer('SparrowRanking').visibleLayers[0];
+            var splitLayers = [4,5,6,11,12,13]; //important! UPDATE
+             layer Ids of all state split layers
+            
+            //revert to default layer from split layer
+            if( $.inArray(sparrowId, splitLayers) > -1 ){
+                sparrowId = returnDefaultLayer( sparrowId, $(".radio input[type='radio']:checked")[0].id );
+                var layerArr = [];
+                layerArr.push(sparrowId);
+                map.getLayer('SparrowRanking').setVisibleLayers(layerArr);
+                map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
+                //TODO: call generateRenderer 
+                
+            }else{
+                map.getLayer('SparrowRanking').setDefaultLayerDefinitions(); 
+                //TODO: call generateRenderer 
+            }
+
+            //reset the selects
+            $('.aoiSelect').selectpicker('val', '');  // 'hack' because selectpicker('deselectAll') method only works when select is open.
+            //$('.aoiSelect').selectpicker('refresh'); //don't need refresh apparently
+
         });
 
 
