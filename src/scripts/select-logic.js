@@ -8,33 +8,64 @@ $('.selectpicker').selectpicker();
 //Change Displayed Metric select options
 function populateMetricOptions(selectedIndex){
     var metricOptions;
-    switch (selectedIndex){
-        case 0:
-            if( $("#st-select")[0].selectedIndex > 0){
-                metricOptions = Group3_st;
-            }else{
-                metricOptions = Group3;
-            }
-            break;
-        case 1:
-            if( $("#st-select")[0].selectedIndex > 0){
-                metricOptions = Group2_st;
-            }else{
-                metricOptions = Group2;
-            }
-            break;
-        case 2: 
-            if( $("#st-select")[0].selectedIndex > 0){
-                metricOptions = Group1_st;
-            }else{
-                metricOptions = Group1;
-            }
-            break;
-            
-        case 3:
-            metricOptions = ST;
-            break;
+    if($(".radio input[type='radio']:checked")[0].id == 'radio1'){
+        switch (selectedIndex){
+            case 0:
+                if( $("#st-select")[0].selectedIndex > 0){
+                    metricOptions = Group3_st;
+                }else{
+                    metricOptions = Group3;
+                }
+                break;
+            case 1:
+                if( $("#st-select")[0].selectedIndex > 0){
+                    metricOptions = Group2_st;
+                }else{
+                    metricOptions = Group2;
+                }
+                break;
+            case 2: 
+                if( $("#st-select")[0].selectedIndex > 0){
+                    metricOptions = Group1_st;
+                }else{
+                    metricOptions = Group1;
+                }
+                break;
+                
+            case 3:
+                metricOptions = ST;
+                break;
+        }
+    } else if($(".radio input[type='radio']:checked")[0].id == 'radio2'){
+        switch (selectedIndex){
+            case 0:
+                if( $("#st-select")[0].selectedIndex > 0){
+                    metricOptions = Group3_st_tn;
+                }else{
+                    metricOptions = Group3_tn;
+                }
+                break;
+            case 1:
+                if( $("#st-select")[0].selectedIndex > 0){
+                    metricOptions = Group2_st_tn;
+                }else{
+                    metricOptions = Group2_tn;
+                }
+                break;
+            case 2: 
+                if( $("#st-select")[0].selectedIndex > 0){
+                    metricOptions = Group1_st_tn;
+                }else{
+                    metricOptions = Group1_tn;
+                }
+                break;
+                
+            case 3:
+                metricOptions = ST_tn;
+                break;
+        }
     }
+    
     $("#displayedMetricSelect").find('option').remove();
     $.each(metricOptions, function(index, value){
         $("#displayedMetricSelect").append(new Option(value.name, value.field));

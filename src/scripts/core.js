@@ -966,8 +966,8 @@ require([
         //clear AOI selections
         $("#clearAOIButton").on('click', function(){
             var sparrowId = map.getLayer('SparrowRanking').visibleLayers[0];
-            var splitLayers = [4,5,6,11,12,13]; //important! UPDATE
-             layer Ids of all state split layers
+            var splitLayers = [4,5,6,11,12,13]; //important! UPDATE layer Ids of all state split layers
+
             
             //revert to default layer from split layer
             if( $.inArray(sparrowId, splitLayers) > -1 ){
@@ -976,6 +976,10 @@ require([
                 layerArr.push(sparrowId);
                 map.getLayer('SparrowRanking').setVisibleLayers(layerArr);
                 map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
+
+
+
+
                 //TODO: call generateRenderer 
                 
             }else{
@@ -986,6 +990,7 @@ require([
             //reset the selects
             $('.aoiSelect').selectpicker('val', '');  // 'hack' because selectpicker('deselectAll') method only works when select is open.
             //$('.aoiSelect').selectpicker('refresh'); //don't need refresh apparently
+            populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
 
         });
 
