@@ -110,6 +110,7 @@ require([
         }
     }*/
 
+
     function setupQueryTask(url, outFieldsArr, whereClause){
         var queryTask;
         queryTask = new esri.tasks.QueryTask(url);
@@ -325,6 +326,48 @@ require([
 
     // Geosearch functions
     on(dom.byId('btnGeosearch'),'click', geosearch);
+
+    function generateRenderer(){
+        console.log('in generateRenderer()');
+        var layerDefs = "GRP_1_NAM IN ('Cumberland River')";
+        var classDef = new ClassBreaksDefinition();
+        classDef.classificationField = "dl1_g3_tot";
+        classDef.classificationMethod = "quantile";
+        classDef.breakCount = 5;
+        classDef.type = 'classBreaksDef';
+
+        var colorRamp = new AlgorithmicColorRamp();
+        colorRamp.fromColor = Color.fromHex("#998ec3");
+        colorRamp.toColor = Color.fromHex("#f1a340");
+        colorRamp.algorithm = 'hsv';
+
+        
+        classDef.colorRamp = colorRamp;
+
+
+        var sparrowId = map.getLayer('SparrowRanking').visibleLayers[0];
+        var generateRenderer = new esri.tasks.GenerateRendererTask(serviceBaseURL + sparrowId);
+
+        var params = new GenerateRendererParameters();
+        params.classificationDefiniton = classDef;
+        params.where = "GRP_1_NAM IN ('Cumberland River')";
+
+        var generateRenderer = new GenerateRendererTask(serviceBaseURL + 0);
+        generateRenderer.execute(params, applyRenderer, errorHandler);
+
+         function applyRenderer(renderer){
+            console.log('in applyRenderer()');
+            map.getLayer('SparrowRanking').setRenderer(renderer);
+            map.getLayer('SparrowRanking').redraw();
+        }
+
+        function errorHandler(err){
+            console.log('generateRenderer Err ', err);
+        }
+    
+    }//END generateRenderer()
+
+   
 
     // Optionally confine search to map extent
     function setSearchExtent (){
@@ -977,10 +1020,6 @@ require([
                 layerArr.push(sparrowId);
                 map.getLayer('SparrowRanking').setVisibleLayers(layerArr);
                 map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
-
-
-
-
                 //TODO: call generateRenderer 
                 
             }else{
@@ -1014,6 +1053,7 @@ require([
         $("#chartButton").on("click", createChartQuery);
 
         /* END UI SIDEBAR EVENTS______________________________________________________________*/
+        $('#rendererButton').on('click', generateRenderer);
 
         
 
