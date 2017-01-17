@@ -27,6 +27,7 @@ require([
     'esri/graphic',
     'esri/geometry/Multipoint',
     'esri/geometry/Point',
+    "esri/layers/LayerDrawingOptions",
     'esri/symbols/PictureMarkerSymbol',
     'esri/symbols/SimpleLineSymbol',
     'esri/symbols/SimpleFillSymbol',
@@ -56,6 +57,7 @@ require([
     Graphic,
     Multipoint,
     Point,
+    LayerDrawingOptions,
     PictureMarkerSymbol,
     SimpleLineSymbol,
     SimpleFillSymbol,
@@ -332,13 +334,13 @@ require([
         var layerDefs = "GRP_1_NAM IN ('Cumberland River')";
         var classDef = new ClassBreaksDefinition();
         classDef.classificationField = "dl1_g3_tot";
-        classDef.classificationMethod = "quantile";
+        classDef.classificationMethod = "natural-breaks";
         classDef.breakCount = 5;
         classDef.type = 'classBreaksDef';
 
         var colorRamp = new AlgorithmicColorRamp();
-        colorRamp.fromColor = Color.fromHex("#998ec3");
-        colorRamp.toColor = Color.fromHex("#f1a340");
+        colorRamp.fromColor = Color.fromHex("#ffffcc");
+        colorRamp.toColor = Color.fromHex("#006837");
         colorRamp.algorithm = 'hsv';
 
         
@@ -350,15 +352,19 @@ require([
 
         var params = new GenerateRendererParameters();
         params.classificationDefiniton = classDef;
-        params.where = "GRP_1_NAM IN ('Cumberland River')";
+        params.where = "GRP_1_NAM = 'Cumberland River";
 
         var generateRenderer = new GenerateRendererTask(serviceBaseURL + 0);
         generateRenderer.execute(params, applyRenderer, errorHandler);
 
          function applyRenderer(renderer){
             console.log('in applyRenderer()');
-            map.getLayer('SparrowRanking').setRenderer(renderer);
-            map.getLayer('SparrowRanking').redraw();
+            var optionsArray = [];
+            var drawingOptions = new LayerDrawingOptions();
+            drawingOptions.renderer = renderer;
+            // set the drawing options for the relevant layer
+            // optionsArray index corresponds to layer index in the map service
+            optionsArray[2] = drawingOptions;
         }
 
         function errorHandler(err){
@@ -646,6 +652,76 @@ require([
                         }
                    });
                     break;
+                case 4:
+                    $.each(Group3_st, function(index, object){
+                        if (object.field == $("#displayedMetricSelect").val() ){
+                            label = object.name;
+                        }
+                   });
+                    break;
+                case 5: 
+                    $.each(Group2_st, function(index, object){
+                        if (object.field == $("#displayedMetricSelect").val() ){
+                            label = object.name;
+                        }
+                   });
+                    break;
+                case 6:
+                    $.each(Group1_st, function(index, object){
+                        if (object.field == $("#displayedMetricSelect").val() ){
+                            label = object.name;
+                        }
+                   });
+                    break;
+                case 7:
+                   $.each(Group3_tn, function(index, object){
+                        if (object.field == $("#displayedMetricSelect").val() ){
+                            label = object.name;
+                        }
+                   });
+                    break;
+                case 8:
+                    $.each(Group2_tn, function(index, object){
+                        if (object.field == $("#displayedMetricSelect").val() ){
+                            label = object.name;
+                        }
+                   });
+                    break;
+                case 9: 
+                    $.each(Group1_tn, function(index, object){
+                        if (object.field == $("#displayedMetricSelect").val() ){
+                            label = object.name;
+                        }
+                   });
+                    break;
+                case 10:
+                    $.each(ST_tn, function(index, object){
+                        if (object.field == $("#displayedMetricSelect").val() ){
+                            label = object.name;
+                        }
+                   });
+                    break;
+                case 11:
+                    $.each(Group3_st_tn, function(index, object){
+                        if (object.field == $("#displayedMetricSelect").val() ){
+                            label = object.name;
+                        }
+                   });
+                    break;
+                case 12: 
+                    $.each(Group2_st_tn, function(index, object){
+                        if (object.field == $("#displayedMetricSelect").val() ){
+                            label = object.name;
+                        }
+                   });
+                    break;
+                case 13:
+                    $.each(Group1_st_tn, function(index, object){
+                        if (object.field == $("#displayedMetricSelect").val() ){
+                            label = object.name;
+                        }
+                   });
+                    break;
             }
             return label + chartUnits;
         }
@@ -690,11 +766,22 @@ require([
             
 
         });
-        $("#chartWindowDiv").css("visibility", "visible");   
+        $("#chartWindowDiv").css("visibility", "visible");
 
+        //Important! UPDATE if nutrient Models change names.
+        if( $(".radio input[type='radio']:checked")[0].id == "radio1"){
+            $("#chartWindowPanelTitle").text("Phosphorus " + labelySelect() );
+        }   else{
+            $("#chartWindowPanelTitle").text("Nitrogen " + labelySelect() );
+        }
+        
 
-        $("#chartWindowDiv .dropdown").prepend("<div id='chartClose' title='close'><b>X</b></div>");
-        $("#chartWindowDiv .dropdown").prepend("<div id='chartMinimize' title='collapse'><b>_</b></div>");
+        //only create close / minimize if they don't already exist
+        if ($("#chartClose").length == 0){
+            $("#chartWindowDiv .dropdown").prepend("<div id='chartClose' title='close'><b>X</b></div>");
+            $("#chartWindowDiv .dropdown").prepend("<div id='chartMinimize' title='collapse'><b>_</b></div>");
+        }
+
 
         var instance = $('#chartWindowDiv').data('lobiPanel');
         instance.unpin();
@@ -887,6 +974,11 @@ require([
 
         //LOBIPANEL______________________________________________
 
+        /*$("#chartWindowDiv").on('init.lobiPanel', function(ev, lobiPanel){
+            console.log("init event called");
+            $("#chartModalPanelTitle").text("Phosphorus " + labelySelect() );
+        });*/
+
          $("#chartMinimize").on('click', function(){
             $("#chartWindowDiv").css("visibility", "hidden");
             //map.getLayer("fimExtents").setVisibility(false);
@@ -897,6 +989,8 @@ require([
             map.graphics.clear();
             $("#chartWindowDiv").css("visibility", "hidden");
             $("#chartWindowContainer").empty();
+            $("#chartWindowPanelTitle").empty();
+            
         });
 
         //END LOBIPANEL______________________________________________
