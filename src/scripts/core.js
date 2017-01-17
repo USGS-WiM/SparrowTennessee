@@ -329,49 +329,73 @@ require([
     // Geosearch functions
     on(dom.byId('btnGeosearch'),'click', geosearch);
 
-    function generateRenderer(){
+        function generateRenderer(){
         console.log('in generateRenderer()');
-        var layerDefs = "GRP_1_NAM IN ('Cumberland River')";
-        var classDef = new ClassBreaksDefinition();
-        classDef.classificationField = "dl1_g3_tot";
-        classDef.classificationMethod = "natural-breaks";
-        classDef.breakCount = 5;
-        classDef.type = 'classBreaksDef';
 
-        var colorRamp = new AlgorithmicColorRamp();
-        colorRamp.fromColor = Color.fromHex("#ffffcc");
-        colorRamp.toColor = Color.fromHex("#006837");
-        colorRamp.algorithm = 'hsv';
-
-        
-        classDef.colorRamp = colorRamp;
-
-
+        var app = {};
         var sparrowId = map.getLayer('SparrowRanking').visibleLayers[0];
-        var generateRenderer = new esri.tasks.GenerateRendererTask(serviceBaseURL + sparrowId);
-
-        var params = new GenerateRendererParameters();
-        params.classificationDefiniton = classDef;
-        params.where = "GRP_1_NAM = 'Cumberland River";
-
-        var generateRenderer = new GenerateRendererTask(serviceBaseURL + 0);
-        generateRenderer.execute(params, applyRenderer, errorHandler);
-
-         function applyRenderer(renderer){
-            console.log('in applyRenderer()');
-            var optionsArray = [];
-            var drawingOptions = new LayerDrawingOptions();
-            drawingOptions.renderer = renderer;
-            // set the drawing options for the relevant layer
-            // optionsArray index corresponds to layer index in the map service
-            optionsArray[2] = drawingOptions;
+        if(map.getLayer('SparrowRanking').layerDefinitions){
+            var dynamicLayerDefs = map.getLayer('SparrowRanking').layerDefinitions[0];
+            app.layerDef = dynamicLayerDefs;
         }
+        
 
-        function errorHandler(err){
-            console.log('generateRenderer Err ', err);
-        }
-    
+
+        app.Url = "https://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/" + sparrowId;
+        
+        app.outFields = ["dl1_g2_tot"];
+        app.currentAttribute = "dl1_g2_tot"; //Get Dynamically
+
+
+        // map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, false);
+
+
+          var classDef = new ClassBreaksDefinition();
+          classDef.classificationField = app.currentAttribute;
+          classDef.classificationMethod = "quantile";
+          classDef.breakCount = 5;
+          classDef.baseSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+                new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
+                new Color([192,192,192]), 0.1)
+            );
+
+          var colorRamp = new AlgorithmicColorRamp();
+          colorRamp.fromColor = Color.fromHex("#ffffcc");
+          colorRamp.toColor = Color.fromHex("#006837");
+          colorRamp.algorithm = "hsv"; // options are:  "cie-lab", "hsv", "lab-lch"
+          classDef.colorRamp = colorRamp;
+
+          var params = new GenerateRendererParameters();
+          params.classificationDefinition = classDef;
+          // limit the renderer to data being shown by the feature layer
+          params.where = app.layerDef; 
+          var generateRenderer = new GenerateRendererTask(app.Url);
+          generateRenderer.execute(params, applyRenderer, errorHandler);
+
     }//END generateRenderer()
+
+    function applyRenderer(renderer){
+        var sparrowId = map.getLayer('SparrowRanking').visibleLayers[0];
+        
+        var layer = map.getLayer('SparrowRanking');
+        console.log('in applyRenderer()',layer);
+
+        // dynamic layer stuff
+          var optionsArray = [];
+          var drawingOptions = new LayerDrawingOptions();
+          drawingOptions.renderer = renderer;
+          // set the drawing options for the relevant layer
+          // optionsArray index corresponds to layer index in the map service
+          optionsArray[sparrowId] = drawingOptions;
+          console.log(optionsArray)
+          layer.setLayerDrawingOptions(optionsArray);
+          layer.hide();
+          layer.show();
+    }
+
+    function errorHandler(err){
+        console.log('generateRenderer Err ', err);
+    }  
 
    
 
