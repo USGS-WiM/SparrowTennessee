@@ -974,13 +974,17 @@ require([
 
         //LOBIPANEL______________________________________________
 
+        //not working - set title via jquery above.
         /*$("#chartWindowDiv").on('init.lobiPanel', function(ev, lobiPanel){
             console.log("init event called");
             $("#chartModalPanelTitle").text("Phosphorus " + labelySelect() );
         });*/
 
+        //TODO: exactly the same as close right now, not much functionality here.
          $("#chartMinimize").on('click', function(){
             $("#chartWindowDiv").css("visibility", "hidden");
+            $("#chartWindowContainer").empty(); //removes all highcharts including the pesky highcharts legend container
+            $("#chartWindowPanelTitle").empty();
             //map.getLayer("fimExtents").setVisibility(false);
             //$("#flood-tools-alert").slideDown(250);
         });
