@@ -170,7 +170,7 @@ function setAggregateGroup(groupBySelectedIndex, selectedRadio){
     sparrowRanking.setVisibleLayers(visibleLayerIds);
 
 
-    //TODO: Call to check Renderer then generate renderer
+    generateRenderer();
         
     
 } //END setAggregateGroup()
@@ -255,6 +255,7 @@ function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
         //map.getLayer("SparrowRanking").refresh();*/
 
         //TODO: call generateRenderer
+        generateRenderer();
 
         updateAOI(layerDefs[0], selectId);
         

@@ -98,6 +98,7 @@ require([
     });
 
 
+
     //TODO: FIGURE OUT HOW TO USE THE QUERY WHERECLAUSE     Call setupQueryTask for every layer inqueryParameters
     for (var key in queryParameters){
         setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, [queryParameters[key].nameField], "1=1");
@@ -189,6 +190,8 @@ require([
         var initMapCenter = webMercatorUtils.webMercatorToGeographic(map.extent.getCenter());
         $('#latitude').html(initMapCenter.y.toFixed(3));
         $('#longitude').html(initMapCenter.x.toFixed(3));
+
+        generateRenderer();
 
         //code for adding draggability to infoWindow. http://www.gavinr.com/2015/04/13/arcgis-javascript-draggable-infowindow/
         if (dragInfoWindows == true) {
@@ -343,11 +346,9 @@ require([
 
         app.Url = "https://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/" + sparrowId;
         
-        app.outFields = ["dl1_g2_tot"];
-        app.currentAttribute = "dl1_g2_tot"; //Get Dynamically
-
-
-        // map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, false);
+        var selectedMetric = $('#displayedMetricSelect')[0].value;
+        app.outFields = [selectedMetric];
+        app.currentAttribute = selectedMetric; 
 
 
           var classDef = new ClassBreaksDefinition();
@@ -1642,6 +1643,8 @@ require([
             }
         }
         /* parse layers.js */
+
+        generateRenderer();
 
         var legend = new Legend({
             map: map,
