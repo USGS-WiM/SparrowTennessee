@@ -47,13 +47,55 @@ require([
             }    
         },
         {
+            "groupHeading": "Model Calibration Sites",
+            "showGroupHeading": true,
+            "includeInLayerList": true,
+            "layers": {
+                "Phosphorus Calibration Sites" : {
+                    "url": serviceBaseURL,
+                    "visibleLayers": [14],
+                    "options": {
+                        "id": "phosCalibration",
+                        "opacity": 0.85,
+                        "visible": false
+                    },
+                    "wimOptions": {
+                        "type": "layer",
+                        "layerType": "agisDynamic",
+                        "includeInLayerList": true,
+                        "zoomScale": 144448,
+                        "hasOpacitySlider": true,
+                        "hasZoomto" : true,
+                        "includeLegend" : true
+                    }
+                },
+                "Nitrogen Calibration Sites" : {
+                    "url": serviceBaseURL,
+                    "visibleLayers": [15],
+                    "options": {
+                        "id": "nitroCalibration",
+                        "visible": false,
+                        "opacity": 0.85
+                    },
+                    "wimOptions": {
+                        "type": "layer",
+                        "layerType": "agisDynamic",
+                        "includeInLayerList": true,
+                        "hasOpacitySlider": true,
+                        "hasZoomto": true,
+                        "includeLegend" : false
+                    }
+                }
+            }
+        },
+        {
             "groupHeading": "Auxilliary Layers",
             "showGroupHeading": true,
             "includeInLayerList": true,
             "layers": {
                 "Tennessee Mainstems" : {
                     "url": serviceBaseURL,
-                    "visibleLayers": [4],
+                    "visibleLayers": [17],
                     "options": {
                         "id": "mainstems",
                         "opacity": 0.75,
@@ -71,7 +113,7 @@ require([
                 },
                 "Tennessee Streams" : {
                     "url": serviceBaseURL,
-                    "visibleLayers": [5],
+                    "visibleLayers": [16],
                     "options": {
                         "id": "streams",
                         "visible": false,
