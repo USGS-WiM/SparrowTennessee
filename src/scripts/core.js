@@ -10,6 +10,8 @@ var maxLegendDivHeight;
 var dragInfoWindows = true;
 var defaultMapCenter = [-86, 36];
 var queryParametersLength = Object.getOwnPropertyNames(queryParameters).length;
+var identifyTask;
+var identifyParams;  
 
 
 
@@ -35,6 +37,8 @@ require([
     'esri/tasks/AlgorithmicColorRamp',
     'esri/tasks/GenerateRendererParameters',
     'esri/tasks/GenerateRendererTask',
+    "esri/tasks/IdentifyTask",
+    "esri/tasks/IdentifyParameters",
     'esri/geometry/webMercatorUtils',
     'esri/SpatialReference',
     'dojo/dnd/Moveable',
@@ -65,6 +69,8 @@ require([
     AlgorithmicColorRamp,
     GenerateRendererParameters,
     GenerateRendererTask,
+    IdentifyTask,
+    IdentifyParameters,
     webMercatorUtils,
     SpatialReference,
     Moveable,
@@ -283,27 +289,56 @@ require([
     });
 
     //end code for adding draggability to infoWindow
+    on(map, "click", executeIdentifyTask);
 
-    on(map, "click", function(evt) {         
+    
+    identifyParams = new esri.tasks.IdentifyParameters();
+    identifyParams.tolerance = 5;
+    identifyParams.returnGeometry = true;
+    //identifyParams.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_VISIBLE;
+    identifyParams.width  = map.width;
+    identifyParams.height = map.height;
+    identifyTask = new esri.tasks.IdentifyTask(serviceBaseURL); 
 
-        var graphic = new Graphic();
+    function getInfoWindowContent(){
+        console.log('in getInfoWindowContent');
+    }
 
-        var feature = graphic;
+    function executeIdentifyTask(evt){
+        var sparrowLayer = map.getLayer("SparrowRanking").visibleLayers[0];
 
-        var template = new esri.InfoTemplate("test popup",
-            "attributes and stuff go here");
+        identifyParams.layerIds = [sparrowLayer];
+        identifyParams.geometry = evt.mapPoint;
+        identifyParams.mapExtent = map.extent;
+        
+        var deferred = identifyTask.execute(identifyParams).addCallback(function(response){
+            console.log(response);
 
-        //ties the above defined InfoTemplate to the feature result returned from a click event
+            var fields = getChartOutfields( map.getLayer('SparrowRanking').visibleLayers[0] );
+            var template = new esri.InfoTemplate();
+            template.setTitle(fields[0].label + ": " + response[0].value);
+            template.setContent(getInfoWindowContent(fields, response));
 
-        feature.setInfoTemplate(template);
+            function getInfoWindowContent(fields, response){
+                var responseObj = response[0].feature.attributes;
+                console.log(responseObj);
+                $.each(fields, function(index, field, responseObj){
+                    if (index > 0){
+                        console.log(field.label);
+                        console.log(field.attribute);
+                    }
+                });
+                
+            }
 
-        map.infoWindow.setFeatures([feature]);
-        map.infoWindow.show(evt.mapPoint);
 
-        map.infoWindow.show();
-    });
-
-
+            var graphic = new Graphic();
+            var feature = graphic;
+            feature.setInfoTemplate(template);
+            map.infoWindow.setFeatures([feature]);
+            map.infoWindow.show(evt.mapPoint);
+        });
+    }
 
     var geocoder = new Geocoder({
         value: '',
@@ -1552,119 +1587,7 @@ require([
         }
 
         //get visible and non visible layer lists
-        function addMapServerLegend(layerName, layerDetails) {
 
-
-            if (layerDetails.wimOptions.layerType === 'agisFeature') {
-
-                //for feature layer since default icon is used, put that in legend
-                var legendItem = $('<div align="left" id="' + camelize(layerName) + '"><img alt="Legend Swatch" src="https://raw.githubusercontent.com/Leaflet/Leaflet/master/dist/images/marker-icon.png" /><strong>&nbsp;&nbsp;' + layerName + '</strong></br></div>');
-                $('#legendDiv').append(legendItem);
-
-            }
-
-            else if (layerDetails.wimOptions.layerType === 'agisWMS') {
-
-                //for WMS layers, for now just add layer title
-                var legendItem = $('<div align="left" id="' + camelize(layerName) + '"><img alt="Legend Swatch" src="http://placehold.it/25x41" /><strong>&nbsp;&nbsp;' + layerName + '</strong></br></div>');
-                $('#legendDiv').append(legendItem);
-
-            }
-
-            else if (layerDetails.wimOptions.layerType === 'agisDynamic') {
-
-                //create new legend div
-                var legendItemDiv = $('<div align="left" id="' + camelize(layerName) + '"><strong>&nbsp;&nbsp;' + layerName + '</strong></br></div>');
-                $('#legendDiv').append(legendItemDiv);
-
-                //get legend REST endpoint for swatch
-                $.getJSON(layerDetails.url + '/legend?f=json', function (legendResponse) {
-
-                    console.log(layerName,'legendResponse',legendResponse);
-
-
-
-                    //make list of layers for legend
-                    if (layerDetails.options.layers) {
-                        //console.log(layerName, 'has visisble layers property')
-                        //if there is a layers option included, use that
-                        var visibleLayers = layerDetails.options.layers;
-                    }
-                    else {
-                        //console.log(layerName, 'no visible layers property',  legendResponse)
-
-                        //create visibleLayers array with everything
-                        var visibleLayers = [];
-                        $.grep(legendResponse.layers, function(i,v) {
-                            visibleLayers.push(v);
-                        });
-                    }
-
-                    //loop over all map service layers
-                    $.each(legendResponse.layers, function (i, legendLayer) {
-
-                        //var legendHeader = $('<strong>&nbsp;&nbsp;' + legendLayer.layerName + '</strong>');
-                        //$('#' + camelize(layerName)).append(legendHeader);
-
-                        //sub-loop over visible layers property
-                        $.each(visibleLayers, function (i, visibleLayer) {
-
-                            //console.log(layerName, 'visibleLayer',  visibleLayer);
-
-                            if (visibleLayer == legendLayer.layerId) {
-
-                                console.log(layerName, visibleLayer,legendLayer.layerId, legendLayer)
-
-                                //console.log($('#' + camelize(layerName)).find('<strong>&nbsp;&nbsp;' + legendLayer.layerName + '</strong></br>'))
-
-                                var legendHeader = $('<strong>&nbsp;&nbsp;' + legendLayer.layerName + '</strong></br>');
-                                $('#' + camelize(layerName)).append(legendHeader);
-
-                                //get legend object
-                                var feature = legendLayer.legend;
-                                /*
-                                 //build legend html for categorized feautres
-                                 if (feature.length > 1) {
-                                 */
-
-                                //placeholder icon
-                                //<img alt="Legend Swatch" src="http://placehold.it/25x41" />
-
-                                $.each(feature, function () {
-
-                                    //make sure there is a legend swatch
-                                    if (this.imageData) {
-                                        var legendFeature = $('<img alt="Legend Swatch" src="data:image/png;base64,' + this.imageData + '" /><small>' + this.label.replace('<', '').replace('>', '') + '</small></br>');
-
-                                        $('#' + camelize(layerName)).append(legendFeature);
-                                    }
-                                });
-                                /*
-                                 }
-                                 //single features
-                                 else {
-                                 var legendFeature = $('<img alt="Legend Swatch" src="data:image/png;base64,' + feature[0].imageData + '" /><small>&nbsp;&nbsp;' + legendLayer.layerName + '</small></br>');
-
-                                 //$('#legendDiv').append(legendItem);
-                                 $('#' + camelize(layerName)).append(legendFeature);
-
-                                 }
-                                 */
-                            }
-                        }); //each visible layer
-                    }); //each legend item
-                }); //get legend json
-            }
-        }
-        /* parse layers.js */
-
-        //generateRenderer();
-
-        var legend = new Legend({
-            map: map,
-            layerInfos: legendLayers
-        }, "legendDiv");
-        legend.startup();
 
 
     });//end of require statement containing legend building code

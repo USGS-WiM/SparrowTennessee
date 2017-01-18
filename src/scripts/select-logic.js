@@ -533,6 +533,7 @@ function generateRenderer(){
         require([
         'esri/map',
         'esri/Color',
+        "esri/dijit/Legend",
         "esri/layers/LayerDrawingOptions",
         'esri/symbols/SimpleLineSymbol',
         'esri/symbols/SimpleFillSymbol',
@@ -547,6 +548,7 @@ function generateRenderer(){
     ], function (
         Map,
         Color,
+        Legend,
         LayerDrawingOptions,
         SimpleLineSymbol,
         SimpleFillSymbol,
@@ -620,14 +622,30 @@ function generateRenderer(){
               // set the drawing options for the relevant layer
               // optionsArray index corresponds to layer index in the map service
               optionsArray[sparrowId] = drawingOptions;
-              console.log(optionsArray)
+              console.log(optionsArray);
+
               layer.setLayerDrawingOptions(optionsArray);
               layer.hide();
               layer.show();
+
+              if (! app.hasOwnProperty("legend")){
+                createLegend();
+              }
         }
 
         function errorHandler(err){
             console.log('generateRenderer Err ', err);
+        }
+
+        function createLegend(){
+            app.legend = new Legend({
+                map : map, 
+                layerInfos : [{
+                    layer: map.getLayer("SparrowRanking"),
+                    title: "Sparrow Nutrient Model"
+                }]
+            }, dom.byId("legendDiv"));
+            app.legend.startup();
         }
 
     }); // END Dojo

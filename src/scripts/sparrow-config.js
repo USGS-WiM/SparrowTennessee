@@ -94,7 +94,7 @@ var Group2 = [
         field: "dl1_g2_tot", 
         name: "Load from HUC8 delivered to downstream boundary (lb/yr)", 
         chartOutfields: [
-            { attribute: "GRP_2_NAM", label: "HUC10 name"}, 
+            { attribute: "GRP_2_NAM", label: "HUC8 name"}, 
             { attribute: "dl1_g2_sc1", label: "Wastewater load from HUC8 delivered to downstream boundary (lb/yr)"},
             { attribute: "dl1_g2_sc2", label: "Urban-land load from HUC8 delivered to downstream boundary (lb/yr)"},
             { attribute: "dl1_g2_sc3", label: "Soil-parent-rock load from HUC8 delivered to downstream boundary (lb/yr)"},
@@ -107,7 +107,7 @@ var Group2 = [
         field: "dy1_g2_tot", 
         name: "Yield from HUC8 delivered to downstream boundary (lb/yr/mi2)", 
         chartOutfields: [
-            { attribute: "GRP_2_NAM", label: "HUC10 name"}, 
+            { attribute: "GRP_2_NAM", label: "HUC8 name"}, 
             { attribute: "dy1_g2_sc1", label: "Wastewater yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"},
             { attribute: "dy1_g2_sc2", label: "Urban-land yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"},
             { attribute: "dy1_g2_sc3", label: "Soil-parent-rock yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"},
@@ -120,7 +120,7 @@ var Group2 = [
         field: "dl2_g2_tot", 
         name: "Load from HUC8 delivered to HUC8 outlet (lb/yr)", 
         chartOutfields: [
-            { attribute: "GRP_2_NAM", label: "HUC10 name"}, 
+            { attribute: "GRP_2_NAM", label: "HUC8 name"}, 
             { attribute: "dl2_g2_sc1", label: "Wastewater load from HUC8 delivered to HUC8 outlet (lb/yr)"},
             { attribute: "dl1_g2_sc2", label: "Urban-land load from HUC8 delivered to HUC8 outlet (lb/yr)"},
             { attribute: "dl1_g2_sc3", label: "Soil-parent-rock load from HUC8 delivered to HUC8 outlet (lb/yr)"},
@@ -134,7 +134,7 @@ var Group2 = [
         field: "dy2_g2_tot", 
         name: "Yield from HUC8 delivered to HUC8 outlet (lb/yr/mi2)", 
         chartOutfields: [
-            { attribute: "GRP_2_NAM", label: "HUC10 name"}, 
+            { attribute: "GRP_2_NAM", label: "HUC8 name"}, 
             { attribute: "dy2_g2_sc1", label: "Wastewater yield from HUC8 delivered to HUC8 outlet (lb/yr/mi2)"},
             { attribute: "dy2_g2_sc2", label: "Urban-land yield from HUC8 delivered to HUC8 outlet (lb/yr/mi2)"},
             { attribute: "dy2_g2_sc3", label: "Soil-parent-rock yield from HUC8 delivered to HUC8 outlet (lb/yr/mi2)"},
@@ -491,7 +491,7 @@ var Group2_tn = [
         field: "dl1_g2_tot", 
         name: "Load from HUC8 delivered to downstream boundary (lb/yr)", 
         chartOutfields: [
-            { attribute: "GRP_2_NAM", label: "HUC10 name"}, 
+            { attribute: "GRP_2_NAM", label: "HUC8 name"}, 
             { attribute: "dl1_g2_sc1", label: "Wastewater load from HUC8 delivered to downstream boundary (lb/yr)"},
             { attribute: "dl1_g2_sc2", label: "Urban-land load from HUC8 delivered to downstream boundary (lb/yr)"},
             { attribute: "dl1_g2_sc3", label: "Atmospheric deposition load from HUC8 delivered to downstream boundary (lb/yr)"},
@@ -503,7 +503,7 @@ var Group2_tn = [
         field: "dy1_g2_tot", 
         name: "Yield from HUC8 delivered to downstream boundary (lb/yr/mi2)", 
         chartOutfields: [
-            { attribute: "GRP_2_NAM", label: "HUC10 name"}, 
+            { attribute: "GRP_2_NAM", label: "HUC8 name"}, 
             { attribute: "dy1_g2_sc1", label: "Wastewater yield from HUC8 delivered to downstream boundary (lb/yr)"},
             { attribute: "dy1_g2_sc2", label: "Urban-land yield from HUC8 delivered to downstream boundary (lb/yr)"},
             { attribute: "dy1_g2_sc3", label: "Atmospheric deposition yield from HUC8 delivered to downstream boundary (lb/yr)"},
@@ -515,7 +515,7 @@ var Group2_tn = [
         field: "dl2_g2_tot", 
         name: "Load from HUC8 delivered to HUC8 outlet (lb/yr)", 
         chartOutfields: [
-            { attribute: "GRP_2_NAM", label: "HUC10 name"}, 
+            { attribute: "GRP_2_NAM", label: "HUC8 name"}, 
             { attribute: "dl2_g2_sc1", label: "Wastewater load from HUC8 delivered to HUC8 outlet (lb/yr)"},
             { attribute: "dl2_g2_sc2", label: "Urban-land load from HUC8 delivered to HUC8 outlet (lb/yr)"},
             { attribute: "dl2_g2_sc3", label: "Atmospheric deposition load from HUC8 delivered to HUC8 outlet (lb/yr)"},
@@ -528,7 +528,7 @@ var Group2_tn = [
         field: "dy2_g2_tot", 
         name: "Yield from HUC8 delivered to HUC8 outlet (lb/yr/mi2)", 
         chartOutfields: [
-            { attribute: "GRP_2_NAM", label: "HUC10 name"}, 
+            { attribute: "GRP_2_NAM", label: "HUC8 name"}, 
             { attribute: "dy2_g2_sc1", label: "Wastewater yield from HUC8 delivered to HUC8 outlet (lb/yr)"},
             { attribute: "dy2_g2_sc2", label: "Urban-land yield from HUC8 delivered to HUC8 outlet (lb/yr)"},
             { attribute: "dy2_g2_sc3", label: "Atmospheric deposition yield from HUC8 delivered to HUC8 outlet (lb/yr)"},
