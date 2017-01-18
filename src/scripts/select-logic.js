@@ -170,7 +170,7 @@ function setAggregateGroup(groupBySelectedIndex, selectedRadio){
     sparrowRanking.setVisibleLayers(visibleLayerIds);
 
 
-    //generateRenderer();
+    generateRenderer();
         
     
 } //END setAggregateGroup()
@@ -529,5 +529,107 @@ function getChartOutfields(sparrowLayerId){
 } //END getChartOutfields()
 
 
+function generateRenderer(){
+        require([
+        'esri/map',
+        'esri/Color',
+        "esri/layers/LayerDrawingOptions",
+        'esri/symbols/SimpleLineSymbol',
+        'esri/symbols/SimpleFillSymbol',
+        'esri/tasks/ClassBreaksDefinition',
+        'esri/tasks/AlgorithmicColorRamp',
+        'esri/tasks/GenerateRendererParameters',
+        'esri/tasks/GenerateRendererTask',
+        'dojo/dom',
+        'dojo/dom-class',
+        'dojo/on',
+        'dojo/domReady!'
+    ], function (
+        Map,
+        Color,
+        LayerDrawingOptions,
+        SimpleLineSymbol,
+        SimpleFillSymbol,
+        ClassBreaksDefinition,
+        AlgorithmicColorRamp,
+        GenerateRendererParameters,
+        GenerateRendererTask,
+        dom,
+        domClass,
+        on
+    ) {
+        console.log('in generateRenderer()');
+
+        var app = {};
+        var sparrowId = map.getLayer('SparrowRanking').visibleLayers[0];
+        //apply layer defs to renderer if they exist
+        if(map.getLayer('SparrowRanking').layerDefinitions){
+            var dynamicLayerDefs = map.getLayer('SparrowRanking').layerDefinitions[0];
+            app.layerDef = dynamicLayerDefs;
+        }
+        
+        app.Url = "https://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/" + sparrowId;
+        
+        var selectedMetric = $('#displayedMetricSelect')[0].value;
+        app.outFields = [selectedMetric];
+        app.currentAttribute = selectedMetric; 
 
 
+        var classDef = new ClassBreaksDefinition();
+        classDef.classificationField = app.currentAttribute;
+        classDef.classificationMethod = "quantile";
+        classDef.breakCount = 5;
+        classDef.baseSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+                new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
+                new Color([192,192,192]), 0.1)
+            );
+        
+          
+
+        var colorRamp = new AlgorithmicColorRamp();
+        //different ramps for phos/nitro
+        if( $(".radio input[type='radio']:checked")[0].id == "radio1" ){
+            colorRamp.fromColor = Color.fromHex("#ffffcc");
+            colorRamp.toColor = Color.fromHex("#006837");
+        } else{
+            colorRamp.fromColor = Color.fromHex("#ffd084");
+            colorRamp.toColor = Color.fromHex("#845305");
+        }
+          
+        colorRamp.algorithm = "hsv"; // options are:  "cie-lab", "hsv", "lab-lch"
+        classDef.colorRamp = colorRamp;
+
+        var params = new GenerateRendererParameters();
+        params.classificationDefinition = classDef;
+        // limit the renderer to data being shown by the current layer
+        params.where = app.layerDef; 
+        var generateRenderer = new GenerateRendererTask(app.Url);
+        generateRenderer.execute(params, applyRenderer, errorHandler);
+
+
+        function applyRenderer(renderer){
+            var sparrowId = map.getLayer('SparrowRanking').visibleLayers[0];
+            
+            var layer = map.getLayer('SparrowRanking');
+            console.log('in applyRenderer()',layer);
+
+            // dynamic layer stuff
+              var optionsArray = [];
+              var drawingOptions = new LayerDrawingOptions();
+              drawingOptions.renderer = renderer;
+              // set the drawing options for the relevant layer
+              // optionsArray index corresponds to layer index in the map service
+              optionsArray[sparrowId] = drawingOptions;
+              console.log(optionsArray)
+              layer.setLayerDrawingOptions(optionsArray);
+              layer.hide();
+              layer.show();
+        }
+
+        function errorHandler(err){
+            console.log('generateRenderer Err ', err);
+        }
+
+    }); // END Dojo
+
+} //END generateRenderer()

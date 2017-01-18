@@ -81,6 +81,7 @@ require([
     //set initial Displayed Metric options
     $('#groupResultsSelect').on('loaded.bs.select', function(){  
         populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
+        generateRenderer();
     });
 
     //keep Displayed Metric options in sync -- can be moved to sidebar events lower in code
@@ -89,6 +90,12 @@ require([
         setAggregateGroup( e.currentTarget.selectedIndex, $(".radio input[type='radio']:checked")[0].id );
        
     });
+
+    //TODO TEMPORARY SOLOUTION?  MUST CALL RENDERER WHEN DISPLAYED METRIC CHANGES
+     $("#displayedMetricSelect").on('changed.bs.select', function(e){
+        generateRenderer();
+     });
+
 
     map = Map('mapDiv', {
         basemap: 'gray',
@@ -191,7 +198,6 @@ require([
         $('#latitude').html(initMapCenter.y.toFixed(3));
         $('#longitude').html(initMapCenter.x.toFixed(3));
 
-        generateRenderer();
 
         //code for adding draggability to infoWindow. http://www.gavinr.com/2015/04/13/arcgis-javascript-draggable-infowindow/
         if (dragInfoWindows == true) {
@@ -332,7 +338,7 @@ require([
     // Geosearch functions
     on(dom.byId('btnGeosearch'),'click', geosearch);
 
-        function generateRenderer(){
+    /*function generateRenderer(){
         console.log('in generateRenderer()');
 
         var app = {};
@@ -404,7 +410,7 @@ require([
 
     function errorHandler(err){
         console.log('generateRenderer Err ', err);
-    }  
+    }*/  
 
    
 
@@ -1162,6 +1168,8 @@ require([
             $('.aoiSelect').selectpicker('val', '');  // 'hack' because selectpicker('deselectAll') method only works when select is open.
             //$('.aoiSelect').selectpicker('refresh'); //don't need refresh apparently
             populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
+            //redraw the symbols
+            generateRenderer();
 
         });
 
@@ -1184,9 +1192,7 @@ require([
         $("#chartButton").on("click", createChartQuery);
 
         /* END UI SIDEBAR EVENTS______________________________________________________________*/
-        $('#rendererButton').on('click', generateRenderer);
 
-        
 
     });
 
@@ -1652,7 +1658,7 @@ require([
         }
         /* parse layers.js */
 
-        generateRenderer();
+        //generateRenderer();
 
         var legend = new Legend({
             map: map,
