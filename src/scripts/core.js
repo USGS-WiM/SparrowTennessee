@@ -351,20 +351,28 @@ require([
         app.currentAttribute = selectedMetric; 
 
 
-          var classDef = new ClassBreaksDefinition();
-          classDef.classificationField = app.currentAttribute;
-          classDef.classificationMethod = "quantile";
-          classDef.breakCount = 5;
-          classDef.baseSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+        var classDef = new ClassBreaksDefinition();
+        classDef.classificationField = app.currentAttribute;
+        classDef.classificationMethod = "quantile";
+        classDef.breakCount = 5;
+        classDef.baseSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
                 new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
                 new Color([192,192,192]), 0.1)
             );
+        
+          
 
-          var colorRamp = new AlgorithmicColorRamp();
-          colorRamp.fromColor = Color.fromHex("#ffffcc");
-          colorRamp.toColor = Color.fromHex("#006837");
-          colorRamp.algorithm = "hsv"; // options are:  "cie-lab", "hsv", "lab-lch"
-          classDef.colorRamp = colorRamp;
+        var colorRamp = new AlgorithmicColorRamp();
+        if( $(".radio input[type='radio']:checked")[0].id == "radio1" ){
+            colorRamp.fromColor = Color.fromHex("#ffffcc");
+            colorRamp.toColor = Color.fromHex("#006837");
+        } else{
+            colorRamp.fromColor = Color.fromHex("#ffd084");
+            colorRamp.toColor = Color.fromHex("#845305");
+        }
+          
+        colorRamp.algorithm = "hsv"; // options are:  "cie-lab", "hsv", "lab-lch"
+        classDef.colorRamp = colorRamp;
 
           var params = new GenerateRendererParameters();
           params.classificationDefinition = classDef;

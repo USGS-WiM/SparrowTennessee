@@ -170,7 +170,7 @@ function setAggregateGroup(groupBySelectedIndex, selectedRadio){
     sparrowRanking.setVisibleLayers(visibleLayerIds);
 
 
-    generateRenderer();
+    //generateRenderer();
         
     
 } //END setAggregateGroup()
