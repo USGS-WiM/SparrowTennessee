@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html5>
 <html>
 <head>
     <title>SPARROW Tennessee</title>
@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="bower_components/bootstrap-select/dist/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="bower_components/lobipanel/dist/css/lobipanel.min.css">
+
+    <link rel="stylesheet" href="bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css"/> <!--recent Addition-->
 
     
     <link rel="stylesheet" href="bower_components/bootstrap-map-js/dist/css/bootstrapmap.min.css">
@@ -29,35 +32,41 @@
     <link rel="stylesheet" href="bower_components/wim-styles/template/css/base.css">
     <!-- endbuild -->
 
-    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel='icon' href='images/faviconsmall.png' type='image/png'/>
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/jquery.nicescroll/dist/jquery.nicescroll.min.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="bower_components/bootstrap-sidebar/dist/js/sidebar.js"></script>
-    <script src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-    <script src="bower_components/highcharts/highcharts.js"></script>
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="bower_components/jquery.nicescroll/dist/jquery.nicescroll.min.js"></script>
+    <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="bower_components/bootstrap-sidebar/dist/js/sidebar.js"></script>
+    <script type="text/javascript" src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript" src="bower_components/highcharts/highcharts.js"></script>
+    <script type="text/javascript" src="bower_components/lobipanel/dist/js/lobipanel.min.js"></script>
 
-    
+
+    <!--<script src="./lib/highcharts-export-clientside/highcharts-export-clientside.js"></script>--> <!--Needs 4.2 version of highcharts-->
+
     <!-- endbower -->
     <!-- endbuild -->
-
+    <script type="text/javascript" src="http://js.arcgis.com/3.13/"></script>
+    <script type="text/javascript" src="http://highcharts.github.io/export-csv/export-csv.js"></script>
     
-    <script src="http://js.arcgis.com/3.13/"></script>
-    
-
     <!-- build:js scripts/combined.js -->
-    <script src="scripts/utilities.js"></script>
-    <script src="scripts/layers.js"></script>
-    <script src="scripts/sparrow-config.js"></script>
-    <script src="scripts/select-logic.js"></script>
-    <script src="scripts/chart-window.js"></script>
+    <script type="text/javascript" src="scripts/utilities.js"></script>
     
-    <script src="scripts/core.js"></script>
-
+    <script type="text/javascript" src="scripts/sparrow-config.js"></script>
+    <script type="text/javascript" src="scripts/layers.js"></script>
     
+    <!--<script type="text/javascript" src="scripts/chart-window.js"></script>-->
+    <!--<script type="text/javascript" src="scripts/chart-window-2.js"></script>-->
+    
+    <script type="text/javascript" src="scripts/core.js"></script>
+    <script type="text/javascript" src="scripts/event-handlers.js"></script>
+    <script type="text/javascript" src="scripts/select-logic.js"></script>
+    
+   
     <!-- endbuild -->
 
 </head>
@@ -169,6 +178,7 @@
     </div> <!-- /.modal-dialog -->
 </div><!-- End About modal -->
 
+<!--NO LONGER IN USE Switched Chart Modal to Lobipanel
 <div id="chartModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog  modal-lg">
     <div class="modal-content">
@@ -178,10 +188,15 @@
       </div>
       <div class="modal-body">
           <div id="chartContainer"></div>
+          <span>
+              <button id="downloadXLS" class="btn btn-default" data-type="application/vnd.ms-excel">Export Data</button>
+              <button id="resetButton" class="btn btn-default" disabled>Reset Zoom</button>
+          </span>
       </div>
     </div>
   </div>
 </div>
+-->
 
 <!-- Begin page content -->
 <div class="container-fluid keepit100">
@@ -250,9 +265,10 @@
                        <div class="select-label">
                             <p>Nutrient Model</p>
                         </div> 
+
                         <!--<div id="nutrientRadio" class="btn-gorup" data-toggle="buttons">-->
                             <div class="radio radio-primary active" id="modelResultsRadio">
-                                <input type="radio" name="radio1" id="radio1" value="option1" checked="">
+                                <input type="radio" name="radio1" id="radio1" value="option1" checked>
                                 <label for="radio1">
                                     Phosphorus
                                 </label>
@@ -269,28 +285,33 @@
                             <p>Area of Interest</p>
                         </div>
                             <div class='input-group' >
-                                <select id="st-select" class="selectpicker 0" title="State" ></select>
-                                <span class=''>
+                                <select id="st-select" class="selectpicker 0 aoiSelect" title="State" ></select>
+                                <!--<span class=''>
                                     <a href="#" class="clearAOI st-select" style="display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
                                         <span class="glyphicon glyphicon-remove"></span>
                                     </a>
-                                </span>
+                                </span>-->
                             </div>
                              <div class='input-group'>
-                                <select id="grp1-select" class="selectpicker 1" title="Independent Watershed"></select>
-                                <span class=''>
+                                <select id="grp1-select" class="selectpicker 1 aoiSelect" title="Independent Watershed"></select>
+                                <!--<span class=''>
                                     <a href="#" class="clearAOI grp1-select" style="display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
                                         <span class="glyphicon glyphicon-remove"></span>
                                     </a>
-                                </span>
+                                </span>-->
                             </div>
                              <div class='input-group'>
-                                <select id="grp2-select" class="selectpicker 2" title="HUC8" ></select>
-                                <span class=''>
+                                <select id="grp2-select" class="selectpicker 2 aoiSelect" title="HUC8" ></select>
+                                <!--<span class=''>
                                     <a href="#" class="clearAOI grp2-select" style=" display: inline-block; box-sizing:border-box; padding: 7px; color: #ccc">
                                         <span class="glyphicon glyphicon-remove"></span>
                                     </a>
-                                </span>
+                                </span>-->
+                            </div>
+                            <div class="btn">
+                                <button type="button" class="btn btn-default" id="clearAOIButton">
+                                    <span class="glyphicon glyphicon-remove"></span> Clear Area of Interest
+                                </button>
                             </div>
                             
                             
@@ -299,7 +320,7 @@
                             <p>Displayed Metric</p>
                         </div>
     
-                        <select id="displayedMetricSelect" class="selectpicker nonAOISelect" data-width="220px"></select>
+                        <select id="displayedMetricSelect" class="selectpicker nonAOISelect" data-width="280px"></select>
 
                         <div class="select-label">
                             <p>Group Results By</p>
@@ -312,7 +333,7 @@
                         </select>
 
                         <div class="btn">
-                            <button type="button" class="btn btn-default" data-target="chartModal" id="chartButton">
+                            <button type="button" class="btn btn-primary" data-target="chartModal" id="chartButton">
                                 <span class="glyphicon glyphicon-signal"></span> Show Chart
                             </button>
                         </div>
@@ -349,10 +370,37 @@
                     </div>
                 </div>
 
-            </div>
+                <!--LOBIPANEL EXPERIMENTAL________________________________________________________________________________________________________________________-->
+                <div id="chartWindowDiv" class="panel panel-default chartWindowMaximize">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <h4 id="chartWindowPanelTitle"></h4>
+                        </div>
+                        <!--<span>
+                          <button id="downloadXLS" class="btn btn-default" data-type="application/vnd.ms-excel">Export Data</button>
+                          <button id="resetButton" class="btn btn-default" disable="true">Reset Zoom</button>
+                        </span>-->
+                    
+                    </div>
+                    <div class="panel-body" id="chartWindowContainer">
+                        
+                    </div>
+                    
+                        
+                    
+
+                </div>
+                
+
+
+
+                <!--LOBIPANEL EXPERIMENTAL________________________________________________________________________________________________________________________-->
+            
+            </div><!--END mapDiv-->
 
             <div id="homeButton"></div>
             <div id="locateButton"></div>
+            
 
             <div id="latLngScale" class="latLngScale">
                 <span class="hover-content"> <b>Map scale </b></span>
