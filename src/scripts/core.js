@@ -117,15 +117,6 @@ require([
         setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, [queryParameters[key].nameField], "1=1");
     }
 
-   /* function updateAOI(layerDefs){
-        var layerDefs = "GRP_1_NAM in ('Cumberland River')"
-        console.log('in updateAOI()');
-        console.log('layerDefs = ' + layerDefs);
-        for (var key in queryParameters){
-            setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, [queryParameters[key].nameField], layerDefs);
-        }
-    }*/
-
 
     function setupQueryTask(url, outFieldsArr, whereClause){
         var queryTask;
@@ -317,7 +308,11 @@ require([
             var fields = getChartOutfields( map.getLayer('SparrowRanking').visibleLayers[0] );
             var template = new esri.InfoTemplate();
             template.setTitle(fields[0].label + ": " + response[0].value);
-            template.setContent(getInfoWindowContent(fields, response));
+            template.setContent('<div class="btn"><button type="button" onclick="createChartQuery" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></div>');
+
+
+            
+            /*template.setContent(getInfoWindowContent(fields, response));
 
             function getInfoWindowContent(fields, response){
                 var responseObj = response[0].feature.attributes;
@@ -329,7 +324,7 @@ require([
                     }
                 });
                 
-            }
+            }*/
 
 
             var graphic = new Graphic();
@@ -337,8 +332,11 @@ require([
             feature.setInfoTemplate(template);
             map.infoWindow.setFeatures([feature]);
             map.infoWindow.show(evt.mapPoint);
+            $("#popupChartButton").on('click', createChartQuery);
+
         });
-    }
+    }//END executeIdentifyTask
+    
 
     var geocoder = new Geocoder({
         value: '',
@@ -1225,6 +1223,8 @@ require([
 
         //Start the Chart Chain of Events
         $("#chartButton").on("click", createChartQuery);
+        
+
 
         /* END UI SIDEBAR EVENTS______________________________________________________________*/
 

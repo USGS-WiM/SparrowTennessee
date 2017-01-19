@@ -311,8 +311,9 @@ function updateAOI(layerDefs, selectId){
         } // END setupFindTask
 
         function filterAOI(response){
+            $("#grp2-select").find('option').remove();
 
-            $.each(response, function(index, feature){
+            $.each(response, function(index, obj){
                 //console.log(feature);
                 /*if (feature.layerId == 1){
                     console.log("Huc8 = " + feature.feature.attributes.GRP_2_NAM);
@@ -320,23 +321,23 @@ function updateAOI(layerDefs, selectId){
                 if(feature.layerId == 6){
                     console.log("State = " + feature.feature.attributes.ST)
                 }*/
-                switch(feature.layerId){
+                switch(obj.layerId){
                     case 1:
-                        var item = feature.feature.attributes.GRP_2_NAM;
+                        var item = obj.feature.attributes.GRP_2_NAM;
                         console.log("huc8 " + item);
-                        $("#grp2-select").append('<option value="item">'+ item + '</option>').val(item);
+                        $("#grp2-select").append(new Option(item, item));
                         break;
                     case 2:
-                        var item = feature.feature.attributes.GRP_1_NAM;
+                        var item = obj.feature.attributes.GRP_1_NAM;
                         console.log("independent watershed "+ item);
                         break;
                     case 5:
-                        var item = feature.feature.attributes.GRP_1_NAM;
-                         console.log("IND watershed " + item);
+                        var item = obj.feature.attributes.GRP_1_NAM;
+                         console.log("ST_IndependendWatershed " + item);
                         break;
                     case 6:
-                        var item = feature.feature.attributes.GRP_2_NAM;
-                        console.log("Huc8 " + item);
+                        var item = obj.feature.attributes.GRP_2_NAM;
+                        console.log("ST_HUC8 " + item);
                         break;
                 }
 
@@ -627,6 +628,7 @@ function generateRenderer(){
               layer.setLayerDrawingOptions(optionsArray);
               layer.hide();
               layer.show();
+
 
               if (! app.hasOwnProperty("legend")){
                 createLegend();
