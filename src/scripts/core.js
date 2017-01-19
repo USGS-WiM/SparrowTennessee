@@ -2,9 +2,7 @@
 'use strict';
 // Generated on 2015-04-13 using generator-wim 0.0.1
 
-
-var map;
-var allLayers;
+var app = {};
 var maxLegendHeight;
 var maxLegendDivHeight;
 var dragInfoWindows = true;
@@ -12,8 +10,6 @@ var defaultMapCenter = [-86, 36];
 var queryParametersLength = Object.getOwnPropertyNames(queryParameters).length;
 var identifyTask;
 var identifyParams;  
-
-
 
 require([
     'esri/arcgis/utils',
@@ -24,6 +20,9 @@ require([
     'esri/dijit/HomeButton',
     'esri/dijit/LocateButton',
     'esri/layers/ArcGISTiledMapServiceLayer',
+    'esri/layers/ArcGISDynamicMapServiceLayer',
+    'esri/layers/FeatureLayer',
+    'esri/layers/WMSLayer',
     'esri/dijit/Geocoder',
     'esri/dijit/PopupTemplate',
     'esri/graphic',
@@ -41,6 +40,7 @@ require([
     "esri/tasks/IdentifyParameters",
     'esri/geometry/webMercatorUtils',
     'esri/SpatialReference',
+    'dojo/parser',
     'dojo/dnd/Moveable',
     'dojo/query',
     'dojo/dom',
@@ -56,6 +56,9 @@ require([
     HomeButton,
     LocateButton,
     ArcGISTiledMapServiceLayer,
+    ArcGISDynamicMapServiceLayer,
+    FeatureLayer,
+    WMSLayer,
     Geocoder,
     PopupTemplate,
     Graphic,
@@ -73,43 +76,53 @@ require([
     IdentifyParameters,
     webMercatorUtils,
     SpatialReference,
+    parser,
     Moveable,
     query,
     dom,
     domClass,
     on
 ) {
+    parser.parse();
 
-    //bring this line back after experiment////////////////////////////
-    //allLayers = mapLayers;
-
-
-    //set initial Displayed Metric options
-    $('#groupResultsSelect').on('loaded.bs.select', function(){  
-        populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
-        generateRenderer();
-    });
-
-    //keep Displayed Metric options in sync -- can be moved to sidebar events lower in code
-    $("#groupResultsSelect").on('changed.bs.select', function(e){  
-        populateMetricOptions(e.currentTarget.selectedIndex);
-        setAggregateGroup( e.currentTarget.selectedIndex, $(".radio input[type='radio']:checked")[0].id );
-       
-    });
-
-    //TODO TEMPORARY SOLOUTION?  MUST CALL RENDERER WHEN DISPLAYED METRIC CHANGES
-     $("#displayedMetricSelect").on('changed.bs.select', function(e){
-        generateRenderer();
-     });
-
-
-    map = Map('mapDiv', {
+    //setup map
+    app.map = Map('mapDiv', {
         basemap: 'gray',
         //center: [-95.6, 38.6],
         center: defaultMapCenter,
         zoom: 7
     });
 
+    //button for returning to initial extent
+    app.home = new HomeButton({
+        map: app.map
+    }, "homeButton");
+    app.home.startup();
+
+    //button for finding and zooming to user's location
+    app.locate = new LocateButton({
+        map: app.map
+    }, "locateButton");
+    app.locate.startup();
+
+    app.geocoder = new Geocoder({
+        value: '',
+        maxLocations: 25,
+        autoComplete: true,
+        arcgisGeocoder: true,
+        autoNavigate: false,
+        map: app.map
+    }, 'geosearch');
+    app.geocoder.startup();
+    app.geocoder.on('select', geocodeSelect);
+    app.geocoder.on('findResults', geocodeResults);
+    app.geocoder.on('clear', clearFindGraphics);
+
+
+    //load additional basemap
+    var nationalMapBasemap = new ArcGISTiledMapServiceLayer('http://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer');
+
+    loadEventHandlers();
 
 
     //TODO: FIGURE OUT HOW TO USE THE QUERY WHERECLAUSE     Call setupQueryTask for every layer inqueryParameters
@@ -117,6 +130,83 @@ require([
         setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, [queryParameters[key].nameField], "1=1");
     }
 
+    app.updateMousePosition = function(cursorPosition) {
+        $('#mapCenterLabel').css("display", "none");
+        if (cursorPosition.mapPoint != null) {
+            var geographicMapPt = webMercatorUtils.webMercatorToGeographic(cursorPosition.mapPoint);
+            $('#latitude').html(geographicMapPt.y.toFixed(3));
+            $('#longitude').html(geographicMapPt.x.toFixed(3));
+        }
+    }
+
+    app.updateMapCenter = function(extent) {
+        //displays latitude and longitude of map center
+        $('#mapCenterLabel').css("display", "inline");
+        var geographicMapCenter = webMercatorUtils.webMercatorToGeographic(extent.getCenter());
+        $('#latitude').html(geographicMapCenter.y.toFixed(3));
+        $('#longitude').html(geographicMapCenter.x.toFixed(3));
+    }
+
+    
+    identifyParams = new esri.tasks.IdentifyParameters();
+    identifyParams.tolerance = 5;
+    identifyParams.returnGeometry = true;
+    //identifyParams.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_VISIBLE;
+    identifyParams.width  = app.map.width;
+    identifyParams.height = app.map.height;
+    identifyTask = new esri.tasks.IdentifyTask(serviceBaseURL); 
+
+    function getInfoWindowContent(){
+        console.log('in getInfoWindowContent');
+    }
+
+    app.executeIdentifyTask = function(evt){
+        console.log(evt)
+        var sparrowLayer = app.map.getLayer("SparrowRanking").visibleLayers[0];
+
+        identifyParams.layerIds = [sparrowLayer];
+        identifyParams.geometry = evt.mapPoint;
+        identifyParams.mapExtent = app.map.extent;
+        
+        var deferred = identifyTask.execute(identifyParams).addCallback(function(response){
+            console.log(response);
+
+            var fields = getChartOutfields( app.map.getLayer('SparrowRanking').visibleLayers[0] );
+            var template = new esri.InfoTemplate();
+            template.setTitle(fields[0].label + ": " + response[0].value);
+            template.setContent('<div class="btn"><button type="button" onclick="createChartQuery" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></div>');
+            
+
+            /*template.setContent(getInfoWindowContent(fields, response));
+
+            function getInfoWindowContent(fields, response){
+                var responseObj = response[0].feature.attributes;
+                console.log(responseObj);
+                $.each(fields, function(index, field, responseObj){
+                    if (index > 0){
+                        console.log(field.label);
+                        console.log(field.attribute);
+                    }
+                });
+                
+            }*/
+
+
+            var graphic = new Graphic();
+            var feature = graphic;
+            feature.setInfoTemplate(template);
+            app.map.infoWindow.setFeatures([feature]);
+            app.map.infoWindow.show(evt.mapPoint);
+            $("#popupChartButton").on('click', createChartQuery);
+        });
+    }
+
+    // Symbols
+    var sym = createPictureSymbol('../images/purple-pin.png', 0, 12, 13, 24);
+
+    var selectionSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, 
+        new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
+        new Color([255, 0, 0]), 2), new Color([255,255, 0, 0.5])); 
 
     function setupQueryTask(url, outFieldsArr, whereClause){
         var queryTask;
@@ -137,7 +227,7 @@ require([
         switch(response.displayFieldName){
             case queryParameters["grp3"].nameField:
                 console.log("Currently no AOI for Group 3");
-                break
+                break;
             case queryParameters["grp2"].nameField:
                 $.each(response.features, function(index, feature){
                     var attributeName = queryParameters["grp2"].nameField;
@@ -162,295 +252,11 @@ require([
         }
     }
 
-    //button for returning to initial extent
-    var home = new HomeButton({
-        map: map
-    }, "homeButton");
-    home.startup();
-    //button for finding and zooming to user's location
-    var locate = new LocateButton({
-        map: map
-    }, "locateButton");
-    locate.startup();
-
-    //following block forces map size to override problems with default behavior
-    $(window).resize(function () {
-        if ($("#legendCollapse").hasClass('in')) {
-            maxLegendHeight =  ($('#mapDiv').height()) * 0.90;
-            $('#legendElement').css('height', maxLegendHeight);
-            $('#legendElement').css('max-height', maxLegendHeight);
-            maxLegendDivHeight = ($('#legendElement').height()) - parseInt($('#legendHeading').css("height").replace('px',''));
-            $('#legendDiv').css('max-height', maxLegendDivHeight);
-        }
-        else {
-            $('#legendElement').css('height', 'initial');
-        }
-    });
-
-    //displays map scale on map load
-    on(map, "load", function() {
-        var scale =  map.getScale().toFixed(0);
-        $('#scale')[0].innerHTML = addCommas(scale);
-        var initMapCenter = webMercatorUtils.webMercatorToGeographic(map.extent.getCenter());
-        $('#latitude').html(initMapCenter.y.toFixed(3));
-        $('#longitude').html(initMapCenter.x.toFixed(3));
-
-
-        //code for adding draggability to infoWindow. http://www.gavinr.com/2015/04/13/arcgis-javascript-draggable-infowindow/
-        if (dragInfoWindows == true) {
-            var handle = query(".title", map.infoWindow.domNode)[0];
-            var dnd = new Moveable(map.infoWindow.domNode, {
-                handle: handle
-            });
-
-            // when the infoWindow is moved, hide the arrow:
-            on(dnd, 'FirstMove', function() {
-                // hide pointer and outerpointer (used depending on where the pointer is shown)
-                var arrowNode =  query(".outerPointer", map.infoWindow.domNode)[0];
-                domClass.add(arrowNode, "hidden");
-
-                var arrowNode =  query(".pointer", map.infoWindow.domNode)[0];
-                domClass.add(arrowNode, "hidden");
-            }.bind(this));
-        }
-
-
-    });
-    //displays map scale on scale change (i.e. zoom level)
-    on(map, "zoom-end", function () {
-        var scale =  map.getScale().toFixed(0);
-        $('#scale')[0].innerHTML = addCommas(scale);
-    });
-
-    //updates lat/lng indicator on mouse move. does not apply on devices w/out mouse. removes "map center" label
-    on(map, "mouse-move", function (cursorPosition) {
-        $('#mapCenterLabel').css("display", "none");
-        if (cursorPosition.mapPoint != null) {
-            var geographicMapPt = webMercatorUtils.webMercatorToGeographic(cursorPosition.mapPoint);
-            $('#latitude').html(geographicMapPt.y.toFixed(3));
-            $('#longitude').html(geographicMapPt.x.toFixed(3));
-        }
-    });
-    //updates lat/lng indicator to map center after pan and shows "map center" label.
-    on(map, "pan-end", function () {
-        //displays latitude and longitude of map center
-        $('#mapCenterLabel').css("display", "inline");
-        var geographicMapCenter = webMercatorUtils.webMercatorToGeographic(map.extent.getCenter());
-        $('#latitude').html(geographicMapCenter.y.toFixed(3));
-        $('#longitude').html(geographicMapCenter.x.toFixed(3));
-    });
-
-    var nationalMapBasemap = new ArcGISTiledMapServiceLayer('http://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer');
-    //on clicks to swap basemap. map.removeLayer is required for nat'l map b/c it is not technically a basemap, but a tiled layer.
-    on(dom.byId('btnStreets'), 'click', function () {
-        map.setBasemap('streets');
-        map.removeLayer(nationalMapBasemap);
-    });
-    on(dom.byId('btnSatellite'), 'click', function () {
-        map.setBasemap('satellite');
-        map.removeLayer(nationalMapBasemap);
-    });
-    on(dom.byId('btnHybrid'), 'click', function () {
-        map.setBasemap('hybrid');
-        map.removeLayer(nationalMapBasemap);
-    });
-    on(dom.byId('btnTerrain'), 'click', function () {
-        map.setBasemap('terrain');
-        map.removeLayer(nationalMapBasemap);
-    });
-    on(dom.byId('btnGray'), 'click', function () {
-        map.setBasemap('gray');
-        map.removeLayer(nationalMapBasemap);
-    });
-    on(dom.byId('btnNatGeo'), 'click', function () {
-        map.setBasemap('national-geographic');
-        map.removeLayer(nationalMapBasemap);
-    });
-    on(dom.byId('btnOSM'), 'click', function () {
-        map.setBasemap('osm');
-        map.removeLayer(nationalMapBasemap);
-    });
-    on(dom.byId('btnTopo'), 'click', function () {
-        map.setBasemap('topo');
-        map.removeLayer(nationalMapBasemap);
-    });
-
-    on(dom.byId('btnNatlMap'), 'click', function () {
-        map.addLayer(nationalMapBasemap);
-    });
-
-    //end code for adding draggability to infoWindow
-    on(map, "click", executeIdentifyTask);
-
-    
-    identifyParams = new esri.tasks.IdentifyParameters();
-    identifyParams.tolerance = 5;
-    identifyParams.returnGeometry = true;
-    //identifyParams.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_VISIBLE;
-    identifyParams.width  = map.width;
-    identifyParams.height = map.height;
-    identifyTask = new esri.tasks.IdentifyTask(serviceBaseURL); 
-
-    function getInfoWindowContent(){
-        console.log('in getInfoWindowContent');
-    }
-
-    function executeIdentifyTask(evt){
-        var sparrowLayer = map.getLayer("SparrowRanking").visibleLayers[0];
-
-        identifyParams.layerIds = [sparrowLayer];
-        identifyParams.geometry = evt.mapPoint;
-        identifyParams.mapExtent = map.extent;
-        
-        var deferred = identifyTask.execute(identifyParams).addCallback(function(response){
-            console.log(response);
-
-            var fields = getChartOutfields( map.getLayer('SparrowRanking').visibleLayers[0] );
-            var template = new esri.InfoTemplate();
-            template.setTitle(fields[0].label + ": " + response[0].value);
-            template.setContent('<div class="btn"><button type="button" onclick="createChartQuery" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></div>');
-
-
-            
-            /*template.setContent(getInfoWindowContent(fields, response));
-
-            function getInfoWindowContent(fields, response){
-                var responseObj = response[0].feature.attributes;
-                console.log(responseObj);
-                $.each(fields, function(index, field, responseObj){
-                    if (index > 0){
-                        console.log(field.label);
-                        console.log(field.attribute);
-                    }
-                });
-                
-            }*/
-
-
-            var graphic = new Graphic();
-            var feature = graphic;
-            feature.setInfoTemplate(template);
-            map.infoWindow.setFeatures([feature]);
-            map.infoWindow.show(evt.mapPoint);
-            $("#popupChartButton").on('click', createChartQuery);
-
-        });
-    }//END executeIdentifyTask
-    
-
-    var geocoder = new Geocoder({
-        value: '',
-        maxLocations: 25,
-        autoComplete: true,
-        arcgisGeocoder: true,
-        autoNavigate: false,
-        map: map
-    }, 'geosearch');
-    geocoder.startup();
-    geocoder.on('select', geocodeSelect);
-    geocoder.on('findResults', geocodeResults);
-    geocoder.on('clear', clearFindGraphics);
-    on(geocoder.inputNode, 'keydown', function (e) {
-        if (e.keyCode == 13) {
-            setSearchExtent();
-        }
-    });
-
-    // Symbols
-    var sym = createPictureSymbol('../images/purple-pin.png', 0, 12, 13, 24);
-
-    var selectionSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, 
-                                    new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
-                                    new Color([255, 0, 0]), 2), new Color([255,255, 0, 0.5])); 
-
-    map.on('load', function (){
-        map.infoWindow.set('highlight', false);
-        map.infoWindow.set('titleInBody', false);
-    });
-
-    // Geosearch functions
-    on(dom.byId('btnGeosearch'),'click', geosearch);
-
-    /*function generateRenderer(){
-        console.log('in generateRenderer()');
-
-        var app = {};
-        var sparrowId = map.getLayer('SparrowRanking').visibleLayers[0];
-        if(map.getLayer('SparrowRanking').layerDefinitions){
-            var dynamicLayerDefs = map.getLayer('SparrowRanking').layerDefinitions[0];
-            app.layerDef = dynamicLayerDefs;
-        }
-        
-
-
-        app.Url = "https://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/" + sparrowId;
-        
-        var selectedMetric = $('#displayedMetricSelect')[0].value;
-        app.outFields = [selectedMetric];
-        app.currentAttribute = selectedMetric; 
-
-
-        var classDef = new ClassBreaksDefinition();
-        classDef.classificationField = app.currentAttribute;
-        classDef.classificationMethod = "quantile";
-        classDef.breakCount = 5;
-        classDef.baseSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
-                new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
-                new Color([192,192,192]), 0.1)
-            );
-        
-          
-
-        var colorRamp = new AlgorithmicColorRamp();
-        if( $(".radio input[type='radio']:checked")[0].id == "radio1" ){
-            colorRamp.fromColor = Color.fromHex("#ffffcc");
-            colorRamp.toColor = Color.fromHex("#006837");
-        } else{
-            colorRamp.fromColor = Color.fromHex("#ffd084");
-            colorRamp.toColor = Color.fromHex("#845305");
-        }
-          
-        colorRamp.algorithm = "hsv"; // options are:  "cie-lab", "hsv", "lab-lch"
-        classDef.colorRamp = colorRamp;
-
-          var params = new GenerateRendererParameters();
-          params.classificationDefinition = classDef;
-          // limit the renderer to data being shown by the feature layer
-          params.where = app.layerDef; 
-          var generateRenderer = new GenerateRendererTask(app.Url);
-          generateRenderer.execute(params, applyRenderer, errorHandler);
-
-    }//END generateRenderer()
-
-    function applyRenderer(renderer){
-        var sparrowId = map.getLayer('SparrowRanking').visibleLayers[0];
-        
-        var layer = map.getLayer('SparrowRanking');
-        console.log('in applyRenderer()',layer);
-
-        // dynamic layer stuff
-          var optionsArray = [];
-          var drawingOptions = new LayerDrawingOptions();
-          drawingOptions.renderer = renderer;
-          // set the drawing options for the relevant layer
-          // optionsArray index corresponds to layer index in the map service
-          optionsArray[sparrowId] = drawingOptions;
-          console.log(optionsArray)
-          layer.setLayerDrawingOptions(optionsArray);
-          layer.hide();
-          layer.show();
-    }
-
-    function errorHandler(err){
-        console.log('generateRenderer Err ', err);
-    }*/  
-
-   
 
     // Optionally confine search to map extent
     function setSearchExtent (){
         if (dom.byId('chkExtent').checked === 1) {
-            geocoder.activeGeocoder.searchExtent = map.extent;
+            geocoder.activeGeocoder.searchExtent = app.map.extent;
         } else {
             geocoder.activeGeocoder.searchExtent = null;
         }
@@ -483,7 +289,7 @@ require([
             }
             //zoomToPlaces(places);
             var centerPoint = new Point(places[0].feature.geometry);
-            map.centerAndZoom(centerPoint, 17);
+            app.map.centerAndZoom(centerPoint, 17);
             //map.setLevel(15);
 
         } else {
@@ -508,7 +314,7 @@ require([
         infoTemplate = new PopupTemplate({title:'{address}', description: 'Latitude: {lat}<br/>Longitude: {lon}'});
         graphic = new Graphic(pt,symbol,attributes,infoTemplate);
         // Add to map
-        map.graphics.add(graphic);
+        app.map.graphics.add(graphic);
     }
 
     function zoomToPlaces(places) {
@@ -516,12 +322,12 @@ require([
         for (var i = 0; i < places.length; i++) {
             multiPoint.addPoint(places[i].feature.geometry);
         }
-        map.setExtent(multiPoint.getExtent().expand(2.0));
+        app.map.setExtent(multiPoint.getExtent().expand(2.0));
     }
 
     function clearFindGraphics() {
-        map.infoWindow.hide();
-        map.graphics.clear();
+        app.map.infoWindow.hide();
+        app.map.graphics.clear();
     }
 
     function createPictureSymbol(url, xOffset, yOffset, xWidth, yHeight) {
@@ -539,9 +345,9 @@ require([
         $("#chartContainer").empty();
         console.log('creating chart query');
         var chartQueryTask;
-        var sparrowLayerId = map.getLayer('SparrowRanking').visibleLayers[0];
-        if (map.getLayer('SparrowRanking').layerDefinitions){
-            var whereClause = map.getLayer('SparrowRanking').layerDefinitions[sparrowLayerId];
+        var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
+        if (app.map.getLayer('SparrowRanking').layerDefinitions){
+            var whereClause = app.map.getLayer('SparrowRanking').layerDefinitions[sparrowLayerId];
         } else{
             var whereClause = "1=1";
         }
@@ -624,7 +430,7 @@ require([
 
 
        //get chartOutfields from config --i.e {attribute: "VALUE", label: "value"}
-        var sparrowLayerId = map.getLayer('SparrowRanking').visibleLayers[0];
+        var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
         var chartLabelsObj = getChartOutfields(sparrowLayerId);
         var chartLabelsArr = [];
         $.each(chartLabelsObj, function(index, obj){
@@ -693,7 +499,7 @@ require([
         }
 
         function labelySelect(){
-            var layerId = map.getLayer('SparrowRanking').visibleLayers[0];
+            var layerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
             var label;
             switch( layerId ){
                 case 0:
@@ -808,9 +614,9 @@ require([
                 new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
                 new Color([255, 0, 0]), 2), new Color([255,255, 0, 0.5]));
 
-            map.getLayer("SparrowGraphics").setDefinitionExpression(layerDefinitions);
+            app.map.getLayer("SparrowGraphics").setDefinitionExpression(layerDefinitions);
 
-            map.getLayer("SparrowGraphics").setSelectionSymbol(selectionSymbol);
+            app.map.getLayer("SparrowGraphics").setSelectionSymbol(selectionSymbol);
         }
 
 
@@ -832,12 +638,15 @@ require([
             editTitle: false,
             reload: false,
             editTitle: false,
+            draggable: true,
             minWidth: 800,
             minHeight: 800,
             maxHeight: 1000
-            
-
+        
         });
+
+        $("#chartWindowDiv").addClass( "chartWindowMaximize" );
+        $("#chartWindowDiv").removeClass( "chartWindowMinimize" );
         $("#chartWindowDiv").css("visibility", "visible");
 
         //Important! UPDATE if nutrient Models change names.
@@ -847,9 +656,8 @@ require([
             $("#chartWindowPanelTitle").text("Nitrogen " + labelySelect() );
         }
         
-
         //only create close / minimize if they don't already exist
-        if ($("#chartClose").length == 0){
+        if ($("#chartMinimize").length == 0){
             $("#chartWindowDiv .dropdown").prepend("<div id='chartClose' title='close'><b>X</b></div>");
             $("#chartWindowDiv .dropdown").prepend("<div id='chartMinimize' title='collapse'><b>_</b></div>");
         }
@@ -858,16 +666,32 @@ require([
         var instance = $('#chartWindowDiv').data('lobiPanel');
         instance.unpin();
 
+         $("#chartMinimize").on('click', function(){
+            $("#chartWindowDiv").slideDown(250);
+            $("#chartWindowDiv").removeClass("chartWindowMaximize");
+            $("#chartWindowDiv").attr('style', '');
+            $("#chartWindowDiv").addClass("chartWindowMinimize");
+        });
+
+        $("#chartClose").on('click', function(){
+            app.map.graphics.clear();
+            $("#chartWindowDiv").css("visibility", "hidden");
+            $("#chartWindowContainer").empty();
+            $("#chartWindowPanelTitle").empty();
+            
+        });
+
+
+        //need listener to resize chart
+        $("#chartWindowDiv").resize(function() {
+            var height = $("#chartWindowDiv").height()
+            var width = $("#chartWindowDiv").width()
+            $('#chartWindowContainer').highcharts().setSize(width-50, height-75, true);
+        });
+
+
         //END LOBIPANEL-------------------------------------------------------------------------------------------------------
         
-        
-        //CHART WINDOW MODAL ____________________________________________________________________________________________________________________________
-
-        //Show the Chart Modal
-        //$('#chartModal').modal('show');
-        //var chart = $('#chartContainer').highcharts(); //element id must match in highcharts function below
-
-        //END CHART WINDOW MODAL ____________________________________________________________________________________________________________________________
 
         var chart = $('#chartWindowContainer').highcharts(); 
 
@@ -881,14 +705,13 @@ require([
             $('#chartWindowContainer').highcharts({
                 chart: {
                     type: 'column',
-                    width: 770,
-                    height: 700,
                     zoomType: "x",
                     resetZoomButton: {
                         theme: {
                             display: 'none'
                         }
                     },
+                    backgroundColor:'rgba(255, 255, 255, 0.1)',
                     events: {
                         selection: function (e) {
                             var xAxis = e.xAxis[0],
@@ -1003,8 +826,8 @@ require([
 
                                     //get everything needed for the query
                                     var category = this.category;  //refers to the selected chart area
-                                    var visibleLayers = map.getLayer('SparrowRanking').visibleLayers[0];
-                                    var URL = map.getLayer('SparrowRanking').url;
+                                    var visibleLayers = app.map.getLayer('SparrowRanking').visibleLayers[0];
+                                    var URL = app.map.getLayer('SparrowRanking').url;
                                     var fieldName = switchWhereField( $("#groupResultsSelect")[0].selectedIndex );
 
                                     var queryTask;
@@ -1012,7 +835,7 @@ require([
 
                                     var graphicsQuery = new esri.tasks.Query();
                                     graphicsQuery.returnGeometry = true; //important!
-                                    graphicsQuery.outSpatialReference = map.spatialReference;  //important!
+                                    graphicsQuery.outSpatialReference = app.map.spatialReference;  //important!
                                     graphicsQuery.outFields = ["*"];
                                     graphicsQuery.where = fieldName + "= '" + category + "'";
 
@@ -1020,14 +843,14 @@ require([
                                     queryTask.execute(graphicsQuery, responseHandler);
 
                                     function responseHandler(response){
-                                        map.graphics.clear();
+                                        app.map.graphics.clear();
                                         
                                         var feature = response.features[0];
                                         feature.setSymbol(new SimpleFillSymbol()
                                             .setColor(new Color([209,23,23,0.25]))
                                             .setOutline(null)
                                         );
-                                        map.graphics.add(feature);
+                                        app.map.graphics.add(feature);
                                     }
                                 } 
                             }
@@ -1042,54 +865,6 @@ require([
             });
         });
 
-        /*  _________________________________________CHART EVENTS________________________________________________________________ */
-
-        //LOBIPANEL______________________________________________
-
-        //not working - set title via jquery above.
-        /*$("#chartWindowDiv").on('init.lobiPanel', function(ev, lobiPanel){
-            console.log("init event called");
-            $("#chartModalPanelTitle").text("Phosphorus " + labelySelect() );
-        });*/
-
-        //TODO: exactly the same as close right now, not much functionality here.
-         $("#chartMinimize").on('click', function(){
-            $("#chartWindowDiv").css("visibility", "hidden");
-            $("#chartWindowContainer").empty(); //removes all highcharts including the pesky highcharts legend container
-            $("#chartWindowPanelTitle").empty();
-            //map.getLayer("fimExtents").setVisibility(false);
-            //$("#flood-tools-alert").slideDown(250);
-        });
-
-        $("#chartClose").on('click', function(){
-            map.graphics.clear();
-            $("#chartWindowDiv").css("visibility", "hidden");
-            $("#chartWindowContainer").empty();
-            $("#chartWindowPanelTitle").empty();
-            
-        });
-
-        //END LOBIPANEL______________________________________________
-
-        
-
-        //CHART WINDOW MODAL ______________________________________________
-
-        //initial showing
-        /*$("#chartModal").on('show.bs.modal', function(){
-            $("#chartModalTitle").empty();
-            $("#chartModalTitle").text("Phosphorus " + labelySelect() );
-        });
-
-        //after initial showing
-        $("#chartModal").on('shown.bs.modal', function(){
-            $("#chartModalTitle").empty();
-            $("#chartModalTitle").text("Phosphorus " + labelySelect() );
-        });*/
-
-         //END CHART WINDOW MODAL ____________________________________________
-
-
         //Custom Reset button
         $('#resetButton').click(function() {
             var chart = $('#chartContainer').highcharts();
@@ -1103,381 +878,176 @@ require([
             alert(chart.getCSV());
             //window.open('data:application/vnd.ms-excel,' + chart.getTable() );
         });
-
-
-        
-        /*$('#chartModal').on('show.bs.modal', function(){
-            $('#chartContainer').css('visibility', 'hidden');
-        })
-
-        $("chartModal").on('shown.bs.modal', function(event){
-            $("#chartContainer").css('visibility', 'initial');
-            chart.reflow();
-        });*/
-
       
     } //END ShowChart()
 
-    // Show modal dialog; handle legend sizing (both on doc ready)
-    $(document).ready(function(){
-        function showModal() {
-            $('#geosearchModal').modal('show');
-        }
-        // Geosearch nav menu is selected
-        $('#geosearchNav').click(function(){
-            showModal();
-        });
 
-        function showAboutModal () {
-            $('#aboutModal').modal('show');
-        }
-        $('#aboutNav').click(function(){
-            showAboutModal();
-        });
+    function showModal() {
+        $('#geosearchModal').modal('show');
+    }
+    // Geosearch nav menu is selected
+    $('#geosearchNav').click(function(){
+        showModal();
+    });
 
-        $("#html").niceScroll();
-        $("#sidebar").niceScroll();
-        $("#sidebar").scroll(function () {
-            $("#sidebar").getNiceScroll().resize();
-        });
+    function showAboutModal () {
+        $('#aboutModal').modal('show');
+    }
+    $('#aboutNav').click(function(){
+        showAboutModal();
+    });
 
-        $("#legendDiv").niceScroll();
+    $("#html").niceScroll();
+    $("#sidebar").niceScroll();
+    $("#sidebar").scroll(function () {
+        $("#sidebar").getNiceScroll().resize();
+    });
 
+    $("#legendDiv").niceScroll();
+
+    maxLegendHeight =  ($('#mapDiv').height()) * 0.90;
+    $('#legendElement').css('max-height', maxLegendHeight);
+
+    $('#legendCollapse').on('shown.bs.collapse', function () {
         maxLegendHeight =  ($('#mapDiv').height()) * 0.90;
         $('#legendElement').css('max-height', maxLegendHeight);
+        maxLegendDivHeight = ($('#legendElement').height()) - parseInt($('#legendHeading').css("height").replace('px',''));
+        $('#legendDiv').css('max-height', maxLegendDivHeight);
+    });
 
-        $('#legendCollapse').on('shown.bs.collapse', function () {
-            maxLegendHeight =  ($('#mapDiv').height()) * 0.90;
-            $('#legendElement').css('max-height', maxLegendHeight);
-            maxLegendDivHeight = ($('#legendElement').height()) - parseInt($('#legendHeading').css("height").replace('px',''));
-            $('#legendDiv').css('max-height', maxLegendDivHeight);
-        });
+    $('#legendCollapse').on('hide.bs.collapse', function () {
+        $('#legendElement').css('height', 'initial');
+    });
+    
 
-        $('#legendCollapse').on('hide.bs.collapse', function () {
-            $('#legendElement').css('height', 'initial');
-        });
+    /* HANDLE SIDEBAR UI EVENTS_____________________________________________________________*/
+
+    /*RADIO EVENTS*/
+    $('.radio').on('change', function(e){
+        var groupBySelectedIndex = $("#groupResultsSelect")[0].selectedIndex;
+        var selectedRadio = this.firstElementChild.id;
         
-
-        /* HANDLE SIDEBAR UI EVENTS_____________________________________________________________*/
-
-        /*RADIO EVENTS*/
-        $('.radio').on('change', function(e){
-            var groupBySelectedIndex = $("#groupResultsSelect")[0].selectedIndex;
-            var selectedRadio = this.firstElementChild.id;
-            
-            populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
-            setAggregateGroup(groupBySelectedIndex, selectedRadio);   
-        });
+        populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
+        setAggregateGroup(groupBySelectedIndex, selectedRadio);   
+    });
 
 
+    /* AOI EVENTS */
+
+    $('.aoiSelect').on('change', AOIChange);
 
 
-        /* AOI EVENTS */
+    //clear AOI selections
+    $("#clearAOIButton").on('click', function(){
+        var sparrowId = app.map.getLayer('SparrowRanking').visibleLayers[0];
+        var splitLayers = [4,5,6,11,12,13]; //important! UPDATE layer Ids of all state split layers
 
-        $('.aoiSelect').on('change', AOIChange);
-
-
-        //clear AOI selections
-        $("#clearAOIButton").on('click', function(){
-            var sparrowId = map.getLayer('SparrowRanking').visibleLayers[0];
-            var splitLayers = [4,5,6,11,12,13]; //important! UPDATE layer Ids of all state split layers
-
-            
-            //revert to default layer from split layer
-            if( $.inArray(sparrowId, splitLayers) > -1 ){
-                sparrowId = returnDefaultLayer( sparrowId, $(".radio input[type='radio']:checked")[0].id );
-                var layerArr = [];
-                layerArr.push(sparrowId);
-                map.getLayer('SparrowRanking').setVisibleLayers(layerArr);
-                map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
-                //TODO: call generateRenderer 
-                
-            }else{
-                map.getLayer('SparrowRanking').setDefaultLayerDefinitions(); 
-                //TODO: call generateRenderer 
-            }
-
-            //reset the selects
-            $('.aoiSelect').selectpicker('val', '');  // 'hack' because selectpicker('deselectAll') method only works when select is open.
-            //$('.aoiSelect').selectpicker('refresh'); //don't need refresh apparently
-            populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
-            //redraw the symbols
-            generateRenderer();
-
-        });
-
-
-        // enable/disable Show Chart button 
-        $('.nonAOISelect').on('change', function(){
-            if ($('#groupResultsSelect')[0].selectedIndex == 0){
-                if ($('#displayedMetricSelect')[0].selectedIndex == 4 || $('#displayedMetricSelect')[0].selectedIndex == 5){
-                    $("#chartButton").addClass('disabled');
-                    //TODO:  ALSO MAKE SURE YOU REMOVE ANY CHART FROM THE VIEW (Lobipanel only, modal takes care of self.)
-                } else{
-                    $("#chartButton").removeClass('disabled');
-                }
-            } else {
-                $("#chartButton").removeClass('disabled');
-            }
-        });
-
-        //Start the Chart Chain of Events
-        $("#chartButton").on("click", createChartQuery);
         
+        //revert to default layer from split layer
+        if( $.inArray(sparrowId, splitLayers) > -1 ){
+            sparrowId = returnDefaultLayer( sparrowId, $(".radio input[type='radio']:checked")[0].id );
+            var layerArr = [];
+            layerArr.push(sparrowId);
+            app.map.getLayer('SparrowRanking').setVisibleLayers(layerArr);
+            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
+            //TODO: call generateRenderer 
+            
+        }else{
+            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(); 
+            //TODO: call generateRenderer 
+        }
 
-
-        /* END UI SIDEBAR EVENTS______________________________________________________________*/
-
+        //reset the selects
+        $('.aoiSelect').selectpicker('val', '');  // 'hack' because selectpicker('deselectAll') method only works when select is open.
+        //$('.aoiSelect').selectpicker('refresh'); //don't need refresh apparently
+        populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
+        //redraw the symbols
+        generateRenderer();
 
     });
 
+
+    // enable/disable Show Chart button 
+    $('.nonAOISelect').on('change', function(){
+        if ($('#groupResultsSelect')[0].selectedIndex == 0){
+            if ($('#displayedMetricSelect')[0].selectedIndex == 4 || $('#displayedMetricSelect')[0].selectedIndex == 5){
+                $("#chartButton").addClass('disabled');
+                //TODO:  ALSO MAKE SURE YOU REMOVE ANY CHART FROM THE VIEW (Lobipanel only, modal takes care of self.)
+            } else{
+                $("#chartButton").removeClass('disabled');
+            }
+        } else {
+            $("#chartButton").removeClass('disabled');
+        }
+    });
+
+    //Start the Chart Chain of Events
+    $("#chartButton").on("click", createChartQuery);
+
+    /* END UI SIDEBAR EVENTS______________________________________________________________*/
+
+    // var layer = new ArcGISDynamicMapServiceLayer("http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer", {
+    //     "id": "SparrowRanking",
+    //     "opacity": 0.75,
+    //     "visible": true
+    // });
+    // app.map.addLayer(layer);
+    // layer.setVisibleLayers([0]);
+
+    // console.log(app.map)
+
     require([
-        'esri/dijit/Legend',
-        'esri/tasks/locator',
-        'esri/tasks/query',
-        'esri/tasks/QueryTask',
-        'esri/graphicsUtils',
-        'esri/geometry/Point',
-        'esri/geometry/Extent',
-        'esri/layers/ArcGISDynamicMapServiceLayer',
-        'esri/layers/FeatureLayer',
-        'esri/SpatialReference',
-        'esri/layers/WMSLayer',
-        'esri/layers/WMSLayerInfo',
-        'dijit/form/CheckBox',
-        'dijit/form/RadioButton',
-        'dojo/query',
-        'dojo/dom',
-        'dojo/dom-class',
-        'dojo/dom-construct',
-        'dojo/dom-style',
-        'dojo/on'
+        'dijit/form/CheckBox'
     ], function(
-        Legend,
-        Locator,
-        Query,
-        QueryTask,
-        graphicsUtils,
-        Point,
-        Extent,
-        ArcGISDynamicMapServiceLayer,
-        FeatureLayer,
-        SpatialReference,
-        WMSLayer,
-        WMSLayerInfo,
-        CheckBox,
-        RadioButton,
-        query,
-        dom,
-        domClass,
-        domConstruct,
-        domStyle,
-        on
+        CheckBox
     ) {
 
-        var legendLayers = [];
-        var layersObject = [];
-        var layerArray = [];
-        var staticLegendImage;
-        var identifyTask, identifyParams;
-        var navToolbar;
-        var locator;
-
-        //create global layers lookup
-        var mapLayers = [];
-
-        
-
         $.each(allLayers, function (index,group) {
-            console.log('processing: ', group.groupHeading)
-
-
             //sub-loop over layers within this groupType
             $.each(group.layers, function (layerName,layerDetails) {
 
-
-
-                //check for exclusiveGroup for this layer
-                var exclusiveGroupName = '';
-                if (layerDetails.wimOptions.exclusiveGroupName) {
-                    exclusiveGroupName = layerDetails.wimOptions.exclusiveGroupName;
+                var layer = new ArcGISDynamicMapServiceLayer(layerDetails.url, layerDetails.options);
+                if (layerDetails.visibleLayers) {
+                    layer.setVisibleLayers(layerDetails.visibleLayers);
                 }
-
-                if (layerDetails.wimOptions.layerType === 'agisFeature') {
-                    var layer = new FeatureLayer(layerDetails.url, layerDetails.options);
-                    //check if include in legend is true
-                    if (layerDetails.wimOptions && layerDetails.wimOptions.includeLegend == true){
-                        legendLayers.push({layer:layer, title: layerName});
-                    }
-                    addLayer(group.groupHeading, group.showGroupHeading, layer, layerName, exclusiveGroupName, layerDetails.options, layerDetails.wimOptions);
-                    //addMapServerLegend(layerName, layerDetails);
-                }
-
-                else if (layerDetails.wimOptions.layerType === 'agisWMS') {
-                    var layer = new WMSLayer(layerDetails.url, {resourceInfo: layerDetails.options.resourceInfo, visibleLayers: layerDetails.options.visibleLayers }, layerDetails.options);
-                    //check if include in legend is true
-                    if (layerDetails.wimOptions && layerDetails.wimOptions.includeLegend == true){
-                        legendLayers.push({layer:layer, title: layerName});
-                    }
-                    //map.addLayer(layer);
-                    addLayer(group.groupHeading, group.showGroupHeading, layer, layerName, exclusiveGroupName, layerDetails.options, layerDetails.wimOptions);
-                    //addMapServerLegend(layerName, layerDetails);
-                }
-
-                else if (layerDetails.wimOptions.layerType === 'agisDynamic') {
-                    var layer = new ArcGISDynamicMapServiceLayer(layerDetails.url, layerDetails.options);
-                    //check if include in legend is true
-                    if (layerDetails.wimOptions && layerDetails.wimOptions.includeLegend == true){
-                        legendLayers.push({layer:layer, title: layerName});
-                    }
-                    if (layerDetails.visibleLayers) {
-                        layer.setVisibleLayers(layerDetails.visibleLayers);
-                    }
-                    //map.addLayer(layer);
-                    addLayer(group.groupHeading, group.showGroupHeading, layer, layerName, exclusiveGroupName, layerDetails.options, layerDetails.wimOptions);
-                    //addMapServerLegend(layerName, layerDetails);
-                }
+                addLayer(group.groupHeading, group.showGroupHeading, layer, layerName, layerDetails.options, layerDetails.wimOptions);
             });
         });
 
-        function addLayer(groupHeading, showGroupHeading, layer, layerName, exclusiveGroupName, options, wimOptions) {
+        function addLayer(groupHeading, showGroupHeading, layer, layerName, options, wimOptions) {
 
             //add layer to map
-            //layer.addTo(map);
-            map.addLayer(layer);
+            app.map.addLayer(layer);
 
-            //add layer to layer list
-            mapLayers.push([exclusiveGroupName,camelize(layerName),layer]);
+            //create layer toggle
+            //var button = $('<div align="left" style="cursor: pointer;padding:5px;"><span class="glyphspan glyphicon glyphicon-check"></span>&nbsp;&nbsp;' + layerName + '</div>');
+            if (layer.visible && wimOptions.hasOpacitySlider !== undefined && wimOptions.hasOpacitySlider == true && wimOptions.hasZoomto !== undefined && wimOptions.hasZoomto == true) {
+                //opacity icon and zoomto icon; button selected
+                var button = $('<div class="btn-group-vertical lyrTogDiv" style="cursor: pointer;" > <button id="' + layer.id + '"type="button" class="btn btn-default active" aria-pressed="true" style="font-weight: bold;text-align: left"><i class="glyphspan fa fa-check-square-o"></i>&nbsp;&nbsp;' + layerName + '<span id="opacity' + camelize(layerName) + '" class="glyphspan glyphicon glyphicon-adjust pull-right opacity"></span><span class="glyphicon glyphicon-search pull-right zoomto"></span></button></div>');
+            } else if (!layer.visible && wimOptions.hasOpacitySlider !== undefined && wimOptions.hasOpacitySlider == true && wimOptions.hasZoomto !== undefined && wimOptions.hasZoomto == true){
+                //opacity icon and zoomto icon; button not selected
+                var button = $('<div class="btn-group-vertical lyrTogDiv" style="cursor: pointer;" > <button id="' + layer.id + '"type="button" class="btn btn-default" aria-pressed="true" style="font-weight: bold;text-align: left"><i class="glyphspan fa fa-square-o"></i>&nbsp;&nbsp;' + layerName + '<span id="opacity' + camelize(layerName) + '" class="glyphspan glyphicon glyphicon-adjust pull-right opacity"></span><span class="glyphicon glyphicon-search pull-right zoomto"></span></button></div>');
+            } 
+            //click listener for regular
+            button.click(function(e) {
 
-            //check if its an exclusiveGroup item
-            if (exclusiveGroupName) {
+                //toggle checkmark
+                $(this).find('i.glyphspan').toggleClass('fa-check-square-o fa-square-o');
+                $(this).find('button').button('toggle');
 
-                if (!$('#' + camelize(exclusiveGroupName)).length) {
-                    var exGroupRoot = $('<div id="' + camelize(exclusiveGroupName +" Root") + '" class="btn-group-vertical lyrTog" style="cursor: pointer;" data-toggle="buttons"> <button type="button" class="btn btn-default active" aria-pressed="true" style="font-weight: bold;text-align: left"><i class="glyphspan fa fa-check-square-o"></i>&nbsp;&nbsp;' + exclusiveGroupName + '</button> </div>');
+                e.preventDefault();
+                e.stopPropagation();
 
-                    exGroupRoot.click(function(e) {
-                        exGroupRoot.find('i.glyphspan').toggleClass('fa-check-square-o fa-square-o');
+                $('#' + camelize(layerName)).toggle();
 
-                        $.each(mapLayers, function (index, currentLayer) {
-
-                            var tempLayer = map.getLayer(currentLayer[2].id);
-
-                            if (currentLayer[0] == exclusiveGroupName) {
-                                if ($("#" + currentLayer[1]).find('i.glyphspan').hasClass('fa-dot-circle-o') && exGroupRoot.find('i.glyphspan').hasClass('fa-check-square-o')) {
-                                    console.log('adding layer: ',currentLayer[1]);
-                                    map.addLayer(currentLayer[2]);
-                                    var tempLayer = map.getLayer(currentLayer[2].id);
-                                    tempLayer.setVisibility(true);
-                                } else if (exGroupRoot.find('i.glyphspan').hasClass('fa-square-o')) {
-                                    console.log('removing layer: ',currentLayer[1]);
-                                    map.removeLayer(currentLayer[2]);
-                                }
-                            }
-
-                        });
-                    });
-
-                    var exGroupDiv = $('<div id="' + camelize(exclusiveGroupName) + '" class="btn-group-vertical" data-toggle="buttons"></div');
-                    $('#toggle').append(exGroupDiv);
-                }
-
-                //create radio button
-                //var button = $('<input type="radio" name="' + camelize(exclusiveGroupName) + '" value="' + camelize(layerName) + '"checked>' + layerName + '</input></br>');
+                //layer toggle
                 if (layer.visible) {
-                    var button = $('<div id="' + camelize(layerName) + '" class="btn-group-vertical lyrTog" style="cursor: pointer;" data-toggle="buttons"> <label class="btn btn-default"  style="font-weight: bold;text-align: left"> <input type="radio" name="' + camelize(exclusiveGroupName) + '" autocomplete="off"><i class="glyphspan fa fa-dot-circle-o ' + camelize(exclusiveGroupName) + '"></i>&nbsp;&nbsp;' + layerName + '</label> </div>');
+                    layer.setVisibility(false);
                 } else {
-                    var button = $('<div id="' + camelize(layerName) + '" class="btn-group-vertical lyrTog" style="cursor: pointer;" data-toggle="buttons"> <label class="btn btn-default"  style="font-weight: bold;text-align: left"> <input type="radio" name="' + camelize(exclusiveGroupName) + '" autocomplete="off"><i class="glyphspan fa fa-circle-o ' + camelize(exclusiveGroupName) + '"></i>&nbsp;&nbsp;' + layerName + '</label> </div>');
+                    layer.setVisibility(true);
                 }
 
-                $('#' + camelize(exclusiveGroupName)).append(button);
-
-                //click listener for radio button
-                button.click(function(e) {
-
-                    if ($(this).find('i.glyphspan').hasClass('fa-circle-o')) {
-                        $(this).find('i.glyphspan').toggleClass('fa-dot-circle-o fa-circle-o');
-
-                        var newLayer = $(this)[0].id;
-
-                        $.each(mapLayers, function (index, currentLayer) {
-
-                            if (currentLayer[0] == exclusiveGroupName) {
-                                if (currentLayer[1] == newLayer && $("#" + camelize(exclusiveGroupName + " Root")).find('i.glyphspan').hasClass('fa-check-square-o')) {
-                                    console.log('adding layer: ',currentLayer[1]);
-                                    map.addLayer(currentLayer[2]);
-                                    var tempLayer = map.getLayer(currentLayer[2].id);
-                                    tempLayer.setVisibility(true);
-                                    //$('#' + camelize(currentLayer[1])).toggle();
-                                }
-                                else if (currentLayer[1] == newLayer && $("#" + camelize(exclusiveGroupName + " Root")).find('i.glyphspan').hasClass('fa-square-o')) {
-                                    console.log('groud heading not checked');
-                                }
-                                else {
-                                    console.log('removing layer: ',currentLayer[1]);
-                                    map.removeLayer(currentLayer[2]);
-                                    if ($("#" + currentLayer[1]).find('i.glyphspan').hasClass('fa-dot-circle-o')) {
-                                        $("#" + currentLayer[1]).find('i.glyphspan').toggleClass('fa-dot-circle-o fa-circle-o');
-                                    }
-                                    $('#' + camelize(this[1])).toggle();
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-
-            //not an exclusive group item
-            else {
-
-                //create layer toggle
-                //var button = $('<div align="left" style="cursor: pointer;padding:5px;"><span class="glyphspan glyphicon glyphicon-check"></span>&nbsp;&nbsp;' + layerName + '</div>');
-                if (layer.visible && wimOptions.hasOpacitySlider !== undefined && wimOptions.hasOpacitySlider == true && wimOptions.hasZoomto !== undefined && wimOptions.hasZoomto == true) {
-                    //opacity icon and zoomto icon; button selected
-                    var button = $('<div class="btn-group-vertical lyrTogDiv" style="cursor: pointer;" data-toggle="buttons"> <button id="' + layer.id + '"type="button" class="btn btn-default active" aria-pressed="true" style="font-weight: bold;text-align: left"><i class="glyphspan fa fa-check-square-o"></i>&nbsp;&nbsp;' + layerName + '<span id="opacity' + camelize(layerName) + '" class="glyphspan glyphicon glyphicon-adjust pull-right opacity"></span><span class="glyphicon glyphicon-search pull-right zoomto"></span></button></div>');
-                } else if (!layer.visible && wimOptions.hasOpacitySlider !== undefined && wimOptions.hasOpacitySlider == true && wimOptions.hasZoomto !== undefined && wimOptions.hasZoomto == true){
-                    //opacity icon and zoomto icon; button not selected
-                    var button = $('<div class="btn-group-vertical lyrTogDiv" style="cursor: pointer;" data-toggle="buttons"> <button id="' + layer.id + '"type="button" class="btn btn-default" aria-pressed="true" style="font-weight: bold;text-align: left"><i class="glyphspan fa fa-square-o"></i>&nbsp;&nbsp;' + layerName + '<span id="opacity' + camelize(layerName) + '" class="glyphspan glyphicon glyphicon-adjust pull-right opacity"></span><span class="glyphicon glyphicon-search pull-right zoomto"></span></button></div>');
-                } else if (layer.visible && wimOptions.hasOpacitySlider !== undefined && wimOptions.hasOpacitySlider == true) {
-                    //opacity icon only; button selected
-                    var button = $('<div class="btn-group-vertical lyrTogDiv" style="cursor: pointer;" data-toggle="buttons"> <button id="' + layer.id + '"type="button" class="btn btn-default active" aria-pressed="true" style="font-weight: bold;text-align: left"><i class="glyphspan fa fa-check-square-o"></i>&nbsp;&nbsp;' + layerName + '<span id="opacity' + camelize(layerName) + '" class="glyphspan glyphicon glyphicon-adjust pull-right"></button></div>');
-                } else if (!layer.visible && wimOptions.hasOpacitySlider !== undefined && wimOptions.hasOpacitySlider == true) {
-                    //opacity icon only; button not selected
-                    var button = $('<div class="btn-group-vertical lyrTogDiv" style="cursor: pointer;" data-toggle="buttons"> <button id="' + layer.id + '"type="button" class="btn btn-default" aria-pressed="true" style="font-weight: bold;text-align: left"><i class="glyphspan fa fa-square-o"></i>&nbsp;&nbsp;' + layerName + '<span id="opacity' + camelize(layerName) + '" class="glyphspan glyphicon glyphicon-adjust pull-right"></button></div>');
-                } else if (layer.visible && wimOptions.hasOpacitySlider == false && wimOptions.hasZoomto !== undefined && wimOptions.hasZoomto == true){
-                    //zoomto icon only; button selected
-                    var button = $('<div class="btn-group-vertical lyrTogDiv" style="cursor: pointer;" data-toggle="buttons"> <button id="' + layer.id + '"type="button" class="btn btn-default active" aria-pressed="true" style="font-weight: bold;text-align: left"><i class="glyphspan fa fa-check-square-o"></i>&nbsp;&nbsp;' + layerName + '<span class="glyphicon glyphicon-search pull-right zoomto"></span></button></span></div>');
-                } else if (!layer.visible && wimOptions.hasOpacitySlider == false && wimOptions.hasZoomto !== undefined && wimOptions.hasZoomto == true) {
-                    //zoomto icon only; button not selected
-                    var button = $('<div class="btn-group-vertical lyrTogDiv" style="cursor: pointer;" data-toggle="buttons"> <button id="' + layer.id + '"type="button" class="btn btn-default" aria-pressed="true" style="font-weight: bold;text-align: left"><i class="glyphspan fa fa-square-o"></i>&nbsp;&nbsp;' + layerName + '<span class="glyphicon glyphicon-search pull-right zoomto"></span></button></span></div>');
-                } else if(layer.visible) {
-                    //no icons; button selected
-                    var button = $('<div class="btn-group-vertical lyrTogDiv" style="cursor: pointer;" data-toggle="buttons"> <button id="' + layer.id + '"type="button" class="btn btn-default active" aria-pressed="true" style="font-weight: bold;text-align: left"><i class="glyphspan fa fa-check-square-o"></i>&nbsp;&nbsp;' + layerName + '</button></span></div>');
-                } else {
-                    //no icons; button not selected
-                    var button = $('<div class="btn-group-vertical lyrTogDiv" style="cursor: pointer;" data-toggle="buttons"> <button id="' + layer.id + '"type="button" class="btn btn-default" aria-pressed="true" style="font-weight: bold;text-align: left"><i class="glyphspan fa fa-square-o"></i>&nbsp;&nbsp;' + layerName + '</button> </div>');
-                }
-
-                //click listener for regular
-                button.click(function(e) {
-
-                    //toggle checkmark
-                    $(this).find('i.glyphspan').toggleClass('fa-check-square-o fa-square-o');
-                    $(this).find('button').button('toggle');
-
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    $('#' + camelize(layerName)).toggle();
-
-                    //layer toggle
-                    if (layer.visible) {
-                        layer.setVisibility(false);
-                    } else {
-                        layer.setVisibility(true);
-                    }
-
-                });
-            }
+            });
 
             //group heading logic
             if (showGroupHeading) {
@@ -1493,115 +1063,86 @@ require([
                 }
 
                 //if it does already exist, append to it
+                $('#' + groupDivID).append(button);
+                //begin opacity slider logic
+                if ($("#opacity"+camelize(layerName)).length > 0) {
+                    $("#opacity"+camelize(layerName)).hover(function () {
+                        $(".opacitySlider").remove();
+                        var currOpacity = app.map.getLayer(options.id).opacity;
+                        var slider = $('<div class="opacitySlider"><label id="opacityValue">Opacity: ' + currOpacity + '</label><label class="opacityClose pull-right">X</label><input id="slider" type="range"></div>');
+                        $("body").append(slider);[0]
 
-                if (exclusiveGroupName) {
-                    //if (!exGroupRoot.length)$("#slider"+camelize(layerName))
-                    $('#' + groupDivID).append(exGroupRoot);
-                    $('#' + groupDivID).append(exGroupDiv);
-                } else {
-                    $('#' + groupDivID).append(button);
-                    //begin opacity slider logic
-                    if ($("#opacity"+camelize(layerName)).length > 0) {
-                        $("#opacity"+camelize(layerName)).hover(function () {
+                        $("#slider")[0].value = currOpacity*100;
+                        $(".opacitySlider").css('left', event.clientX-180);
+                        $(".opacitySlider").css('top', event.clientY-50);
+
+                        $(".opacitySlider").mouseleave(function() {
                             $(".opacitySlider").remove();
-                            var currOpacity = map.getLayer(options.id).opacity;
-                            var slider = $('<div class="opacitySlider"><label id="opacityValue">Opacity: ' + currOpacity + '</label><label class="opacityClose pull-right">X</label><input id="slider" type="range"></div>');
-                            $("body").append(slider);[0]
-
-                            $("#slider")[0].value = currOpacity*100;
-                            $(".opacitySlider").css('left', event.clientX-180);
-                            $(".opacitySlider").css('top', event.clientY-50);
-
-                            $(".opacitySlider").mouseleave(function() {
-                                $(".opacitySlider").remove();
-                            });
-
-                            $(".opacityClose").click(function() {
-                                $(".opacitySlider").remove();
-                            });
-
-                            $('#slider').change(function(event) {
-                                //get the value of the slider with this call
-                                var o = ($('#slider')[0].value)/100;
-                                console.log("o: " + o);
-                                $("#opacityValue").html("Opacity: " + o)
-                                map.getLayer(options.id).setOpacity(o);
-                                //here I am just specifying the element to change with a "made up" attribute (but don't worry, this is in the HTML specs and supported by all browsers).
-                                //var e = '#' + $(this).attr('data-wjs-element');
-                                //$(e).css('opacity', o)
-                            });
-                        });
-                    }
-                    //end opacity slider logic
-
-                    //begin zoomto logic (in progress)
-                    $(".zoomto").hover(function (e) {
-
-                        $(".zoomDialog").remove();
-                        var layerToChange = this.parentNode.id;
-                        var zoomDialog = $('<div class="zoomDialog"><label class="zoomClose pull-right">X</label><br><div class="list-group"><a href="#" id="zoomscale" class="list-group-item lgi-zoom zoomscale">Zoom to scale</a> <a id="zoomcenter" href="#" class="list-group-item lgi-zoom zoomcenter">Zoom to center</a><a id="zoomextent" href="#" class="list-group-item lgi-zoom zoomextent">Zoom to extent</a></div></div>');
-
-                        $("body").append(zoomDialog);
-
-                        $(".zoomDialog").css('left', event.clientX-80);
-                        $(".zoomDialog").css('top', event.clientY-5);
-
-                        $(".zoomDialog").mouseleave(function() {
-                            $(".zoomDialog").remove();
                         });
 
-                        $(".zoomClose").click(function() {
-                            $(".zoomDialog").remove();
+                        $(".opacityClose").click(function() {
+                            $(".opacitySlider").remove();
                         });
 
-                        $('#zoomscale').click(function (e) {
-                            //logic to zoom to layer scale
-                            var layerMinScale = map.getLayer(layerToChange).minScale;
-                            map.setScale(layerMinScale);
-                        });
-
-                        $("#zoomcenter").click(function (e){
-                            //logic to zoom to layer center
-                            //var layerCenter = map.getLayer(layerToChange).fullExtent.getCenter();
-                            //map.centerAt(layerCenter);
-                            var dataCenter = new Point(defaultMapCenter, new SpatialReference({wkid:4326}));
-                            map.centerAt(dataCenter);
-
-                        });
-
-                        $("#zoomextent").click(function (e){
-                            //logic to zoom to layer extent
-                            var layerExtent = map.getLayer(layerToChange).fullExtent;
-                            map.setExtent(layerExtent);
+                        $('#slider').change(function(event) {
+                            //get the value of the slider with this call
+                            var o = ($('#slider')[0].value)/100;
+                            console.log("o: " + o);
+                            $("#opacityValue").html("Opacity: " + o)
+                            app.map.getLayer(options.id).setOpacity(o);
+                            //here I am just specifying the element to change with a "made up" attribute (but don't worry, this is in the HTML specs and supported by all browsers).
+                            //var e = '#' + $(this).attr('data-wjs-element');
+                            //$(e).css('opacity', o)
                         });
                     });
-                    //end zoomto logic
-
                 }
-            }
+                //end opacity slider logic
 
-            else {
-                //otherwise append
-                $('#toggle').append(button);
+                //begin zoomto logic (in progress)
+                $(".zoomto").hover(function (e) {
+                    console.log('here')
+
+                    $(".zoomDialog").remove();
+                    var layerToChange = this.parentNode.id;
+                    var zoomDialog = $('<div class="zoomDialog"><label class="zoomClose pull-right">X</label><br><div class="list-group"><a href="#" id="zoomscale" class="list-group-item lgi-zoom zoomscale">Zoom to scale</a> <a id="zoomcenter" href="#" class="list-group-item lgi-zoom zoomcenter">Zoom to center</a><a id="zoomextent" href="#" class="list-group-item lgi-zoom zoomextent">Zoom to extent</a></div></div>');
+
+                    $("body").append(zoomDialog);
+
+                    $(".zoomDialog").css('left', event.clientX-80);
+                    $(".zoomDialog").css('top', event.clientY-5);
+
+                    $(".zoomDialog").mouseleave(function() {
+                        $(".zoomDialog").remove();
+                    });
+
+                    $(".zoomClose").click(function() {
+                        $(".zoomDialog").remove();
+                    });
+
+                    $('#zoomscale').click(function (e) {
+                        //logic to zoom to layer scale
+                        var layerMinScale = app.map.getLayer(layerToChange).minScale;
+                        app.map.setScale(layerMinScale);
+                    });
+
+                    $("#zoomcenter").click(function (e){
+                        //logic to zoom to layer center
+                        //var layerCenter = app.map.getLayer(layerToChange).fullExtent.getCenter();
+                        //app.map.centerAt(layerCenter);
+                        var dataCenter = new Point(defaultMapCenter, new SpatialReference({wkid:4326}));
+                        app.map.centerAt(dataCenter);
+
+                    });
+
+                    $("#zoomextent").click(function (e){
+                        //logic to zoom to layer extent
+                        var layerExtent = app.map.getLayer(layerToChange).fullExtent;
+                        app.map.setExtent(layerExtent);
+                    });
+                });
+                //end zoomto logic
             }
         }
-
         //get visible and non visible layer lists
-
-
-
     });//end of require statement containing legend building code
-
-});
-
-$(document).ready(function () {
-    //7 lines below are handler for the legend buttons. to be removed if we stick with the in-map legend toggle
-    //$('#legendButtonNavBar, #legendButtonSidebar').on('click', function () {
-    //    $('#legend').toggle();
-    //    //return false;
-    //});
-    //$('#legendClose').on('click', function () {
-    //    $('#legend').hide();
-    //});
-
 });

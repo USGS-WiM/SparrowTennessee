@@ -166,7 +166,7 @@ function setAggregateGroup(groupBySelectedIndex, selectedRadio){
         }
     }
     var visibleLayerIds = [layerArrayValue];
-    var sparrowRanking = map.getLayer('SparrowRanking');
+    var sparrowRanking = app.map.getLayer('SparrowRanking');
     sparrowRanking.setVisibleLayers(visibleLayerIds);
 
 
@@ -179,10 +179,10 @@ function AOIChange(e){
     var selectId = e.currentTarget.id;
     var groupResultsIndex = $("#groupResultsSelect")[0].selectedIndex;
     var selectedItem = e.currentTarget.value;
-    var sparrowRankingId = map.getLayer('SparrowRanking').visibleLayers[0];
+    var sparrowRankingId = app.map.getLayer('SparrowRanking').visibleLayers[0];
     var definitionString = null;
-    if (map.getLayer('SparrowRanking').layerDefinitions != undefined){
-        var tempDef = map.getLayer('SparrowRanking').layerDefinitions[0];
+    if (app.map.getLayer('SparrowRanking').layerDefinitions != undefined){
+        var tempDef = app.map.getLayer('SparrowRanking').layerDefinitions[0];
         var layerDefs = [tempDef];
     } else{
         var layerDefs = [];
@@ -193,7 +193,7 @@ function AOIChange(e){
     if (selectId == "st-select" && groupResultsIndex != 3) {
         //if not already on a state split layer, set one now.
         //TODO: figure out how you can access the current layers to see if you're on a split layer.  
-        //if(map.getLayer('SparrowRanking').visibleLayers[0]){
+        //if(app.map.getLayer('SparrowRanking').visibleLayers[0]){
             populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
             setAggregateGroup( groupResultsIndex, $(".radio input[type='radio']:checked")[0].id );
         //}
@@ -251,8 +251,8 @@ function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
         console.log("Selected Item: " + selectedItem);
         console.log("Select Id: " + selectId);
         
-        map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, false);
-        //map.getLayer("SparrowRanking").refresh();*/
+        app.map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, false);
+        //app.map.getLayer("SparrowRanking").refresh();*/
 
         //TODO: call generateRenderer
         generateRenderer();
@@ -311,9 +311,8 @@ function updateAOI(layerDefs, selectId){
         } // END setupFindTask
 
         function filterAOI(response){
-            $("#grp2-select").find('option').remove();
 
-            $.each(response, function(index, obj){
+            $.each(response, function(index, feature){
                 //console.log(feature);
                 /*if (feature.layerId == 1){
                     console.log("Huc8 = " + feature.feature.attributes.GRP_2_NAM);
@@ -321,23 +320,23 @@ function updateAOI(layerDefs, selectId){
                 if(feature.layerId == 6){
                     console.log("State = " + feature.feature.attributes.ST)
                 }*/
-                switch(obj.layerId){
+                switch(feature.layerId){
                     case 1:
-                        var item = obj.feature.attributes.GRP_2_NAM;
+                        var item = feature.feature.attributes.GRP_2_NAM;
                         console.log("huc8 " + item);
-                        $("#grp2-select").append(new Option(item, item));
+                        $("#grp2-select").append('<option value="item">'+ item + '</option>').val(item);
                         break;
                     case 2:
-                        var item = obj.feature.attributes.GRP_1_NAM;
+                        var item = feature.feature.attributes.GRP_1_NAM;
                         console.log("independent watershed "+ item);
                         break;
                     case 5:
-                        var item = obj.feature.attributes.GRP_1_NAM;
-                         console.log("ST_IndependendWatershed " + item);
+                        var item = feature.feature.attributes.GRP_1_NAM;
+                         console.log("IND watershed " + item);
                         break;
                     case 6:
-                        var item = obj.feature.attributes.GRP_2_NAM;
-                        console.log("ST_HUC8 " + item);
+                        var item = feature.feature.attributes.GRP_2_NAM;
+                        console.log("Huc8 " + item);
                         break;
                 }
 
@@ -563,11 +562,10 @@ function generateRenderer(){
     ) {
         console.log('in generateRenderer()');
 
-        var app = {};
-        var sparrowId = map.getLayer('SparrowRanking').visibleLayers[0];
+        var sparrowId = app.map.getLayer('SparrowRanking').visibleLayers[0];
         //apply layer defs to renderer if they exist
-        if(map.getLayer('SparrowRanking').layerDefinitions){
-            var dynamicLayerDefs = map.getLayer('SparrowRanking').layerDefinitions[0];
+        if(app.map.getLayer('SparrowRanking').layerDefinitions){
+            var dynamicLayerDefs = app.map.getLayer('SparrowRanking').layerDefinitions[0];
             app.layerDef = dynamicLayerDefs;
         }
         
@@ -611,9 +609,9 @@ function generateRenderer(){
 
 
         function applyRenderer(renderer){
-            var sparrowId = map.getLayer('SparrowRanking').visibleLayers[0];
+            var sparrowId = app.map.getLayer('SparrowRanking').visibleLayers[0];
             
-            var layer = map.getLayer('SparrowRanking');
+            var layer = app.map.getLayer('SparrowRanking');
             console.log('in applyRenderer()',layer);
 
             // dynamic layer stuff
@@ -626,9 +624,6 @@ function generateRenderer(){
               console.log(optionsArray);
 
               layer.setLayerDrawingOptions(optionsArray);
-              layer.hide();
-              layer.show();
-
 
               if (! app.hasOwnProperty("legend")){
                 createLegend();
@@ -641,9 +636,9 @@ function generateRenderer(){
 
         function createLegend(){
             app.legend = new Legend({
-                map : map, 
+                map : app.map, 
                 layerInfos : [{
-                    layer: map.getLayer("SparrowRanking"),
+                    layer: app.map.getLayer("SparrowRanking"),
                     title: "Sparrow Nutrient Model"
                 }]
             }, dom.byId("legendDiv"));

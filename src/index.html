@@ -48,31 +48,25 @@
 
     <!--<script src="./lib/highcharts-export-clientside/highcharts-export-clientside.js"></script>--> <!--Needs 4.2 version of highcharts-->
 
-    
     <!-- endbower -->
-
     <!-- endbuild -->
-
-    
     <script type="text/javascript" src="http://js.arcgis.com/3.13/"></script>
-
-    
     <script type="text/javascript" src="http://highcharts.github.io/export-csv/export-csv.js"></script>
     
-
     <!-- build:js scripts/combined.js -->
     <script type="text/javascript" src="scripts/utilities.js"></script>
-    <script type="text/javascript" src="scripts/layers.js"></script>
+    
     <script type="text/javascript" src="scripts/sparrow-config.js"></script>
+    <script type="text/javascript" src="scripts/layers.js"></script>
     
     <!--<script type="text/javascript" src="scripts/chart-window.js"></script>-->
     <!--<script type="text/javascript" src="scripts/chart-window-2.js"></script>-->
     
     <script type="text/javascript" src="scripts/core.js"></script>
+    <script type="text/javascript" src="scripts/event-handlers.js"></script>
     <script type="text/javascript" src="scripts/select-logic.js"></script>
-   
-
     
+   
     <!-- endbuild -->
 
 </head>
@@ -271,9 +265,10 @@
                        <div class="select-label">
                             <p>Nutrient Model</p>
                         </div> 
+
                         <!--<div id="nutrientRadio" class="btn-gorup" data-toggle="buttons">-->
                             <div class="radio radio-primary active" id="modelResultsRadio">
-                                <input type="radio" name="radio1" id="radio1" value="option1" checked="">
+                                <input type="radio" name="radio1" id="radio1" value="option1" checked>
                                 <label for="radio1">
                                     Phosphorus
                                 </label>
@@ -376,7 +371,7 @@
                 </div>
 
                 <!--LOBIPANEL EXPERIMENTAL________________________________________________________________________________________________________________________-->
-                <div id="chartWindowDiv" class="panel panel-default chartWindowClass" x="35">
+                <div id="chartWindowDiv" class="panel panel-default chartWindowMaximize">
                     <div class="panel-heading">
                         <div class="panel-title">
                             <h4 id="chartWindowPanelTitle"></h4>

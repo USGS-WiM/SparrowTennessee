@@ -360,31 +360,29 @@ input[type="checkbox"], input[type="radio"] {
     padding-left:5px;
 }*/
 
-
-.chartWindowClass{
+.chartWindowMaximize{
     position:absolute;
-    top:100px;
-    left:100px;
+    top: 200;
+    right: 200;
     z-index:3;
     color: black;
-    background-color: rgb(255,255,255);
-    background-color: rgba(255,255,255,0.8);
+    background-color: rgba(255,255,255,0.4);
     box-shadow: 0 1px 5px rgba(0,0,0,0.65);
-    /*min-width: 150px;*/
     border-radius: 4px;
     visibility: hidden;
-
 }
 
-#chartMinimize {
-    padding-right: 15px;
-    font-size: 20px;
+.chartWindowMinimize {
+    position:absolute;
+    background-color: rgba(255,255,255,0.4);
+    height: 200px;
+    width: 200px;
+    bottom: 0;
+    right: 0;
+    top: 120;
+    z-index: 20000;
 }
-#chartClose, #chartMinimize {
-    cursor: pointer;
-    display: inline;
-    font-weight: 700;
-}
+
 
 #chartClose {
     cursor: pointer;
@@ -403,7 +401,15 @@ input[type="checkbox"], input[type="radio"] {
     font-weight: bold;
 }
 
-/*Static position for chartwindow for now*/
+#chartMaximize {
+    cursor: pointer;
+    display: inline;
+    padding-right: 15px;
+    font-size: 20px;
+    font-weight: bold;
+}
+/*
 #chartWindowDiv{
     top:65px !important;
 }
+*/

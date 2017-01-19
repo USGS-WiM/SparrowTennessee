@@ -14,7 +14,7 @@ require([
     FeatureLayer
 ) {
 
-    var SparrowOverlay;
+    var sparrowOverlay;
     if ($("#radio1")[0].checked == true){
         sparrowOverlay = 0;
     } else{
@@ -133,7 +133,6 @@ require([
     ]
 
 });
-
 
 
 
