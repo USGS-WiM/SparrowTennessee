@@ -35,34 +35,12 @@ function loadEventHandlers() {
 
     //displays map scale on map load
     app.map.on('load', function (){
-        var scale = app.map.getScale().toFixed(0);
-        $('#scale')[0].innerHTML = addCommas(scale);
-        var initMapCenter = webMercatorUtils.webMercatorToGeographic(map.extent.getCenter());
-        $('#latitude').html(initMapCenter.y.toFixed(3));
-        $('#longitude').html(initMapCenter.x.toFixed(3));
 
+        app.initMapScale();
         app.map.infoWindow.set('highlight', false);
         app.map.infoWindow.set('titleInBody', false);
 
-
-        //code for adding draggability to infoWindow. http://www.gavinr.com/2015/04/13/arcgis-javascript-draggable-infowindow/
-        if (dragInfoWindows == true) {
-            var handle = query(".title",app.map.infoWindow.domNode)[0];
-            var dnd = new Moveable(map.infoWindow.domNode, {
-                handle: handle
-            });
-
-            // when the infoWindow is moved, hide the arrow:
-            on(dnd, 'FirstMove', function() {
-                // hide pointer and outerpointer (used depending on where the pointer is shown)
-                var arrowNode =  query(".outerPointer",app.map.infoWindow.domNode)[0];
-                domClass.add(arrowNode, "hidden");
-
-                var arrowNode =  query(".pointer",app.map.infoWindow.domNode)[0];
-                domClass.add(arrowNode, "hidden");
-            }.bind(this));
-        }
-
+        app.setupDraggableInfoWindow();
     });
 
     //displays map scale on scale change (i.e. zoom level)

@@ -3,13 +3,6 @@
 // Generated on 2015-04-13 using generator-wim 0.0.1
 
 var app = {};
-var maxLegendHeight;
-var maxLegendDivHeight;
-var dragInfoWindows = true;
-var defaultMapCenter = [-86, 36];
-var queryParametersLength = Object.getOwnPropertyNames(queryParameters).length;
-var identifyTask;
-var identifyParams;  
 
 require([
     'esri/arcgis/utils',
@@ -85,13 +78,16 @@ require([
 ) {
     parser.parse();
 
+    app.dragInfoWindows = true;
+    app.defaultMapCenter = [-86, 36];
+
     //setup map
     app.map = Map('mapDiv', {
         basemap: 'gray',
-        //center: [-95.6, 38.6],
-        center: defaultMapCenter,
+        center: app.defaultMapCenter,
         zoom: 7
     });
+
 
     //button for returning to initial extent
     app.home = new HomeButton({
@@ -124,11 +120,18 @@ require([
 
     loadEventHandlers();
 
-
     //TODO: FIGURE OUT HOW TO USE THE QUERY WHERECLAUSE     Call setupQueryTask for every layer inqueryParameters
     for (var key in queryParameters){
         setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, [queryParameters[key].nameField], "1=1");
     }
+
+    app.initMapScale = function() {
+        var scale = app.map.getScale().toFixed(0);
+        $('#scale')[0].innerHTML = addCommas(scale);
+        var initMapCenter = webMercatorUtils.webMercatorToGeographic(app.map.extent.getCenter());
+        $('#latitude').html(initMapCenter.y.toFixed(3));
+        $('#longitude').html(initMapCenter.x.toFixed(3));
+    };
 
     app.updateMousePosition = function(cursorPosition) {
         $('#mapCenterLabel').css("display", "none");
@@ -137,7 +140,7 @@ require([
             $('#latitude').html(geographicMapPt.y.toFixed(3));
             $('#longitude').html(geographicMapPt.x.toFixed(3));
         }
-    }
+    };
 
     app.updateMapCenter = function(extent) {
         //displays latitude and longitude of map center
@@ -145,16 +148,36 @@ require([
         var geographicMapCenter = webMercatorUtils.webMercatorToGeographic(extent.getCenter());
         $('#latitude').html(geographicMapCenter.y.toFixed(3));
         $('#longitude').html(geographicMapCenter.x.toFixed(3));
+    };
+
+    app.setupDraggableInfoWindow = function() {
+        //code for adding draggability to infoWindow. http://www.gavinr.com/2015/04/13/arcgis-javascript-draggable-infowindow/
+        if (app.dragInfoWindows == true) {
+            var handle = query(".title",app.map.infoWindow.domNode)[0];
+            var dnd = new Moveable(app.map.infoWindow.domNode, {
+                handle: handle
+            });
+
+            // when the infoWindow is moved, hide the arrow:
+            on(dnd, 'FirstMove', function() {
+                // hide pointer and outerpointer (used depending on where the pointer is shown)
+                var arrowNode =  query(".outerPointer",app.map.infoWindow.domNode)[0];
+                domClass.add(arrowNode, "hidden");
+
+                var arrowNode =  query(".pointer",app.map.infoWindow.domNode)[0];
+                domClass.add(arrowNode, "hidden");
+            }.bind(this));
+   
+        }
     }
 
-    
-    identifyParams = new esri.tasks.IdentifyParameters();
-    identifyParams.tolerance = 5;
-    identifyParams.returnGeometry = true;
-    //identifyParams.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_VISIBLE;
-    identifyParams.width  = app.map.width;
-    identifyParams.height = app.map.height;
-    identifyTask = new esri.tasks.IdentifyTask(serviceBaseURL); 
+    app.identifyParams = new esri.tasks.IdentifyParameters();
+    app.identifyParams.tolerance = 5;
+    app.identifyParams.returnGeometry = true;
+    //app.identifyParams.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_VISIBLE;
+    app.identifyParams.width  = app.map.width;
+    app.identifyParams.height = app.map.height;
+    app.identifyTask = new esri.tasks.IdentifyTask(serviceBaseURL); 
 
     function getInfoWindowContent(){
         console.log('in getInfoWindowContent');
@@ -164,11 +187,11 @@ require([
         console.log(evt)
         var sparrowLayer = app.map.getLayer("SparrowRanking").visibleLayers[0];
 
-        identifyParams.layerIds = [sparrowLayer];
-        identifyParams.geometry = evt.mapPoint;
-        identifyParams.mapExtent = app.map.extent;
+        app.identifyParams.layerIds = [sparrowLayer];
+        app.identifyParams.geometry = evt.mapPoint;
+        app.identifyParams.mapExtent = app.map.extent;
         
-        var deferred = identifyTask.execute(identifyParams).addCallback(function(response){
+        var deferred = app.identifyTask.execute(app.identifyParams).addCallback(function(response){
             console.log(response);
 
             var fields = getChartOutfields( app.map.getLayer('SparrowRanking').visibleLayers[0] );
@@ -318,7 +341,7 @@ require([
     }
 
     function zoomToPlaces(places) {
-        var multiPoint = new Multipoint(map.spatialReference);
+        var multiPoint = new Multipoint(app.map.spatialReference);
         for (var i = 0; i < places.length; i++) {
             multiPoint.addPoint(places[i].feature.geometry);
         }
@@ -605,7 +628,7 @@ require([
         }
 
 
-         function highlightMapFeature(category){
+         /*function highlightMapFeature(category){
             var layerDefinitions = "GRP_3_NAM = '" + category + "'";
 
 
@@ -617,7 +640,7 @@ require([
             app.map.getLayer("SparrowGraphics").setDefinitionExpression(layerDefinitions);
 
             app.map.getLayer("SparrowGraphics").setSelectionSymbol(selectionSymbol);
-        }
+        }*/
 
 
         /*function highlightMapFeature(attributeString){
@@ -778,7 +801,7 @@ require([
                     formatter: function(){
                         var rank = this.point.index + 1; 
                         return '<b>'+ labelxSelect() + ': ' + this.point.category + '</b><br/>' 
-                                + this.series.name + ': ' + this.point.y.toFixed(2)  + '<br/> Total (lb./yr.) ' + this.point.stackTotal.toFixed(2) + '<br/> Rank: ' + rank;
+                                + this.series.name + ': ' + this.point.y.toFixed(2) + this.point.stackTotal.toFixed(2) + '<br/> Rank: ' + rank;
                     },
                 },
                 plotOptions: {
@@ -847,7 +870,7 @@ require([
                                         
                                         var feature = response.features[0];
                                         feature.setSymbol(new SimpleFillSymbol()
-                                            .setColor(new Color([209,23,23,0.25]))
+                                            .setColor(new Color([182,244,66,0.8]))
                                             .setOutline(null)
                                         );
                                         app.map.graphics.add(feature);
@@ -905,14 +928,14 @@ require([
 
     $("#legendDiv").niceScroll();
 
-    maxLegendHeight =  ($('#mapDiv').height()) * 0.90;
-    $('#legendElement').css('max-height', maxLegendHeight);
+    app.maxLegendHeight =  ($('#mapDiv').height()) * 0.90;
+    $('#legendElement').css('max-height', app.maxLegendHeight);
 
     $('#legendCollapse').on('shown.bs.collapse', function () {
-        maxLegendHeight =  ($('#mapDiv').height()) * 0.90;
-        $('#legendElement').css('max-height', maxLegendHeight);
-        maxLegendDivHeight = ($('#legendElement').height()) - parseInt($('#legendHeading').css("height").replace('px',''));
-        $('#legendDiv').css('max-height', maxLegendDivHeight);
+        app.maxLegendHeight =  ($('#mapDiv').height()) * 0.90;
+        $('#legendElement').css('max-height', app.maxLegendHeight);
+        app.maxLegendDivHeight = ($('#legendElement').height()) - parseInt($('#legendHeading').css("height").replace('px',''));
+        $('#legendDiv').css('max-height', app.maxLegendDivHeight);
     });
 
     $('#legendCollapse').on('hide.bs.collapse', function () {
@@ -949,11 +972,11 @@ require([
             var layerArr = [];
             layerArr.push(sparrowId);
             app.map.getLayer('SparrowRanking').setVisibleLayers(layerArr);
-            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
+            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(true);
             //TODO: call generateRenderer 
             
         }else{
-            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(); 
+            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(true); 
             //TODO: call generateRenderer 
         }
 

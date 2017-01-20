@@ -167,7 +167,7 @@ function setAggregateGroup(groupBySelectedIndex, selectedRadio){
     }
     var visibleLayerIds = [layerArrayValue];
     var sparrowRanking = app.map.getLayer('SparrowRanking');
-    sparrowRanking.setVisibleLayers(visibleLayerIds);
+    sparrowRanking.setVisibleLayers(visibleLayerIds, true);
 
 
     generateRenderer();
@@ -251,10 +251,8 @@ function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
         console.log("Selected Item: " + selectedItem);
         console.log("Select Id: " + selectId);
         
-        app.map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, false);
-        //app.map.getLayer("SparrowRanking").refresh();*/
+        app.map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, true); //Don't refresh yet. Call app.map.getLayer("SparrowRanking").refresh();  after the renderer is applied
 
-        //TODO: call generateRenderer
         generateRenderer();
 
         updateAOI(layerDefs[0], selectId);
@@ -624,6 +622,7 @@ function generateRenderer(){
               console.log(optionsArray);
 
               layer.setLayerDrawingOptions(optionsArray);
+              app.map.getLayer("SparrowRanking").refresh();
 
               if (! app.hasOwnProperty("legend")){
                 createLegend();
