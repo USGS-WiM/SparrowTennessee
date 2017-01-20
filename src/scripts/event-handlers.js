@@ -10,6 +10,7 @@ function loadEventHandlers() {
     $("#groupResultsSelect").on('changed.bs.select', function(e){  
         populateMetricOptions(e.currentTarget.selectedIndex);
         setAggregateGroup( e.currentTarget.selectedIndex, $(".radio input[type='radio']:checked")[0].id );
+        generateRenderer();
         
     });
 

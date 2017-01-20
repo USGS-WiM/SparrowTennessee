@@ -170,7 +170,7 @@ function setAggregateGroup(groupBySelectedIndex, selectedRadio){
     sparrowRanking.setVisibleLayers(visibleLayerIds, true);
 
 
-    generateRenderer();
+    //generateRenderer();
         
     
 } //END setAggregateGroup()
@@ -565,9 +565,10 @@ function generateRenderer(){
         if(app.map.getLayer('SparrowRanking').layerDefinitions){
             var dynamicLayerDefs = app.map.getLayer('SparrowRanking').layerDefinitions[0];
             app.layerDef = dynamicLayerDefs;
-        } else{
+        } 
+        /*else{
             app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
-        }
+        }*/
         
         app.Url = "https://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/" + sparrowId;
         
