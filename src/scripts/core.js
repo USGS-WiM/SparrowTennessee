@@ -171,6 +171,7 @@ require([
         }
     }
 
+
     app.identifyParams = new esri.tasks.IdentifyParameters();
     app.identifyParams.tolerance = 5;
     app.identifyParams.returnGeometry = true;
