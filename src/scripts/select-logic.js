@@ -167,7 +167,7 @@ function setAggregateGroup(groupBySelectedIndex, selectedRadio){
     }
     var visibleLayerIds = [layerArrayValue];
     var sparrowRanking = app.map.getLayer('SparrowRanking');
-    sparrowRanking.setVisibleLayers(visibleLayerIds, false);
+    sparrowRanking.setVisibleLayers(visibleLayerIds, true);
 
 
     generateRenderer();
@@ -251,7 +251,7 @@ function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
         console.log("Selected Item: " + selectedItem);
         console.log("Select Id: " + selectId);
         
-        app.map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, false); //Don't refresh yet. Call app.map.getLayer("SparrowRanking").refresh();  after the renderer is applied
+        app.map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, true); //Don't refresh yet. Call app.map.getLayer("SparrowRanking").refresh();  after the renderer is applied
 
         generateRenderer();
 
@@ -565,6 +565,8 @@ function generateRenderer(){
         if(app.map.getLayer('SparrowRanking').layerDefinitions){
             var dynamicLayerDefs = app.map.getLayer('SparrowRanking').layerDefinitions[0];
             app.layerDef = dynamicLayerDefs;
+        } else{
+            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
         }
         
         app.Url = "https://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/" + sparrowId;
@@ -622,7 +624,7 @@ function generateRenderer(){
               console.log(optionsArray);
 
               layer.setLayerDrawingOptions(optionsArray);
-              //app.map.getLayer("SparrowRanking").refresh();
+              app.map.getLayer("SparrowRanking").refresh();
 
               if (! app.hasOwnProperty("legend")){
                 createLegend();
