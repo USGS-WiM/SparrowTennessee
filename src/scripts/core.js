@@ -953,6 +953,7 @@ require([
         
         populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
         setAggregateGroup(groupBySelectedIndex, selectedRadio);   
+        generateRenderer();
     });
 
 
