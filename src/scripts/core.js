@@ -972,11 +972,11 @@ require([
             var layerArr = [];
             layerArr.push(sparrowId);
             app.map.getLayer('SparrowRanking').setVisibleLayers(layerArr);
-            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(false);
+            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(true);
 
             
         }else{
-            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(false); 
+            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(true); 
 
         }
 
