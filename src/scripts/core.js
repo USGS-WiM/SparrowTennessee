@@ -624,7 +624,7 @@ require([
                    });
                     break;
             }
-            return label + chartUnits;
+            return label;
         }
 
 
@@ -972,12 +972,12 @@ require([
             var layerArr = [];
             layerArr.push(sparrowId);
             app.map.getLayer('SparrowRanking').setVisibleLayers(layerArr);
-            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(true);
-            //TODO: call generateRenderer 
+            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(false);
+
             
         }else{
-            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(true); 
-            //TODO: call generateRenderer 
+            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(false); 
+
         }
 
         //reset the selects
