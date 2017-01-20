@@ -171,7 +171,7 @@ require([
         }
     }
 
-    
+
     app.identifyParams = new esri.tasks.IdentifyParameters();
     app.identifyParams.tolerance = 5;
     app.identifyParams.returnGeometry = true;
@@ -188,9 +188,9 @@ require([
         console.log(evt)
         var sparrowLayer = app.map.getLayer("SparrowRanking").visibleLayers[0];
 
-        identifyParams.layerIds = [sparrowLayer];
-        identifyParams.geometry = evt.mapPoint;
-        identifyParams.mapExtent = app.map.extent;
+        app.identifyParams.layerIds = [sparrowLayer];
+        app.identifyParams.geometry = evt.mapPoint;
+        app.identifyParams.mapExtent = app.map.extent;
         
         var deferred = app.identifyTask.execute(app.identifyParams).addCallback(function(response){
             console.log(response);
@@ -625,11 +625,11 @@ require([
                    });
                     break;
             }
-            return label + chartUnits;
+            return label;
         }
 
 
-         function highlightMapFeature(category){
+         /*function highlightMapFeature(category){
             var layerDefinitions = "GRP_3_NAM = '" + category + "'";
 
 
@@ -641,7 +641,7 @@ require([
             app.map.getLayer("SparrowGraphics").setDefinitionExpression(layerDefinitions);
 
             app.map.getLayer("SparrowGraphics").setSelectionSymbol(selectionSymbol);
-        }
+        }*/
 
 
         /*function highlightMapFeature(attributeString){
@@ -802,7 +802,7 @@ require([
                     formatter: function(){
                         var rank = this.point.index + 1; 
                         return '<b>'+ labelxSelect() + ': ' + this.point.category + '</b><br/>' 
-                                + this.series.name + ': ' + this.point.y.toFixed(2)  + '<br/> Total (lb./yr.) ' + this.point.stackTotal.toFixed(2) + '<br/> Rank: ' + rank;
+                                + this.series.name + ': ' + this.point.y.toFixed(2) + this.point.stackTotal.toFixed(2) + '<br/> Rank: ' + rank;
                     },
                 },
                 plotOptions: {
@@ -871,7 +871,7 @@ require([
                                         
                                         var feature = response.features[0];
                                         feature.setSymbol(new SimpleFillSymbol()
-                                            .setColor(new Color([209,23,23,0.8]))
+                                            .setColor(new Color([182,244,66,0.8]))
                                             .setOutline(null)
                                         );
                                         app.map.graphics.add(feature);
@@ -973,12 +973,12 @@ require([
             var layerArr = [];
             layerArr.push(sparrowId);
             app.map.getLayer('SparrowRanking').setVisibleLayers(layerArr);
-            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
-            //TODO: call generateRenderer 
+            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(false);
+
             
         }else{
-            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(); 
-            //TODO: call generateRenderer 
+            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(false); 
+
         }
 
         //reset the selects

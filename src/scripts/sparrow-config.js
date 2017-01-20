@@ -8,7 +8,7 @@ var Group3 = [
 
 	{
         field: "dl1_g3_tot", 
-        name: "Group Aggregate Load delivered to donwstream boundary", 
+        name: "Group Aggregate Load delivered to donwstream boundary (lb/yr)", 
         chartOutfields: [
             { attribute: "GRP_3_NAM", label: "HUC10 name"}, 
             { attribute: "dl1_g3_sc1", label: "Wastewater load from HUC10 delivered to downstream boundary (lb/yr)"},
@@ -411,7 +411,7 @@ var Group3_tn = [
 
     {
         field: "dl1_g3_tot", 
-        name: "Group Aggregate Load delivered to donwstream boundary", 
+        name: "Group Aggregate Load delivered to donwstream boundary (lb/yr)", 
         chartOutfields: [
             { attribute: "GRP_3_NAM", label: "HUC10 name"}, 
             { attribute: "dl1_g3_sc1", label: "Wastewater load from HUC10 delivered to downstream boundary (lb/yr)"},
@@ -501,7 +501,7 @@ var Group2_tn = [
     },
     {
         field: "dy1_g2_tot", 
-        name: "Yield from HUC8 delivered to downstream boundary (lb/yr/mi2)", 
+        name: "Yield from HUC8 delivered to downstream boundary (lb/yr)", 
         chartOutfields: [
             { attribute: "GRP_2_NAM", label: "HUC8 name"}, 
             { attribute: "dy1_g2_sc1", label: "Wastewater yield from HUC8 delivered to downstream boundary (lb/yr)"},
@@ -526,7 +526,7 @@ var Group2_tn = [
     },
     {
         field: "dy2_g2_tot", 
-        name: "Yield from HUC8 delivered to HUC8 outlet (lb/yr/mi2)", 
+        name: "Yield from HUC8 delivered to HUC8 outlet (lb/yr)", 
         chartOutfields: [
             { attribute: "GRP_2_NAM", label: "HUC8 name"}, 
             { attribute: "dy2_g2_sc1", label: "Wastewater yield from HUC8 delivered to HUC8 outlet (lb/yr)"},
@@ -557,7 +557,7 @@ var Group1_tn = [
     },
     {
         field: "dy1_g1_tot", 
-        name: "Yield from independent watershed delivered to downstream boundary (lb/yr/mi2)", 
+        name: "Yield from independent watershed delivered to downstream boundary (lb/yr)", 
         chartOutfields: [
             { attribute: "GRP_1_NAM", label: "Independent Watershed name"}, 
             { attribute: "dy1_g1_sc1", label: "Wastewater yield from independent watershed delivered to downstream boundary (lb/yr)"},
@@ -586,7 +586,7 @@ var ST_tn = [
     },
     {
         field: "dy1_ST_tot", 
-        name: "Yield from State delivered to downstream boundary (lb/yr/mi2)", 
+        name: "Yield from State delivered to downstream boundary (lb/yr)", 
         chartOutfields: [
             { attribute: "ST", label: "State"},
             { attribute: "dy1_ST_sc1", label: "Wastewater yield from State delivered to downstream boundary (lb/yr)"},
@@ -662,7 +662,7 @@ var Group3_st_tn = [
     },
     {
         field: "y_S3_tot", 
-        name: "Yield from HUC10/State within model area (lb/yr/mi2)", 
+        name: "Yield from HUC10/State within model area (lb/yr)", 
         chartOutfields: [
             { attribute: "ST_GP3_NAM", label: "HUC10/State"},
             { attribute: "y_S3_sc1", label: "Wastewater yield from HUC10/State within model area (lb/yr)"},
@@ -715,7 +715,7 @@ var Group2_st_tn = [
     },
     {
         field: "y_S2_tot", 
-        name: "Yield from HUC8/State within model area (lb/yr/mi2)", 
+        name: "Yield from HUC8/State within model area (lb/yr)", 
         chartOutfields: [
             { attribute: "ST_GP2_NAM", label: "HUC8/State"},
             { attribute: "y_S2_sc1", label: "Wastewater yield from HUC8/State within model area (lb/yr)"},
