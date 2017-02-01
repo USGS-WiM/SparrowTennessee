@@ -974,12 +974,15 @@ require([
             var layerArr = [];
             layerArr.push(sparrowId);
             app.map.getLayer('SparrowRanking').setVisibleLayers(layerArr);
-            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(true);
+            //app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(true); //don't refresh yet.
+            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
+            console.log('Radio Change Clear')
 
             
         }else{
-            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(true); 
-
+            //app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(true); //don't refresh yet.
+            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
+            console.log('AOI CLEAR');
         }
 
         //reset the selects

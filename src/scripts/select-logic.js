@@ -182,7 +182,7 @@ function AOIChange(e){
     var sparrowRankingId = app.map.getLayer('SparrowRanking').visibleLayers[0];
     var definitionString = null;
     if (app.map.getLayer('SparrowRanking').layerDefinitions != undefined){
-        var tempDef = app.map.getLayer('SparrowRanking').layerDefinitions[0];
+        var tempDef = app.map.getLayer('SparrowRanking').layerDefinitions[sparrowRankingId];
         var layerDefs = [tempDef];
     } else{
         var layerDefs = [];
@@ -251,8 +251,8 @@ function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
         console.log("Selected Item: " + selectedItem);
         console.log("Select Id: " + selectId);
         
-        app.map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, true); //Don't refresh yet. Call app.map.getLayer("SparrowRanking").refresh();  after the renderer is applied
-
+        //app.map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, true); //Don't refresh yet. Call app.map.getLayer("SparrowRanking").refresh();  after the renderer is applied
+        app.map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs);
         generateRenderer();
 
         updateAOI(layerDefs[0], selectId);
@@ -563,12 +563,13 @@ function generateRenderer(){
         var sparrowId = app.map.getLayer('SparrowRanking').visibleLayers[0];
         //apply layer defs to renderer if they exist
         if(app.map.getLayer('SparrowRanking').layerDefinitions){
-            var dynamicLayerDefs = app.map.getLayer('SparrowRanking').layerDefinitions[0];
+            var dynamicLayerDefs = app.map.getLayer('SparrowRanking').layerDefinitions[sparrowId];
             app.layerDef = dynamicLayerDefs;
-        } 
-        /*else{
-            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
-        }*/
+        }
+        else{
+            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(); //is this necessary?
+            app.layerDef = null;
+        }
         
         app.Url = "https://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/" + sparrowId;
         
@@ -606,14 +607,16 @@ function generateRenderer(){
         // limit the renderer to data being shown by the current layer
         params.where = app.layerDef; 
         var generateRenderer = new GenerateRendererTask(app.Url);
+        console.log('execute Renderer w/ params:  ' + params);
         generateRenderer.execute(params, applyRenderer, errorHandler);
 
 
         function applyRenderer(renderer){
             var sparrowId = app.map.getLayer('SparrowRanking').visibleLayers[0];
+            console.log('sparrowId: ', sparrowId);
             
             var layer = app.map.getLayer('SparrowRanking');
-            console.log('in applyRenderer()',layer);
+            console.log('in applyRenderer() ', layer);
 
             // dynamic layer stuff
               var optionsArray = [];
@@ -625,11 +628,16 @@ function generateRenderer(){
               console.log(optionsArray);
 
               layer.setLayerDrawingOptions(optionsArray);
-              app.map.getLayer("SparrowRanking").refresh();
+
+              //ONLY USED IF refreshing layer here instead of at layerDef Settings
+              //setTimeout(app.map.getLayer("SparrowRanking").refresh(), 1000);
+              //app.map.getLayer("SparrowRanking").refresh();
 
               if (! app.hasOwnProperty("legend")){
                 createLegend();
               }
+
+
         }
 
         function errorHandler(err){
@@ -645,6 +653,7 @@ function generateRenderer(){
                 }]
             }, dom.byId("legendDiv"));
             app.legend.startup();
+            
         }
 
     }); // END Dojo
