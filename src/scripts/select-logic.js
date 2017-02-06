@@ -207,7 +207,7 @@ function AOIChange(e){
 
 function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
 
-/*        if (layerDefs.length > 0){
+        if (layerDefs.length > 0){
             if(selectId == "grp1-select"){
                 definitionString = layerDefs[0] + " and GRP_1_NAM IN(" + "'" + selectedItem + "')";
             } 
@@ -217,7 +217,7 @@ function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
             if(selectId == "st-select"){
                 definitionString = layerDefs[0] + " and ST IN(" + "'" + selectedItem + "')";
             }
-        }else{*/
+        }else{
             if(selectId == "grp1-select"){
                 definitionString = "GRP_1_NAM IN(" + "'" + selectedItem + "')";
             } 
@@ -227,7 +227,7 @@ function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
             if(selectId == "st-select"){
                 definitionString = "ST IN(" + "'" + selectedItem + "')";
             }
-        //}
+        }
         
 
         //LayerDefs on ALL Layers

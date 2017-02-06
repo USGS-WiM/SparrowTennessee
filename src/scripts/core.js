@@ -954,15 +954,41 @@ require([
         populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
         setAggregateGroup(groupBySelectedIndex, selectedRadio);   
         generateRenderer();
+
+        //reflow the chart if it's open
+        if( $("#chartWindowDiv").css("visibility") == "visible" ) {
+            createChartQuery();
+        }
     });
 
 
     /* AOI EVENTS */
-
     $('.aoiSelect').on('change', AOIChange);
 
+    //removed from eventhandlers________________________________________________________________________________________
+    /*GROUP RESULTS*/
+    $("#groupResultsSelect").on('changed.bs.select', function(e){  
+        populateMetricOptions(e.currentTarget.selectedIndex);
+        setAggregateGroup( e.currentTarget.selectedIndex, $(".radio input[type='radio']:checked")[0].id );
+        generateRenderer();
 
-    //clear AOI selections
+        if( $("#chartWindowDiv").css("visibility") == "visible" ) {
+            createChartQuery();
+        }
+        
+    });
+
+    /*METRIC*/
+    $("#displayedMetricSelect").on('changed.bs.select', function(e){
+        generateRenderer();
+
+        if( $("#chartWindowDiv").css("visibility") == "visible" ) {
+            createChartQuery();
+        }
+    });
+    //END removed from eventhandlers________________________________________________________________________________________
+
+    /*CLEAR AOI SELECTIONS */
     $("#clearAOIButton").on('click', function(){
         var sparrowId = app.map.getLayer('SparrowRanking').visibleLayers[0];
         var splitLayers = [4,5,6,11,12,13]; //important! UPDATE layer Ids of all state split layers
@@ -1000,12 +1026,15 @@ require([
         if ($('#groupResultsSelect')[0].selectedIndex == 0){
             if ($('#displayedMetricSelect')[0].selectedIndex == 4 || $('#displayedMetricSelect')[0].selectedIndex == 5){
                 $("#chartButton").addClass('disabled');
+                $('#chartButton').attr('disabled','disabled');
                 //TODO:  ALSO MAKE SURE YOU REMOVE ANY CHART FROM THE VIEW (Lobipanel only, modal takes care of self.)
             } else{
                 $("#chartButton").removeClass('disabled');
+                $("#chartButton").removeAttr('disabled');
             }
         } else {
             $("#chartButton").removeClass('disabled');
+            $("#chartButton").removeAttr('disabled');
         }
     });
 
