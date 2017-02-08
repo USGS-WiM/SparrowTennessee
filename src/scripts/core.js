@@ -123,26 +123,26 @@ require([
 
     //TODO: FIGURE OUT HOW TO USE THE QUERY WHERECLAUSE     Call setupQueryTask for every layer inqueryParameters
     for (var key in queryParameters){
-        setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, [queryParameters[key].nameField], "1=1");
+        setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, queryParameters[key].nameField, "1=1");
     }
 
     app.setLayerDefObj = function(newObj){
         switch(newObj.selectedId){
             case "st-select":
                 layerDefObj.AOI1 = newObj.selectedValue;
-                //updateAOI2('st');
-                //updateAOI1('st');
+                updateAOI2('st');
+                updateAOI1('st');
                 
                 break;
             case "grp1-select":
                 layerDefObj.AOI2 = newObj.selectedValue;
-                /*updateAOIST('grp1')
-                updateAOI2('grp1');*/
+                updateAOIST('grp1')
+                updateAOI2('grp1');
                 break;
             case "grp2-select":
                 layerDefObj.AOI3 = newObj.selectedValue;
-                /*updateAOI1('grp2');
-                updateAOIST('grp2');*/
+                updateAOI1('grp2');
+                updateAOIST('grp2');
                 break;
         }
     }
@@ -155,9 +155,9 @@ require([
         return layerDefObj;
     }
 
-    /*app.updateAOI2 = function(changedAOI){
-
-    }*/
+    app.updateAOI2 = function(changedAOI){
+        console.log('changed AOI: ' + changedAOI);
+    }
 
     app.initMapScale = function() {
         var scale = app.map.getScale().toFixed(0);
@@ -283,26 +283,26 @@ require([
     function populateAOI(response){
 
         switch(response.displayFieldName){
-            case queryParameters["grp3"].nameField:
+            case queryParameters["grp3"].nameField[0]:
                 console.log("Currently no AOI for Group 3");
                 break;
-            case queryParameters["grp2"].nameField:
+            case queryParameters["grp2"].nameField[0]:
                 $.each(response.features, function(index, feature){
-                    var attributeName = queryParameters["grp2"].nameField;
+                    var attributeName = queryParameters["grp2"].nameField[0];
                     $("#grp2-select").append(new Option(feature.attributes[attributeName], feature.attributes["GRP_2_NUM"]));
                     $('#grp2-select').selectpicker('refresh');
                 });
                 break;
-            case queryParameters["grp1"].nameField:
+            case queryParameters["grp1"].nameField[0]:
                  $.each(response.features, function(index, feature){
-                    var attributeName = queryParameters["grp1"].nameField;
+                    var attributeName = queryParameters["grp1"].nameField[0];
                     $("#grp1-select").append(new Option(feature.attributes[attributeName], feature.attributes["GRP_1_NUM"]));
                     $('#grp1-select').selectpicker('refresh');
                 });
                 break;
-            case queryParameters["st"].nameField:
+            case queryParameters["st"].nameField[0]:
                 $.each(response.features, function(index, feature){
-                    var attributeName = queryParameters["st"].nameField;
+                    var attributeName = queryParameters["st"].nameField[0];
                     $("#st-select").append(new Option(feature.attributes[attributeName], feature.attributes["ST"]));
                     $('#st-select').selectpicker('refresh');
                 });
