@@ -176,18 +176,27 @@ function setAggregateGroup(groupBySelectedIndex, selectedRadio){
 } //END setAggregateGroup()
 
 function AOIChange(e){
+
     var selectId = e.currentTarget.id;
+    var selectValue = e.currentTarget.value;
     var groupResultsIndex = $("#groupResultsSelect")[0].selectedIndex;
-    var selectedItem = e.currentTarget.value;
-    var sparrowRankingId = app.map.getLayer('SparrowRanking').visibleLayers[0];
-    var definitionString = null;
-    if (app.map.getLayer('SparrowRanking').layerDefinitions != undefined){
-        var tempDef = app.map.getLayer('SparrowRanking').layerDefinitions[sparrowRankingId];
-        var layerDefs = [tempDef];
-    } else{
-        var layerDefs = [];
-    }
     
+
+    var newObj = {
+        selectedId: selectId,
+        selectedValue: selectValue
+    }
+
+
+/*    var newObj = {
+        state:"",
+        watershed:"",
+        huc8:"",
+        selectId: selectId,
+        selectedItem: e.currentTarget.value,
+        sparrowRankingId: app.map.getLayer('SparrowRanking').visibleLayers[0]
+    }
+*/
     
 
     if (selectId == "st-select" && groupResultsIndex != 3) {
@@ -196,39 +205,44 @@ function AOIChange(e){
         //if(app.map.getLayer('SparrowRanking').visibleLayers[0]){
             populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
             setAggregateGroup( groupResultsIndex, $(".radio input[type='radio']:checked")[0].id );
-        //}
-        setLayerDefs(selectId, definitionString, layerDefs, selectedItem);
-    
-    }else{
-        setLayerDefs(selectId, definitionString, layerDefs, selectedItem); 
     }
+
+    app.setLayerDefObj(newObj);
+
+    setLayerDefs();    
+
+    generateRenderer();
 
 } //END AOIChange()
 
-function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
-
-        if (layerDefs.length > 0){
-            if(selectId == "grp1-select"){
-                definitionString = layerDefs[0] + " and GRP_1_NAM IN(" + "'" + selectedItem + "')";
-            } 
-            if(selectId == "grp2-select"){
-                definitionString = layerDefs[0] + " and GRP_2_NAM IN(" + "'" + selectedItem + "')";
+//function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
+function setLayerDefs(){
+        var definitionString = "";
+        var layerDefObj = app.getLayerDefObj();
+        if (layerDefObj.AOI1){
+            if(definitionString != ""){
+                definitionString += " AND ST = "+ "'" + layerDefObj.AOI1 + "'";
+            } else{
+               definitionString += "ST = "+ "'" + layerDefObj.AOI1 + "'"; 
             }
-            if(selectId == "st-select"){
-                definitionString = layerDefs[0] + " and ST IN(" + "'" + selectedItem + "')";
+        }
+        if (layerDefObj.AOI2){
+            if(definitionString != ""){
+                definitionString += " AND GRP_1_NAM = "+ "'" + layerDefObj.AOI2 + "'";
+            }else{
+                definitionString += "GRP_1_NAM = "+ "'" + layerDefObj.AOI2 + "'";
             }
-        }else{
-            if(selectId == "grp1-select"){
-                definitionString = "GRP_1_NAM IN(" + "'" + selectedItem + "')";
-            } 
-            if(selectId == "grp2-select"){
-                definitionString = "GRP_2_NAM IN(" + "'" + selectedItem + "')";
-            }
-            if(selectId == "st-select"){
-                definitionString = "ST IN(" + "'" + selectedItem + "')";
+            
+        }
+        if (layerDefObj.AOI3){
+            if(definitionString != ""){
+               definitionString += " AND GRP_2_NAM = "+ "'" + layerDefObj.AOI3 + "'";
+            }else{
+                definitionString += "GRP_2_NAM = "+ "'" + layerDefObj.AOI3 + "'";
             }
         }
         
+        var layerDefs = [];
 
         //LayerDefs on ALL Layers
         layerDefs[0] = definitionString;
@@ -246,16 +260,11 @@ function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
         layerDefs[12] = definitionString;
         layerDefs[13] = definitionString;
         
-        
-
-        console.log("Selected Item: " + selectedItem);
-        console.log("Select Id: " + selectId);
-        
-        //app.map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs, true); //Don't refresh yet. Call app.map.getLayer("SparrowRanking").refresh();  after the renderer is applied
         app.map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs);
         generateRenderer();
 
-        updateAOI(layerDefs[0], selectId);
+        //updateAOI(layerDefs[0], selectId);
+        //updateAOI(layerDefs[0], app.layerDefsObj.selectId);
         
 
 } // END setLayerDefs()
@@ -568,6 +577,7 @@ function generateRenderer(){
         }
         else{
             app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(); //is this necessary?
+            app.clearLayerDefObj();
             app.layerDef = null;
         }
         

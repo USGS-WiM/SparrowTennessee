@@ -113,6 +113,7 @@ require([
     app.geocoder.on('select', geocodeSelect);
     app.geocoder.on('findResults', geocodeResults);
     app.geocoder.on('clear', clearFindGraphics);
+    var layerDefObj = {};
 
 
     //load additional basemap
@@ -124,6 +125,39 @@ require([
     for (var key in queryParameters){
         setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, [queryParameters[key].nameField], "1=1");
     }
+
+    app.setLayerDefObj = function(newObj){
+        switch(newObj.selectedId){
+            case "st-select":
+                layerDefObj.AOI1 = newObj.selectedValue;
+                //updateAOI2('st');
+                //updateAOI1('st');
+                
+                break;
+            case "grp1-select":
+                layerDefObj.AOI2 = newObj.selectedValue;
+                /*updateAOIST('grp1')
+                updateAOI2('grp1');*/
+                break;
+            case "grp2-select":
+                layerDefObj.AOI3 = newObj.selectedValue;
+                /*updateAOI1('grp2');
+                updateAOIST('grp2');*/
+                break;
+        }
+    }
+
+    app.clearLayerDefObj = function(){
+        layerDefObj = {};
+    }
+
+    app.getLayerDefObj = function(){
+        return layerDefObj;
+    }
+
+    /*app.updateAOI2 = function(changedAOI){
+
+    }*/
 
     app.initMapScale = function() {
         var scale = app.map.getScale().toFixed(0);
@@ -964,6 +998,15 @@ require([
 
     /* AOI EVENTS */
     $('.aoiSelect').on('change', AOIChange);
+
+    /*$('.aoiSelect').on('change', function(e){
+        AOIChange(e);
+        if( $("#chartWindowDiv").css("visibility") == "visible" ) {
+            createChartQuery();
+        }
+    });*/
+
+
 
     //removed from eventhandlers________________________________________________________________________________________
     /*GROUP RESULTS*/

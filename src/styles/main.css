@@ -413,3 +413,7 @@ input[type="checkbox"], input[type="radio"] {
     top:65px !important;
 }
 */
+
+.navbar-brand>img{
+    display: inline-block;
+}
