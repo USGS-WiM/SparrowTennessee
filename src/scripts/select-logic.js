@@ -219,26 +219,26 @@ function AOIChange(e){
 function setLayerDefs(){
         var definitionString = "";
         var layerDefObj = app.getLayerDefObj();
-        if (layerDefObj.AOI1){
+        if (layerDefObj.AOIST){
             if(definitionString != ""){
-                definitionString += " AND ST = "+ "'" + layerDefObj.AOI1 + "'";
+                definitionString += " AND ST = "+ "'" + layerDefObj.AOIST + "'";
             } else{
-               definitionString += "ST = "+ "'" + layerDefObj.AOI1 + "'"; 
+               definitionString += "ST = "+ "'" + layerDefObj.AOIST + "'"; 
             }
         }
-        if (layerDefObj.AOI2){
+        if (layerDefObj.AOI1){
             if(definitionString != ""){
-                definitionString += " AND GRP_1_NAM = "+ "'" + layerDefObj.AOI2 + "'";
+                definitionString += " AND GRP_1_NAM = "+ "'" + layerDefObj.AOI1 + "'";
             }else{
-                definitionString += "GRP_1_NAM = "+ "'" + layerDefObj.AOI2 + "'";
+                definitionString += "GRP_1_NAM = "+ "'" + layerDefObj.AOI1 + "'";
             }
             
         }
-        if (layerDefObj.AOI3){
+        if (layerDefObj.AOI2){
             if(definitionString != ""){
-               definitionString += " AND GRP_2_NAM = "+ "'" + layerDefObj.AOI3 + "'";
+               definitionString += " AND GRP_2_NAM = "+ "'" + layerDefObj.AOI2 + "'";
             }else{
-                definitionString += "GRP_2_NAM = "+ "'" + layerDefObj.AOI3 + "'";
+                definitionString += "GRP_2_NAM = "+ "'" + layerDefObj.AOI2 + "'";
             }
         }
         
@@ -577,7 +577,6 @@ function generateRenderer(){
         }
         else{
             app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(); //is this necessary?
-            app.clearLayerDefObj();
             app.layerDef = null;
         }
         
