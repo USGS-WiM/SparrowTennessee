@@ -783,26 +783,26 @@ var Group1_st_tn = [
 
 var queryParameters = {
     grp3: {idField: "GRP_3_NUM",
-        nameField: "GRP_3_NAM",
+        nameField: ["GRP_3_NAM", "GRP_2_NAM", "GRP_1_NAM", "ST"], //actually set in core.js for loop currently
         alias: "HUC10",
-        serviceId: 0,
+        serviceId: 4,
         AOISelect: false
     },
     grp2: {idField: "GRP_2_NUM",
-        nameField: "GRP_2_NAM",
+        nameField: ["GRP_2_NAM"],
         alias: "HUC8",
         serviceId: 1,
         AOISelect: true
 
     },
     grp1: {idField: "GRP_1_NUM",
-        nameField: "GRP_1_NAM",
+        nameField: ["GRP_1_NAM"],
         alias: "Independent Watershed",
         serviceId: 2,
         AOISelect: true
     },
     st: {idField: "ST",
-        nameField: "ST",
+        nameField: ["ST"],
         alias: "State",
         serviceId: 3,
         AOISelect: true

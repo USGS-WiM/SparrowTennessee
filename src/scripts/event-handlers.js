@@ -6,18 +6,26 @@ function loadEventHandlers() {
         generateRenderer();
     });
 
-    //keep Displayed Metric options in sync -- can be moved to sidebar events lower in code
+   /* //keep Displayed Metric options in sync -- can be moved to sidebar events lower in code
     $("#groupResultsSelect").on('changed.bs.select', function(e){  
         populateMetricOptions(e.currentTarget.selectedIndex);
         setAggregateGroup( e.currentTarget.selectedIndex, $(".radio input[type='radio']:checked")[0].id );
         generateRenderer();
+
+        if( $("#chartWindowDiv").css("visibility") == "visible" ) {
+            createChartQuery();
+        }
         
     });
 
     //TODO TEMPORARY SOLOUTION?  MUST CALL RENDERER WHEN DISPLAYED METRIC CHANGES
         $("#displayedMetricSelect").on('changed.bs.select', function(e){
         generateRenderer();
-        });
+
+        if( $("#chartWindowDiv").css("visibility") == "visible" ) {
+            createChartQuery();
+        }
+        });*/
 
     //following block forces map size to override problems with default behavior
     $(window).resize(function () {
