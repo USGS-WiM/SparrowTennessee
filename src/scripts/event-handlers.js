@@ -69,7 +69,19 @@ function loadEventHandlers() {
     });
 
     //end code for adding draggability to infoWindow
-    app.map.on("click", function(evt) { app.executeIdentifyTask(evt) });
+    app.map.on("click", function(evt) { 
+        app.identifyParams = new esri.tasks.IdentifyParameters();
+        app.identifyParams.tolerance = 8;
+        app.identifyParams.returnGeometry = true;
+        app.identifyParams.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_VISIBLE;
+        app.identifyParams.width  = app.map.width;
+        app.identifyParams.height = app.map.height;
+        app.identifyTask = new esri.tasks.IdentifyTask(serviceBaseURL); 
+        if (app.map.getLayer("SparrowRanking").layerDefinitions){
+            app.identifyParams.layerDefinitions = app.map.getLayer("SparrowRanking").layerDefinitions;
+        }
+        app.executeIdentifyTask(evt) 
+    });
 
     //on clicks to swap basemap.app.map.removeLayer is required for nat'l map b/c it is not technically a basemap, but a tiled layer.
     $("#btnStreets").on('click', function () {

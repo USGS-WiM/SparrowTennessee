@@ -186,19 +186,7 @@ function AOIChange(e){
         selectedId: selectId,
         selectedValue: selectValue
     }
-
-
-/*    var newObj = {
-        state:"",
-        watershed:"",
-        huc8:"",
-        selectId: selectId,
-        selectedItem: e.currentTarget.value,
-        sparrowRankingId: app.map.getLayer('SparrowRanking').visibleLayers[0]
-    }
-*/
     
-
     if (selectId == "st-select" && groupResultsIndex != 3) {
         //if not already on a state split layer, set one now.
         //TODO: figure out how you can access the current layers to see if you're on a split layer.  
@@ -215,10 +203,11 @@ function AOIChange(e){
 
 } //END AOIChange()
 
-//function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
+
 function setLayerDefs(){
         var definitionString = "";
         var layerDefObj = app.getLayerDefObj();
+        
         if (layerDefObj.AOIST){
             if(definitionString != ""){
                 definitionString += " AND ST = "+ "'" + layerDefObj.AOIST + "'";
