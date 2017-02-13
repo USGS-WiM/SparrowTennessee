@@ -429,7 +429,7 @@ require([
         var calibrationId;
         for (i in visLayers){
             if (visLayers[i].id == "nitroCalibration" && app.map.getLayer('nitroCalibration').visible == true){
-                calibrationId = app.map.getLayer("phosCalibration").visibleLayers[0];
+                calibrationId = app.map.getLayer("nitroCalibration").visibleLayers[0];
                 app.identifyParams.layerIds.push(calibrationId);
                 
             }
@@ -443,42 +443,71 @@ require([
         app.identifyParams.mapExtent = app.map.extent;
         
         var deferred = app.identifyTask.execute(app.identifyParams).addCallback(function(response){
-            console.log(response);
+
+            var calibrationInfoWindow = false;
+            
+            //check response length to make sure a feature was clicked  (handles Layerdefs automatically)
             if (response.length >= 1){
                 $.each(response, function(index, responseObj){
-                    if (responseObj.layerId == '14' || responseObj.layerId == '15'){
+                    //Phosphorus Calibration Site InfoWindow
+                    if (responseObj.layerId == '14'){
+                        var model = "Phosphorus";
                         var calibrationTemplate = new esri.InfoTemplate();
-                        calibrationTemplate.setTitle("SPARROW Calibration Site");
+                        calibrationTemplate.setTitle('SPARROW ' + model + ' Calibration Site');
                         calibrationTemplate.setContent('<div><b>Station Name:</b> ' + responseObj.feature.attributes.name + '</div><br>' +
                                                         '<div><b>Station ID:</b> </b>' + responseObj.feature.attributes.staid + '</div><br>' +
                                                         '<div><b>SPARROW Reach ID: </b>' + responseObj.feature.attributes.MRB_ID + '</div><br>'+
                                                         '<div><b>Fluxmaster Load' + chartUnits +': </b>' + responseObj.feature.attributes.LOAD_A_665 + '</div><br>' +
-                                                        '<div><b>SPARROW Estimated Load (lbs./yr.): </b>' + responseObj.feature.attributes.PLOAD_665 + '</div><br>');
+                                                        '<div><b>SPARROW Estimated Load ' + chartUnits +': </b>' + responseObj.feature.attributes.PLOAD_665 + '</div><br>');
                 
                         var graphic = new Graphic();
                         var feature = graphic;
                         responseObj.feature.setInfoTemplate(calibrationTemplate);
                         app.map.infoWindow.setFeatures([responseObj.feature]);
                         app.map.infoWindow.show(evt.mapPoint);
-                    } else{
-                        var fields = getChartOutfields( app.map.getLayer('SparrowRanking').visibleLayers[0] );
-                        var template = new esri.InfoTemplate();
-                        template.setTitle(fields[0].label + ": " + response[0].value);
-                        template.setContent('<div class="btn"><button type="button" onclick="createChartQuery" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></div>');
+                        calibrationInfoWindow = true;
+                    }
 
-
+                    //Phosphorus Calibration Site InfoWindow
+                    if (responseObj.layerId == '15'){
+                        var model = "Nitrogen";
+                        var calibrationTemplate = new esri.InfoTemplate();
+                        calibrationTemplate.setTitle('SPARROW ' + model + ' Calibration Site');
+                        calibrationTemplate.setContent('<div><b>Station Name:</b> ' + responseObj.feature.attributes.name + '</div><br>' +
+                                                        '<div><b>Station ID:</b> </b>' + responseObj.feature.attributes.staid + '</div><br>' +
+                                                        '<div><b>SPARROW Reach ID: </b>' + responseObj.feature.attributes.MRB_ID + '</div><br>'+
+                                                        '<div><b>Fluxmaster Load' + chartUnits +': </b>' + responseObj.feature.attributes.LOAD_A_600 + '</div><br>' +
+                                                        '<div><b>SPARROW Estimated Load ' + chartUnits +': </b>' + responseObj.feature.attributes.PLOAD_600 + '</div><br>');
+                
                         var graphic = new Graphic();
                         var feature = graphic;
-                        feature.setInfoTemplate(template);
-                        app.map.infoWindow.setFeatures([feature]);
+                        responseObj.feature.setInfoTemplate(calibrationTemplate);
+                        app.map.infoWindow.setFeatures([responseObj.feature]);
                         app.map.infoWindow.show(evt.mapPoint);
-                        $("#popupChartButton").on('click', createChartQuery);
+                        calibrationInfoWindow = true;
+                    
                     }
                 });
-            }
-            
-        });
-    }
+
+
+                if (calibrationInfoWindow != true){
+                    var fields = getChartOutfields( app.map.getLayer('SparrowRanking').visibleLayers[0] );
+                    var template = new esri.InfoTemplate();
+                    template.setTitle(fields[0].label + ": " + response[0].value);
+                    template.setContent('<div class="btn"><button type="button" onclick="createChartQuery" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></div>');
+
+
+                    var graphic = new Graphic();
+                    var feature = graphic;
+                    feature.setInfoTemplate(template);
+                    app.map.infoWindow.setFeatures([feature]);
+                    app.map.infoWindow.show(evt.mapPoint);
+                    $("#popupChartButton").on('click', createChartQuery);
+                
+                }       
+            }         
+        }); //END deferred callback
+    } //END executeIdentifyTask();
 
     // Symbols
     var sym = createPictureSymbol('../images/purple-pin.png', 0, 12, 13, 24);
