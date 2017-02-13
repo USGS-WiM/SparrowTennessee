@@ -112,7 +112,7 @@ require([
     app.geocoder.startup();
     app.geocoder.on('select', geocodeSelect);
     app.geocoder.on('findResults', geocodeResults);
-    app.geocoder.on('clear', clearFindGraphics);
+    app.geocoder.on('clear', app.clearFindGraphics);
     var layerDefObj = {};
     var AllAOIOptions = [];
 
@@ -153,6 +153,10 @@ require([
         app.updateAOIs(newObj.selectedId);
     }
 
+    app.getLayerDefObj = function(){
+        return layerDefObj;
+    }
+
     app.clearLayerDefObj = function(){
         layerDefObj = {};
         $("#st-select").empty();
@@ -160,11 +164,6 @@ require([
         $("#grp2-select").empty();
         //UPDATE NOTE: add empty method for addtl. AOI selects
         defaultAOIOptions();
-
-    }
-
-    app.getLayerDefObj = function(){
-        return layerDefObj;
     }
 
     app.updateAOIs = function(selectedId){
@@ -360,11 +359,6 @@ require([
         } 
     }
 
-    app.updateAOI2 = function(changedAOI){
-        console.log('changed AOI: ' + changedAOI);
-    }
-
-
     app.initMapScale = function() {
         var scale = app.map.getScale().toFixed(0);
         $('#scale')[0].innerHTML = addCommas(scale);
@@ -411,13 +405,6 @@ require([
         }
     }
 
-
-    
-
-    function getInfoWindowContent(){
-        console.log('in getInfoWindowContent');
-    }
-
     app.executeIdentifyTask = function(evt){
         console.log(evt)
         var sparrowLayer = app.map.getLayer("SparrowRanking").visibleLayers[0];
@@ -442,6 +429,7 @@ require([
         app.identifyParams.geometry = evt.mapPoint;
         app.identifyParams.mapExtent = app.map.extent;
         
+        //Deferred callback
         var deferred = app.identifyTask.execute(app.identifyParams).addCallback(function(response){
 
             var calibrationInfoWindow = false;
@@ -494,7 +482,7 @@ require([
                     var fields = getChartOutfields( app.map.getLayer('SparrowRanking').visibleLayers[0] );
                     var template = new esri.InfoTemplate();
                     template.setTitle(fields[0].label + ": " + response[0].value);
-                    template.setContent('<div class="btn"><button type="button" onclick="createChartQuery" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></div>');
+                    template.setContent('<div class="btn"><button type="button" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></div>');
 
 
                     var graphic = new Graphic();
@@ -502,19 +490,56 @@ require([
                     feature.setInfoTemplate(template);
                     app.map.infoWindow.setFeatures([feature]);
                     app.map.infoWindow.show(evt.mapPoint);
-                    $("#popupChartButton").on('click', createChartQuery);
+                    $("#popupChartButton").on('click', app.createChartQuery);
                 
                 }       
             }         
         }); //END deferred callback
     } //END executeIdentifyTask();
 
-    // Symbols
-    var sym = createPictureSymbol('../images/purple-pin.png', 0, 12, 13, 24);
+    app.clearFindGraphics = function clearFindGraphics() {
+        app.map.infoWindow.hide();
+        app.map.graphics.clear();
+    }
 
-    var selectionSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, 
-        new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
-        new Color([255, 0, 0]), 2), new Color([255,255, 0, 0.5])); 
+    app.createChartQuery = function(){
+
+        $("#chartContainer").empty();
+        console.log('creating chart query');
+        var chartQueryTask;
+        var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
+        if (app.map.getLayer('SparrowRanking').layerDefinitions){
+            var whereClause = app.map.getLayer('SparrowRanking').layerDefinitions[sparrowLayerId];
+        } else{
+            var whereClause = "1=1";
+        }
+
+        //add map layer ID to query URL
+        var SparrowRankingUrl = serviceBaseURL + sparrowLayerId;
+
+        //setup QueryTask
+        chartQueryTask = new esri.tasks.QueryTask(SparrowRankingUrl);
+
+        //Returns chartOutfields Object form config --i.e. {attribute: "VALUE", label: "VALUE"} 
+        var chartFieldsObj = getChartOutfields(sparrowLayerId); 
+        
+        //grab attributes from chartOutfields object
+        var outfieldsArr = [];
+        $.each(chartFieldsObj, function(index, obj){
+            outfieldsArr.push( obj.attribute ); //get attribute value ONLY
+        });
+
+        //setup esri query
+        var chartQuery = new esri.tasks.Query();
+        chartQuery.returnGeometry = false;
+        chartQuery.outFields = outfieldsArr;
+        chartQuery.where = whereClause;
+
+        chartQueryTask.execute(chartQuery, showChart);
+
+    }//END app.createChartQuery
+
+   
 
     function setupQueryTask(url, outFieldsArr, whereClause){
         var queryTask;
@@ -569,6 +594,13 @@ require([
 
     }
 
+    // Symbols
+    var sym = createPictureSymbol('../images/purple-pin.png', 0, 12, 13, 24);
+
+    var selectionSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, 
+        new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
+        new Color([255, 0, 0]), 2), new Color([255,255, 0, 0.5])); 
+
 
     // Optionally confine search to map extent
     function setSearchExtent (){
@@ -588,7 +620,7 @@ require([
         $('#geosearchModal').modal('hide');
     }
     function geocodeSelect(item) {
-        clearFindGraphics();
+        app.clearFindGraphics();
         var g = (item.graphic ? item.graphic : item.result.feature);
         g.setSymbol(sym);
         //addPlaceGraphic(item.result,g.symbol);
@@ -598,7 +630,7 @@ require([
     function geocodeResults(places) {
         places = places.results;
         if (places.length > 0) {
-            clearFindGraphics();
+            app.clearFindGraphics();
             var symbol = sym;
             // Create and add graphics with pop-ups
             for (var i = 0; i < places.length; i++) {
@@ -642,11 +674,6 @@ require([
         app.map.setExtent(multiPoint.getExtent().expand(2.0));
     }
 
-    function clearFindGraphics() {
-        app.map.infoWindow.hide();
-        app.map.graphics.clear();
-    }
-
     function createPictureSymbol(url, xOffset, yOffset, xWidth, yHeight) {
         return new PictureMarkerSymbol(
             {
@@ -658,7 +685,7 @@ require([
             });
     }
 
-    function createChartQuery(){
+/*    function createChartQuery(){
         $("#chartContainer").empty();
         console.log('creating chart query');
         var chartQueryTask;
@@ -692,7 +719,7 @@ require([
 
         chartQueryTask.execute(chartQuery, showChart);
 
-    }
+    }*/
 
     function showChart(response){
 
@@ -998,7 +1025,6 @@ require([
             
         });
 
-
         //need listener to resize chart
         $("#chartWindowDiv").resize(function() {
             var height = $("#chartWindowDiv").height()
@@ -1049,9 +1075,7 @@ require([
                             }
                             $("#resetButton").prop("disabled", false);
                             return true; // Zoom to selected bars
-                            
                         }
-                        
                     }
                 },
                 title:{
@@ -1180,18 +1204,18 @@ require([
                 },
                 series: series
             });
-        });
-
-        //Custom Reset button
-        $('#resetButton').click(function() {
-            var chart = $('#chartContainer').highcharts();
-            chart.xAxis[0].setExtremes(null,null);
-            $("#resetButton").prop("disabled", true);
-            //chart.resetZoomButton.hide();
-        });
+            //Custom Reset Button
+            $('#resetButton').click(function() {
+                var chart = $('#chartWindowContainer').highcharts();
+                chart.xAxis[0].setExtremes(null,null);
+                $("#resetButton").prop("disabled", true);
+                //chart.resetZoomButton.hide();
+            });
+        
+        }); //END self-invoking highcharts function
 
         $("#downloadXLS").click(function(){
-            var chart = $('#chartContainer').highcharts();
+            var chart = $('#chartWindowContainer').highcharts();
             alert(chart.getCSV());
             //window.open('data:application/vnd.ms-excel,' + chart.getTable() );
         });
@@ -1240,7 +1264,7 @@ require([
     /* HANDLE SIDEBAR UI EVENTS_____________________________________________________________*/
 
     /*RADIO EVENTS*/
-    $('.radio').on('change', function(e){
+    /*$('.radio').on('change', function(e){
         var groupBySelectedIndex = $("#groupResultsSelect")[0].selectedIndex;
         var selectedRadio = this.firstElementChild.id;
         
@@ -1250,48 +1274,40 @@ require([
 
         //reflow the chart if it's open
         if( $("#chartWindowDiv").css("visibility") == "visible" ) {
-            createChartQuery();
-        }
-    });
-
-
-    /* AOI EVENTS */
-    $('.aoiSelect').on('change', AOIChange);
-
-    /*$('.aoiSelect').on('change', function(e){
-        AOIChange(e);
-        if( $("#chartWindowDiv").css("visibility") == "visible" ) {
-            createChartQuery();
+            app.createChartQuery();
         }
     });*/
 
 
+    /* AOI EVENTS */
+    //$('.aoiSelect').on('change', AOIChange);
 
     //removed from eventhandlers________________________________________________________________________________________
     /*GROUP RESULTS*/
-    $("#groupResultsSelect").on('changed.bs.select', function(e){  
+/*    $("#groupResultsSelect").on('changed.bs.select', function(e){  
         populateMetricOptions(e.currentTarget.selectedIndex);
         setAggregateGroup( e.currentTarget.selectedIndex, $(".radio input[type='radio']:checked")[0].id );
         generateRenderer();
 
         if( $("#chartWindowDiv").css("visibility") == "visible" ) {
-            createChartQuery();
+            app.map.graphics.clear();
+            app.createChartQuery();
         }
         
-    });
+    });*/
 
     /*METRIC*/
-    $("#displayedMetricSelect").on('changed.bs.select', function(e){
+    /*$("#displayedMetricSelect").on('changed.bs.select', function(e){
         generateRenderer();
 
         if( $("#chartWindowDiv").css("visibility") == "visible" ) {
-            createChartQuery();
+            app.createChartQuery();
         }
-    });
+    });*/
     //END removed from eventhandlers________________________________________________________________________________________
 
     /*CLEAR AOI SELECTIONS */
-    $("#clearAOIButton").on('click', function(){
+    /*$("#clearAOIButton").on('click', function(){
         var sparrowId = app.map.getLayer('SparrowRanking').visibleLayers[0];
         
         //revert to default layer from split layer
@@ -1319,11 +1335,15 @@ require([
         app.clearLayerDefObj();
         generateRenderer();
 
-    });
+        if( $("#chartWindowDiv").css("visibility") == "visible" ) {
+            app.createChartQuery();
+        }
+
+    });*/
 
 
     // enable/disable Show Chart button 
-    $('.nonAOISelect').on('change', function(){
+    /*$('.nonAOISelect').on('change', function(){
         if ($('#groupResultsSelect')[0].selectedIndex == 0){
             if ($('#displayedMetricSelect')[0].selectedIndex == 4 || $('#displayedMetricSelect')[0].selectedIndex == 5){
                 $("#chartButton").addClass('disabled');
@@ -1337,10 +1357,10 @@ require([
             $("#chartButton").removeClass('disabled');
             $("#chartButton").removeAttr('disabled');
         }
-    });
+    });*/
 
     //Start the Chart Chain of Events
-    $("#chartButton").on("click", createChartQuery);
+    //$("#chartButton").on("click", app.createChartQuery);
 
     /* END UI SIDEBAR EVENTS______________________________________________________________*/
 

@@ -167,7 +167,7 @@ function setAggregateGroup(groupBySelectedIndex, selectedRadio){
     }
     var visibleLayerIds = [layerArrayValue];
     var sparrowRanking = app.map.getLayer('SparrowRanking');
-    sparrowRanking.setVisibleLayers(visibleLayerIds, true);
+    sparrowRanking.setVisibleLayers(visibleLayerIds);
 
 
     //generateRenderer();
@@ -176,7 +176,7 @@ function setAggregateGroup(groupBySelectedIndex, selectedRadio){
 } //END setAggregateGroup()
 
 function AOIChange(e){
-
+    
     var selectId = e.currentTarget.id;
     var selectValue = e.currentTarget.value;
     var groupResultsIndex = $("#groupResultsSelect")[0].selectedIndex;
@@ -200,6 +200,11 @@ function AOIChange(e){
     setLayerDefs();    
 
     generateRenderer();
+
+    if( $("#chartWindowDiv").css("visibility") == "visible" ) {
+        app.map.graphics.clear();
+        app.createChartQuery();
+    }
 
 } //END AOIChange()
 
