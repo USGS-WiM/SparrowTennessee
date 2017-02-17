@@ -14,6 +14,7 @@ function loadEventHandlers() {
             app.createChartQuery();
         }
     });
+    /*END RADIO EVENTS*/
 
 
     /* AOI EVENTS */
@@ -23,15 +24,27 @@ function loadEventHandlers() {
     //set initial Displayed Metric options
     $('#groupResultsSelect').on('loaded.bs.select', function(){  
         populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
+
+        if ( $("#groupResultsSelect")[0].selectedIndex == 0 ) {
+            $("#tableButton").show();
+        } else{
+            $("#tableButton").hide();
+        }
         generateRenderer();
     });
 
    //keep Displayed Metric options in sync 
     $("#groupResultsSelect").on('changed.bs.select', function(e){ 
         app.clearFindGraphics(); 
+        if ( $("#groupResultsSelect")[0].selectedIndex == 0 ) {
+            $("#tableButton").show();
+        } else{
+            $("#tableButton").hide();
+        }
         populateMetricOptions(e.currentTarget.selectedIndex);
         setAggregateGroup( e.currentTarget.selectedIndex, $(".radio input[type='radio']:checked")[0].id );
         generateRenderer();
+
 
         if( $("#chartWindowDiv").css("visibility") == "visible" ) {
             app.map.graphics.clear();
@@ -39,6 +52,7 @@ function loadEventHandlers() {
         }
         
     });
+    /*END GROUP RESULTS (AGGREGATE LAYER) EVENTS */
     
     /*METRIC EVENTS*/
     $("#displayedMetricSelect").on('changed.bs.select', function(e){
@@ -48,6 +62,7 @@ function loadEventHandlers() {
             app.createChartQuery();
         }
     });
+    /*END METRIC EVENTS*/
 
     /* CLEAR AOI BUTTON EVENT */
     $("#clearAOIButton").on('click', function(){
@@ -83,6 +98,7 @@ function loadEventHandlers() {
         }
 
     });
+    /*END CLEAR AOI BUTTON EVENT */
  
 
     /* ENABLE/DISABLE SHOW CHART BUTTON PROGRAMATICALLY */
@@ -103,9 +119,9 @@ function loadEventHandlers() {
     });
 
     /* SHOW CHART BUTTON CLICK */
-    //set up the Chart chain of events
    $("#chartButton").on("click", function(){
-        app.createChartQuery();
+        //set up the Chart chain of events
+        app.createChartQuery();  
     });
 
     //following block forces map size to override problems with default behavior

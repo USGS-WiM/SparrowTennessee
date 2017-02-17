@@ -480,9 +480,23 @@ require([
 
                 if (calibrationInfoWindow != true){
                     var fields = getChartOutfields( app.map.getLayer('SparrowRanking').visibleLayers[0] );
+                    var attributes = response[0].feature.attributes;
+                    var valuePairs = {};
+
+                    $.each(fields, function(index, obj){
+                        console.log(obj.attribute);
+                    });
+
                     var template = new esri.InfoTemplate();
+                    
                     template.setTitle(fields[0].label + ": " + response[0].value);
-                    template.setContent('<div class="btn"><button type="button" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></div>');
+                    template.setContent(/*'<div><b>Station Name:</b> ' + responseObj.feature.attributes.name + '</div><br>' +
+                                                        '<div><b>Station ID:</b> </b>' + responseObj.feature.attributes.staid + '</div><br>' +
+                                                        '<div><b>SPARROW Reach ID: </b>' + responseObj.feature.attributes.MRB_ID + '</div><br>'+
+                                                        '<div><b>Fluxmaster Load' + chartUnits +': </b>' + responseObj.feature.attributes.LOAD_A_600 + '</div><br>' +
+                                                        '<div><b>SPARROW Estimated Load ' + chartUnits +': </b>' + responseObj.feature.attributes.PLOAD_600 + '</div><br>'*/
+                        '<div class="btn"><button type="button" class="btn btn-primary" id="popupSmallChartButton"><span class="glyphicon glyphicon-signal"></span> Show Chart</button></div><br>'
+                        +'<div class="btn"><button type="button" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></div>');
 
 
                     var graphic = new Graphic();
@@ -490,6 +504,8 @@ require([
                     feature.setInfoTemplate(template);
                     app.map.infoWindow.setFeatures([feature]);
                     app.map.infoWindow.show(evt.mapPoint);
+                    //showChart(response[0]); //CHECK RESPONSE DATA
+                    //$("#popupSmallChartButton").on('click', showChart(response));
                     $("#popupChartButton").on('click', app.createChartQuery);
                 
                 }       
@@ -497,10 +513,48 @@ require([
         }); //END deferred callback
     } //END executeIdentifyTask();
 
+
     app.clearFindGraphics = function clearFindGraphics() {
         app.map.infoWindow.hide();
         app.map.graphics.clear();
     }
+
+    app.createTableQuery = function(){
+         $("#resultsTable").empty();
+
+        var tableQueryTask;
+        var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
+        if (app.map.getLayer('SparrowRanking').layerDefinitions){
+            var whereClause = app.map.getLayer('SparrowRanking').layerDefinitions[sparrowLayerId];
+        } else{
+            var whereClause = "1=1";
+        }
+
+        //add map layer ID to query URL
+        var SparrowRankingUrl = serviceBaseURL + sparrowLayerId;
+
+        //setup QueryTask
+        tableQueryTask = new esri.tasks.QueryTask(SparrowRankingUrl);
+
+        //Returns chartOutfields Object form config --i.e. {attribute: "VALUE", label: "VALUE"} 
+        //var chartFieldsObj = getChartOutfields(sparrowLayerId); 
+        
+        //grab attributes from chartOutfields object
+        /*var outfieldsArr = [];
+        $.each(chartFieldsObj, function(index, obj){
+            outfieldsArr.push( obj.attribute ); //get attribute value ONLY
+        });*/
+
+        //setup esri query
+        var tableQuery = new esri.tasks.Query();
+        tableQuery.returnGeometry = false;
+        //tableQuery.outFields = outfieldsArr;
+        tableQuery.outFields = ['*'];
+        tableQuery.where = whereClause;
+
+        tableQueryTask.execute(tableQuery, buildTable);
+
+    }//END createTableQuery()
 
     app.createChartQuery = function(){
 
@@ -1222,6 +1276,40 @@ require([
       
     } //END ShowChart()
 
+    function buildTable(response){
+        console.log('in response');
+        var table = $("#resultsTable");
+        //var header = table.createTHead();
+        //var header = table.find("thead");
+        //var row = $("</tr>").appendTo(header);
+
+        $("#resultsTable").append("<thead></thead>");
+        $( "#resultsTable" ).find( "thead" ).append("<tr id='headerRow'></tr>");
+
+        $.each(response.features[0].attributes, function(key, value){
+            $('#headerRow').append("<th>" + key + "</th>");
+        });
+        //$("#tableContainer").append(table);
+       
+       $('#resultsTable').append("<tbody id='tableBody'></tbody>");
+        $.each(response.features, function(rowIndex, feature) {
+            console.log('feature(outer)' + feature);
+            var rowI = rowIndex;
+            //var tr = "<tr id='row"+rowIndex+"'></tr>";
+            $("#tableBody").append("<tr id='row"+rowIndex+"'></tr>");
+            $.each(feature.attributes, function(key, value){
+                var td = '<td>'+ value +'</td>';
+                $('#row'+ rowI +'').append(td);
+                /*$.each(obj, function(colIndex, c) { 
+                                        
+                });*/
+               // table.append(row);
+            });
+        });  
+        
+    //return container.append(table);
+    }//END buildTable
+
 
     function showModal() {
         $('#geosearchModal').modal('show');
@@ -1237,6 +1325,12 @@ require([
     $('#aboutNav').click(function(){
         showAboutModal();
     });
+
+    function showTableModal () {
+        app.createTableQuery();
+        $('#tableModal').modal('show');
+    }
+    $('#tableButton').on('click', showTableModal);
 
     $("#html").niceScroll();
     $("#sidebar").niceScroll();

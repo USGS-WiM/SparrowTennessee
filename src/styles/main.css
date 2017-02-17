@@ -417,3 +417,16 @@ input[type="checkbox"], input[type="radio"] {
 .navbar-brand>img{
     display: inline-block;
 }
+
+#tableContainer{
+    overflow:auto;
+    /*font-size: 10px;*/
+}
+
+#tableBody{
+    font-size:8px;
+}
+
+.table thead tr td{
+    font-size: 10px;
+}
