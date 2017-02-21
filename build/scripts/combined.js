@@ -25,6 +25,14 @@ var chartUnits = " (lb./yr.)"
 
 var splitLayers = [4,5,6,11,12,13]; //important! UPDATE layer Ids of all state split layers
 
+var tableOutFields = [
+    { field: "FID", name: "Feature ID"}, 
+    { field: "GRP_1_NAM", name: "Independent Watershed name (in which HUC10 is nested)"},
+    { field: "GRP_2_NAM", name: "HUC8 (in which HUC10 is nested)"},
+    { field: "Area_g3", name: "HUC10 area (mi2)"},
+    { field: "GRP_3_NA_1", name: "HUC10"}
+]
+
 ////PHOSPHORUS LAYER GROUPS______________________________________________________________________________________________________________________________
 //HUC10 Metric choices, service Id 0
 var Group3 = [
@@ -40,7 +48,7 @@ var Group3 = [
             { attribute: "dl1_g3_sc4", label: "Mined-land load from HUC10 delivered to downstream boundary (lb/yr)"},
             { attribute: "dl1_g3_sc5", label: "Manure load from HUC10 delivered to downstream boundary (lb/yr)"},
             { attribute: "dl1_g3_sc6", label: "Agricultural-land load from HUC10 delivered to downstream boundary (lb/yr)"}
-        ]
+        ] 
     },
 	{
         field: "dy1_g3_tot", 
@@ -2252,37 +2260,49 @@ require([
       
     } //END ShowChart()
 
+    $("#tableResizable").resizable({
+        handles: 'n'
+    });
+
     function buildTable(response){
-        console.log('in response');
+        
         var table = $("#resultsTable");
-        //var header = table.createTHead();
-        //var header = table.find("thead");
-        //var row = $("</tr>").appendTo(header);
+        var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
+        if (sparrowLayerId == 0){
+            $("#tableTitle").html("Phosphorus");
+        } else{
+            $("#tableTitle").html("Nitrogen");
+        }
+
 
         $("#resultsTable").append("<thead></thead>");
         $( "#resultsTable" ).find( "thead" ).append("<tr id='headerRow'></tr>");
 
         $.each(response.features[0].attributes, function(key, value){
-            $('#headerRow').append("<th>" + key + "</th>");
+            var headerLabel = getTableFields(key, sparrowLayerId);
+            $('#headerRow').append("<th>" + headerLabel + "</th>");
         });
-        //$("#tableContainer").append(table);
+
        
        $('#resultsTable').append("<tbody id='tableBody'></tbody>");
         $.each(response.features, function(rowIndex, feature) {
             console.log('feature(outer)' + feature);
             var rowI = rowIndex;
-            //var tr = "<tr id='row"+rowIndex+"'></tr>";
+
             $("#tableBody").append("<tr id='row"+rowIndex+"'></tr>");
             $.each(feature.attributes, function(key, value){
                 var td = '<td>'+ value +'</td>';
                 $('#row'+ rowI +'').append(td);
-                /*$.each(obj, function(colIndex, c) { 
-                                        
-                });*/
-               // table.append(row);
+
             });
         });  
-        
+    
+    
+    $('#tableResizable').show();
+    
+    var newWidth = $("#resultsTable").width();
+    $('.ui-widget-header').css('width', newWidth );
+    $('.ui-resizable-handle').css('width', newWidth );
     //return container.append(table);
     }//END buildTable
 
@@ -2302,17 +2322,22 @@ require([
         showAboutModal();
     });
 
-    function showTableModal () {
+   /* function showTableModal () {
         app.createTableQuery();
         $('#tableModal').modal('show');
     }
-    $('#tableButton').on('click', showTableModal);
+    $('#tableButton').on('click', showTableModal);*/
 
     $("#html").niceScroll();
     $("#sidebar").niceScroll();
     $("#sidebar").scroll(function () {
         $("#sidebar").getNiceScroll().resize();
     });
+
+    function showTableResizeable(){
+        app.createTableQuery();
+    }
+    $('#tableButton').on('click', showTableResizeable);
 
     $("#legendDiv").niceScroll();
 
@@ -3173,6 +3198,34 @@ function updateAOI(layerDefs, selectId){
         }//END filterAOI
     }); //END dojo require
 } //END updateAOI()
+
+function getTableFields(key, sparrowLayerId){
+    var label = "";
+    var flatArr = tableOutFields;
+    
+    var configArr = [];
+    if(sparrowLayerId == 0){
+        configArr = Group3;
+    } else{
+        configArr = Group3_tn;
+    }
+    
+    $.each(configArr, function(index, item){
+        flatArr.push({field: item.field, name: item.name});
+        $.each(item.chartOutfields, function(i, fields){
+            flatArr.push({field: fields.attribute, name: fields.label});
+        });  
+    });
+
+    $.each(flatArr, function(index, obj){
+        console.log(obj.name);
+        if(key == obj.field){
+            label = obj.name;
+            return false; //escape the each loop?
+        }
+    });
+    return label;
+}
 
 
 function getChartOutfields(sparrowLayerId){

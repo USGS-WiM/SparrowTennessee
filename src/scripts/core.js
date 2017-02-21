@@ -1276,14 +1276,18 @@ require([
       
     } //END ShowChart()
 
+    $("#tableResizable").resizable({
+        handles: 'n'
+    });
+
     function buildTable(response){
-        console.log('in response');
+        
         var table = $("#resultsTable");
         var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
         if (sparrowLayerId == 0){
-            $("#tableModalTitle").html("Phosphorus");
+            $("#tableTitle").html("Phosphorus");
         } else{
-            $("#tableModalTitle").html("Nitrogen");
+            $("#tableTitle").html("Nitrogen");
         }
 
 
@@ -1308,7 +1312,13 @@ require([
 
             });
         });  
-        
+    
+    
+    $('#tableResizable').show();
+    
+    var newWidth = $("#resultsTable").width();
+    $('.ui-widget-header').css('width', newWidth );
+    $('.ui-resizable-handle').css('width', newWidth );
     //return container.append(table);
     }//END buildTable
 
@@ -1328,17 +1338,22 @@ require([
         showAboutModal();
     });
 
-    function showTableModal () {
+   /* function showTableModal () {
         app.createTableQuery();
         $('#tableModal').modal('show');
     }
-    $('#tableButton').on('click', showTableModal);
+    $('#tableButton').on('click', showTableModal);*/
 
     $("#html").niceScroll();
     $("#sidebar").niceScroll();
     $("#sidebar").scroll(function () {
         $("#sidebar").getNiceScroll().resize();
     });
+
+    function showTableResizeable(){
+        app.createTableQuery();
+    }
+    $('#tableButton').on('click', showTableResizeable);
 
     $("#legendDiv").niceScroll();
 

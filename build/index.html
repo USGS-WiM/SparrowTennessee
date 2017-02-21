@@ -136,12 +136,12 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="tableModalTitle">Dynamic Table Title</h4>
+        <h4 class="modal-title" id="tableModalTitle"></h4>
       </div>
       <div class="modal-body">
-            <div id="tableContainer">
+            <!-- <div id="tableContainer">
                 <table class="table table-bordered" id="resultsTable"></table>
-            </div>
+            </div> -->
           <!-- <span>
               <button id="downloadXLS" class="btn btn-default" data-type="application/vnd.ms-excel">Export Data</button>
               <button id="resetButton" class="btn btn-default" disabled>Reset Zoom</button>
@@ -373,6 +373,11 @@
                 <!--LOBIPANEL EXPERIMENTAL________________________________________________________________________________________________________________________-->
             
             </div><!--END mapDiv-->
+
+            <div style="position:absolute; bottom:0; display:none;" id="tableResizable" class="ui-widget-content">
+                <h3 class="ui-widget-header" id="tableTitle"></h3>
+                    <table class="table table-bordered" id="resultsTable"></table>
+            </div>
 
             <div id="homeButton"></div>
             <div id="locateButton"></div>
