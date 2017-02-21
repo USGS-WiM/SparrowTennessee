@@ -1279,31 +1279,33 @@ require([
     function buildTable(response){
         console.log('in response');
         var table = $("#resultsTable");
-        //var header = table.createTHead();
-        //var header = table.find("thead");
-        //var row = $("</tr>").appendTo(header);
+        var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
+        if (sparrowLayerId == 0){
+            $("#tableModalTitle").html("Phosphorus");
+        } else{
+            $("#tableModalTitle").html("Nitrogen");
+        }
+
 
         $("#resultsTable").append("<thead></thead>");
         $( "#resultsTable" ).find( "thead" ).append("<tr id='headerRow'></tr>");
 
         $.each(response.features[0].attributes, function(key, value){
-            $('#headerRow').append("<th>" + key + "</th>");
+            var headerLabel = getTableFields(key, sparrowLayerId);
+            $('#headerRow').append("<th>" + headerLabel + "</th>");
         });
-        //$("#tableContainer").append(table);
+
        
        $('#resultsTable').append("<tbody id='tableBody'></tbody>");
         $.each(response.features, function(rowIndex, feature) {
             console.log('feature(outer)' + feature);
             var rowI = rowIndex;
-            //var tr = "<tr id='row"+rowIndex+"'></tr>";
+
             $("#tableBody").append("<tr id='row"+rowIndex+"'></tr>");
             $.each(feature.attributes, function(key, value){
                 var td = '<td>'+ value +'</td>';
                 $('#row'+ rowI +'').append(td);
-                /*$.each(obj, function(colIndex, c) { 
-                                        
-                });*/
-               // table.append(row);
+
             });
         });  
         

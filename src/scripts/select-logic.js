@@ -346,6 +346,34 @@ function updateAOI(layerDefs, selectId){
     }); //END dojo require
 } //END updateAOI()
 
+function getTableFields(key, sparrowLayerId){
+    var label = "";
+    var flatArr = tableOutFields;
+    
+    var configArr = [];
+    if(sparrowLayerId == 0){
+        configArr = Group3;
+    } else{
+        configArr = Group3_tn;
+    }
+    
+    $.each(configArr, function(index, item){
+        flatArr.push({field: item.field, name: item.name});
+        $.each(item.chartOutfields, function(i, fields){
+            flatArr.push({field: fields.attribute, name: fields.label});
+        });  
+    });
+
+    $.each(flatArr, function(index, obj){
+        console.log(obj.name);
+        if(key == obj.field){
+            label = obj.name;
+            return false; //escape the each loop?
+        }
+    });
+    return label;
+}
+
 
 function getChartOutfields(sparrowLayerId){
     var chartFieldsArr = [];
