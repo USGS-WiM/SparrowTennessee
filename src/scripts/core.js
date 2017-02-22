@@ -1280,7 +1280,7 @@ require([
         handles: 'n'
     });
 
-    function buildTable(response){
+/*    function buildTable(response){
         
         var table = $("#resultsTable");
         var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
@@ -1313,13 +1313,55 @@ require([
             });
         });  
     
+    $('#tableResizable').show();
+    
+    var newWidth = $("#resultsTable").width();
+    $('.ui-widget-header').css('width', newWidth );
+    $('.ui-resizable-handle').css('width', newWidth );
+    }//END buildTable*/
+
+    function buildTable(response){
+        
+        var table = $("#resultsTable");
+        var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
+        if (sparrowLayerId == 0){
+            $("#tableTitle").html("Phosphorus");
+        } else{
+            $("#tableTitle").html("Nitrogen");
+        }
+
+
+        $("#resultsTable").append("<thead></thead>");
+        $( "#resultsTable" ).find( "thead" ).append("<tr id='headerRow'></tr>");
+
+        $.each(response.features[0].attributes, function(key, value){
+            var headerLabel = getTableFields(key, sparrowLayerId);
+            $('#headerRow').append("<th>" + headerLabel + "</th>");
+        });
+
+        var htmlArr =[];
+        $('#resultsTable').append("<tbody id='tableBody'></tbody>");
+        $.each(response.features, function(rowIndex, feature) {
+            console.log('feature(outer)' + feature);
+            var rowI = rowIndex;
+
+            htmlArr.push("<tr id='row"+rowIndex+"'>")
+
+            //$("#tableBody").append("<tr id='row"+rowIndex+"'></tr>");
+            $.each(feature.attributes, function(key, value){
+                htmlArr.push('<td>'+ value +'</td>')
+                //$('#row'+ rowI +'').append(td);
+            });
+
+            htmlArr.push("</tr>");
+        });  
+        $('#tableBody').html(htmlArr.join(''));
     
     $('#tableResizable').show();
     
     var newWidth = $("#resultsTable").width();
     $('.ui-widget-header').css('width', newWidth );
     $('.ui-resizable-handle').css('width', newWidth );
-    //return container.append(table);
     }//END buildTable
 
 
