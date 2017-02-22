@@ -5,11 +5,9 @@ var chartUnits = " (lb./yr.)"
 var splitLayers = [4,5,6,11,12,13]; //important! UPDATE layer Ids of all state split layers
 
 var tableOutFields = [
-    { field: "FID", name: "Feature ID"}, 
     { field: "GRP_1_NAM", name: "Independent Watershed name (in which HUC10 is nested)"},
     { field: "GRP_2_NAM", name: "HUC8 (in which HUC10 is nested)"},
-    { field: "Area_g3", name: "HUC10 area (mi2)"},
-    { field: "GRP_3_NA_1", name: "HUC10"}
+    { field: "Area_g3", name: "HUC10 area (mi2)"}   
 ]
 
 ////PHOSPHORUS LAYER GROUPS______________________________________________________________________________________________________________________________
@@ -85,7 +83,7 @@ var Group3 = [
         field: "ay_g3_tot", 
         name: "Accumulated yield at HUC10 outlet (lb/yr/mi2)", 
         chartOutfields: [
-        { attribute: "GRP_3_NAM", label: "HUC10 name"}, 
+            { attribute: "GRP_3_NAM", label: "HUC10 name"}, 
             { attribute: "ay_g3_sc1", label: "Accumulated wastewater yield at HUC10 outlet (lb/yr/mi2)"},
             { attribute: "ay_g3_sc2", label: "Accumulated urban-land yield at HUC10 outlet (lb/yr/mi2)"},
             { attribute: "ay_g3_sc3", label: "Accumulated soil-parent-rock yield at HUC10 outlet (lb/yr/mi2)"},

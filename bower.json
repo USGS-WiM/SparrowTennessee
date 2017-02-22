@@ -12,5 +12,8 @@
     "lobipanel": "^0.7.1",
     "highcharts": "^5.0.6",
     "bootstrap-select": "^1.12.1"
+  },
+  "resolutions": {
+    "bootstrap": "3.3.7"
   }
 }

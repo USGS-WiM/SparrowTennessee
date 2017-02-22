@@ -1335,18 +1335,19 @@ require([
         var headerKeyArr = [];
         $.each(response.features[0].attributes, function(key, value){
             //important! UPDATE remove unneeded attributes from header ***must also remove from table below
-            if(key !== 'FID' && key !== "GRP_3_NA_1"){
+            if(key !== 'FID' && key !== "GRP_3_NA_1"){               
                 headerKeyArr.push(key);
             }
         });
 
-        var headerHtmlStr = getTableFields(headerKeyArr, sparrowLayerId);
+        var headerHtmlStr = "";
+        headerHtmlStr = getTableFields(headerKeyArr, sparrowLayerId);
         $("#resultsTable").find( "thead" ).html(headerHtmlStr);
 
         var htmlArr =[];
         $('#resultsTable').append("<tbody id='tableBody'></tbody>");
         $.each(response.features, function(rowIndex, feature) {
-            console.log('feature(outer)' + feature);
+           // console.log('feature(outer)' + feature);
             var rowI = rowIndex;
 
             htmlArr.push("<tr id='row"+rowIndex+"'>")
@@ -1355,7 +1356,7 @@ require([
             $.each(feature.attributes, function(key, value){
                 //important! UPDATE remove unneeded attributes from header ***must also remove from header above
                 if(key !== 'FID' && key !== "GRP_3_NA_1"){
-                    htmlArr.push('<td>'+ value +'</td>')
+                    htmlArr.push('<td>'+ value +'</td>');                    
                 }
             });
 

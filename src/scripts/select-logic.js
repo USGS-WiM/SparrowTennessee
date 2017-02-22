@@ -348,7 +348,18 @@ function updateAOI(layerDefs, selectId){
 
 function getTableFields(headerKeysArr, sparrowLayerId){
     var label = "";
-    var flatArr = tableOutFields;
+    /*tableOutFields = [];
+    var tableOutFields = [
+        { field: "GRP_1_NAM", name: "Independent Watershed name (in which HUC10 is nested)"},
+        { field: "GRP_2_NAM", name: "HUC8 (in which HUC10 is nested)"},
+        { field: "Area_g3", name: "HUC10 area (mi2)"}   
+    ]*/
+
+    var flatArr = [];
+    $.each(tableOutFields, function(i,object){
+        flatArr.push(object);
+    });
+
     var htmlHeaderArr = [];
     
     var configArr = [];
@@ -361,17 +372,21 @@ function getTableFields(headerKeysArr, sparrowLayerId){
     $.each(configArr, function(index, item){
         flatArr.push({field: item.field, name: item.name});
         $.each(item.chartOutfields, function(i, fields){
-            flatArr.push({field: fields.attribute, name: fields.label});
+            if (fields.attribute == "GRP_3_NAM" && (flatArr.map(function (f) { return f.field }).indexOf("GRP_3_NAM") < 0)) {// $.inArray(fields.attribute, flatArr) < 0) {
+                flatArr.push({field: fields.attribute, name: fields.label});
+            } else if (fields.attribute != "GRP_3_NAM") {
+                flatArr.push({field:fields.attribute, name:fields.label});
+            }
         });  
     });
 
     htmlHeaderArr.push("<tr>");
     $.each(flatArr, function(index, obj){
-        console.log(obj.name);
+       // console.log(obj.name);
         $.each(headerKeysArr, function(index, key){
             if(key == obj.field){
                 htmlHeaderArr.push('<th>' + obj.name + '</th>');
-                //return false; //escape the each loop?
+                return false; //escape the each loop?
             }
         });
     });
