@@ -2264,7 +2264,7 @@ require([
         handles: 'n'
     });
 
-    function buildTable(response){
+/*    function buildTable(response){
         
         var table = $("#resultsTable");
         var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
@@ -2297,13 +2297,61 @@ require([
             });
         });  
     
+    $('#tableResizable').show();
+    
+    var newWidth = $("#resultsTable").width();
+    $('.ui-widget-header').css('width', newWidth );
+    $('.ui-resizable-handle').css('width', newWidth );
+    }//END buildTable*/
+
+    function buildTable(response){
+        
+        var table = $("#resultsTable");
+        var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
+        if (sparrowLayerId == 0){
+            $("#tableTitle").html("Phosphorus");
+        } else{
+            $("#tableTitle").html("Nitrogen");
+        }
+
+        $("#resultsTable").append("<thead></thead>");
+        
+        var headerKeyArr = [];
+        $.each(response.features[0].attributes, function(key, value){
+            //important! UPDATE remove unneeded attributes from header ***must also remove from table below
+            if(key !== 'FID' && key !== "GRP_3_NA_1"){
+                headerKeyArr.push(key);
+            }
+        });
+
+        var headerHtmlStr = getTableFields(headerKeyArr, sparrowLayerId);
+        $("#resultsTable").find( "thead" ).html(headerHtmlStr);
+
+        var htmlArr =[];
+        $('#resultsTable').append("<tbody id='tableBody'></tbody>");
+        $.each(response.features, function(rowIndex, feature) {
+            console.log('feature(outer)' + feature);
+            var rowI = rowIndex;
+
+            htmlArr.push("<tr id='row"+rowIndex+"'>")
+
+            //$("#tableBody").append("<tr id='row"+rowIndex+"'></tr>");
+            $.each(feature.attributes, function(key, value){
+                //important! UPDATE remove unneeded attributes from header ***must also remove from header above
+                if(key !== 'FID' && key !== "GRP_3_NA_1"){
+                    htmlArr.push('<td>'+ value +'</td>')
+                }
+            });
+
+            htmlArr.push("</tr>");
+        });  
+        $('#tableBody').html(htmlArr.join(''));
     
     $('#tableResizable').show();
     
     var newWidth = $("#resultsTable").width();
     $('.ui-widget-header').css('width', newWidth );
     $('.ui-resizable-handle').css('width', newWidth );
-    //return container.append(table);
     }//END buildTable
 
 
@@ -3199,9 +3247,10 @@ function updateAOI(layerDefs, selectId){
     }); //END dojo require
 } //END updateAOI()
 
-function getTableFields(key, sparrowLayerId){
+function getTableFields(headerKeysArr, sparrowLayerId){
     var label = "";
     var flatArr = tableOutFields;
+    var htmlHeaderArr = [];
     
     var configArr = [];
     if(sparrowLayerId == 0){
@@ -3217,14 +3266,18 @@ function getTableFields(key, sparrowLayerId){
         });  
     });
 
+    htmlHeaderArr.push("<tr>");
     $.each(flatArr, function(index, obj){
         console.log(obj.name);
-        if(key == obj.field){
-            label = obj.name;
-            return false; //escape the each loop?
-        }
+        $.each(headerKeysArr, function(index, key){
+            if(key == obj.field){
+                htmlHeaderArr.push('<th>' + obj.name + '</th>');
+                //return false; //escape the each loop?
+            }
+        });
     });
-    return label;
+    htmlHeaderArr.push("</tr>");
+    return htmlHeaderArr.join('');
 }
 
 

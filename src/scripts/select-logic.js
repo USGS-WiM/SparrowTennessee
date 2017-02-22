@@ -346,9 +346,10 @@ function updateAOI(layerDefs, selectId){
     }); //END dojo require
 } //END updateAOI()
 
-function getTableFields(key, sparrowLayerId){
+function getTableFields(headerKeysArr, sparrowLayerId){
     var label = "";
     var flatArr = tableOutFields;
+    var htmlHeaderArr = [];
     
     var configArr = [];
     if(sparrowLayerId == 0){
@@ -364,14 +365,18 @@ function getTableFields(key, sparrowLayerId){
         });  
     });
 
+    htmlHeaderArr.push("<tr>");
     $.each(flatArr, function(index, obj){
         console.log(obj.name);
-        if(key == obj.field){
-            label = obj.name;
-            return false; //escape the each loop?
-        }
+        $.each(headerKeysArr, function(index, key){
+            if(key == obj.field){
+                htmlHeaderArr.push('<th>' + obj.name + '</th>');
+                //return false; //escape the each loop?
+            }
+        });
     });
-    return label;
+    htmlHeaderArr.push("</tr>");
+    return htmlHeaderArr.join('');
 }
 
 
