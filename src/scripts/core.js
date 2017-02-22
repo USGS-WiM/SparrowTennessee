@@ -1330,14 +1330,18 @@ require([
             $("#tableTitle").html("Nitrogen");
         }
 
-
         $("#resultsTable").append("<thead></thead>");
-        $( "#resultsTable" ).find( "thead" ).append("<tr id='headerRow'></tr>");
-
+        
+        var headerKeyArr = [];
         $.each(response.features[0].attributes, function(key, value){
-            var headerLabel = getTableFields(key, sparrowLayerId);
-            $('#headerRow').append("<th>" + headerLabel + "</th>");
+            //important! UPDATE remove unneeded attributes from header ***must also remove from table below
+            if(key !== 'FID' && key !== "GRP_3_NA_1"){
+                headerKeyArr.push(key);
+            }
         });
+
+        var headerHtmlStr = getTableFields(headerKeyArr, sparrowLayerId);
+        $("#resultsTable").find( "thead" ).html(headerHtmlStr);
 
         var htmlArr =[];
         $('#resultsTable').append("<tbody id='tableBody'></tbody>");
@@ -1349,8 +1353,10 @@ require([
 
             //$("#tableBody").append("<tr id='row"+rowIndex+"'></tr>");
             $.each(feature.attributes, function(key, value){
-                htmlArr.push('<td>'+ value +'</td>')
-                //$('#row'+ rowI +'').append(td);
+                //important! UPDATE remove unneeded attributes from header ***must also remove from header above
+                if(key !== 'FID' && key !== "GRP_3_NA_1"){
+                    htmlArr.push('<td>'+ value +'</td>')
+                }
             });
 
             htmlArr.push("</tr>");
