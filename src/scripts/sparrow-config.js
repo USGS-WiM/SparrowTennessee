@@ -2,6 +2,16 @@
 var serviceBaseURL = "http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/";
 var chartUnits = " (lb./yr.)"
 
+var splitLayers = [4,5,6,11,12,13]; //important! UPDATE layer Ids of all state split layers
+
+var tableOutFields = [
+    { field: "FID", name: "Feature ID"}, 
+    { field: "GRP_1_NAM", name: "Independent Watershed name (in which HUC10 is nested)"},
+    { field: "GRP_2_NAM", name: "HUC8 (in which HUC10 is nested)"},
+    { field: "Area_g3", name: "HUC10 area (mi2)"},
+    { field: "GRP_3_NA_1", name: "HUC10"}
+]
+
 ////PHOSPHORUS LAYER GROUPS______________________________________________________________________________________________________________________________
 //HUC10 Metric choices, service Id 0
 var Group3 = [
@@ -17,7 +27,7 @@ var Group3 = [
             { attribute: "dl1_g3_sc4", label: "Mined-land load from HUC10 delivered to downstream boundary (lb/yr)"},
             { attribute: "dl1_g3_sc5", label: "Manure load from HUC10 delivered to downstream boundary (lb/yr)"},
             { attribute: "dl1_g3_sc6", label: "Agricultural-land load from HUC10 delivered to downstream boundary (lb/yr)"}
-        ]
+        ] 
     },
 	{
         field: "dy1_g3_tot", 

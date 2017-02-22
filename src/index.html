@@ -22,7 +22,7 @@
     <!-- endbower -->
     <!-- endbuild -->
     <!-- CSS for the mapping components -->
-    <link rel="stylesheet" href="http://js.arcgis.com/3.13/esri/css/esri.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.13/esri/css/esri.css">
 
     <!-- build:css styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
@@ -50,7 +50,7 @@
 
     <!-- endbower -->
     <!-- endbuild -->
-    <script type="text/javascript" src="http://js.arcgis.com/3.13/"></script>
+    <script type="text/javascript" src="https://js.arcgis.com/3.13/"></script>
     <script type="text/javascript" src="http://highcharts.github.io/export-csv/export-csv.js"></script>
     
     <!-- build:js scripts/combined.js -->
@@ -179,6 +179,25 @@
     </div> <!-- /.modal-dialog -->
 </div><!-- End About modal -->
 
+<div id="tableModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="tableModalTitle"></h4>
+      </div>
+      <div class="modal-body">
+            <!-- <div id="tableContainer">
+                <table class="table table-bordered" id="resultsTable"></table>
+            </div> -->
+          <!-- <span>
+              <button id="downloadXLS" class="btn btn-default" data-type="application/vnd.ms-excel">Export Data</button>
+              <button id="resetButton" class="btn btn-default" disabled>Reset Zoom</button>
+          </span> -->
+      </div>
+    </div>
+  </div>
+</div>
 <!--NO LONGER IN USE Switched Chart Modal to Lobipanel
 <div id="chartModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog  modal-lg">
@@ -339,6 +358,12 @@
                             </button>
                         </div>
 
+                        <div class="btn">
+                            <button type="button" class="btn btn-primary" data-target="tableModal" style="display:none;" id="tableButton">
+                                <span class="glyphicon glyphicon-list-alt"></span> Show Table
+                            </button>
+                        </div>
+
 
                     </div><!--END panel body-->
                 </div><!--END filters panel-->
@@ -377,16 +402,14 @@
                         <div class="panel-title">
                             <h4 id="chartWindowPanelTitle"></h4>
                         </div>
-                        <!--<span>
-                          <button id="downloadXLS" class="btn btn-default" data-type="application/vnd.ms-excel">Export Data</button>
-                          <button id="resetButton" class="btn btn-default" disable="true">Reset Zoom</button>
-                        </span>-->
-                    
                     </div>
                     <div class="panel-body" id="chartWindowContainer">
+                        <div>
+                          <button id="downloadXLS" class="btn btn-default" data-type="application/vnd.ms-excel">Export Data</button>
+                          <button id="resetButton" class="btn btn-default" disable="true">Reset Zoom</button>
+                       </div>
                         
                     </div>
-                    
                         
                     
 
@@ -398,6 +421,11 @@
                 <!--LOBIPANEL EXPERIMENTAL________________________________________________________________________________________________________________________-->
             
             </div><!--END mapDiv-->
+
+            <div style="position:absolute; bottom:0; display:none;" id="tableResizable" class="ui-widget-content">
+                <h3 class="ui-widget-header" id="tableTitle"></h3>
+                    <table class="table table-bordered" id="resultsTable"></table>
+            </div>
 
             <div id="homeButton"></div>
             <div id="locateButton"></div>

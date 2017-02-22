@@ -167,7 +167,7 @@ function setAggregateGroup(groupBySelectedIndex, selectedRadio){
     }
     var visibleLayerIds = [layerArrayValue];
     var sparrowRanking = app.map.getLayer('SparrowRanking');
-    sparrowRanking.setVisibleLayers(visibleLayerIds, true);
+    sparrowRanking.setVisibleLayers(visibleLayerIds);
 
 
     //generateRenderer();
@@ -176,7 +176,7 @@ function setAggregateGroup(groupBySelectedIndex, selectedRadio){
 } //END setAggregateGroup()
 
 function AOIChange(e){
-
+    
     var selectId = e.currentTarget.id;
     var selectValue = e.currentTarget.value;
     var groupResultsIndex = $("#groupResultsSelect")[0].selectedIndex;
@@ -186,19 +186,7 @@ function AOIChange(e){
         selectedId: selectId,
         selectedValue: selectValue
     }
-
-
-/*    var newObj = {
-        state:"",
-        watershed:"",
-        huc8:"",
-        selectId: selectId,
-        selectedItem: e.currentTarget.value,
-        sparrowRankingId: app.map.getLayer('SparrowRanking').visibleLayers[0]
-    }
-*/
     
-
     if (selectId == "st-select" && groupResultsIndex != 3) {
         //if not already on a state split layer, set one now.
         //TODO: figure out how you can access the current layers to see if you're on a split layer.  
@@ -213,12 +201,18 @@ function AOIChange(e){
 
     generateRenderer();
 
+    if( $("#chartWindowDiv").css("visibility") == "visible" ) {
+        app.map.graphics.clear();
+        app.createChartQuery();
+    }
+
 } //END AOIChange()
 
-//function setLayerDefs(selectId, definitionString, layerDefs, selectedItem){
+
 function setLayerDefs(){
         var definitionString = "";
         var layerDefObj = app.getLayerDefObj();
+        
         if (layerDefObj.AOIST){
             if(definitionString != ""){
                 definitionString += " AND ST = "+ "'" + layerDefObj.AOIST + "'";
@@ -351,6 +345,34 @@ function updateAOI(layerDefs, selectId){
         }//END filterAOI
     }); //END dojo require
 } //END updateAOI()
+
+function getTableFields(key, sparrowLayerId){
+    var label = "";
+    var flatArr = tableOutFields;
+    
+    var configArr = [];
+    if(sparrowLayerId == 0){
+        configArr = Group3;
+    } else{
+        configArr = Group3_tn;
+    }
+    
+    $.each(configArr, function(index, item){
+        flatArr.push({field: item.field, name: item.name});
+        $.each(item.chartOutfields, function(i, fields){
+            flatArr.push({field: fields.attribute, name: fields.label});
+        });  
+    });
+
+    $.each(flatArr, function(index, obj){
+        console.log(obj.name);
+        if(key == obj.field){
+            label = obj.name;
+            return false; //escape the each loop?
+        }
+    });
+    return label;
+}
 
 
 function getChartOutfields(sparrowLayerId){
