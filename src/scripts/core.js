@@ -1229,13 +1229,10 @@ require([
                                     queryTask.execute(graphicsQuery, responseHandler);
 
                                     function responseHandler(response){
-                                        app.map.graphics.clear();
-                                        
-                                        var feature = response.features[0];
-                                        feature.setSymbol(new SimpleFillSymbol()
-                                            .setColor(new Color([182,244,66,0.8]))
-                                            .setOutline(null)
-                                        );
+                                        app.map.graphics.clear();                                        
+                                        var feature = response.features[0];                                       
+                                        var selectedSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255,0,0]), 2);
+                                        feature.setSymbol(selectedSymbol);
                                         app.map.graphics.add(feature);
                                     }
                                 } 
