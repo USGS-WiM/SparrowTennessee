@@ -13,6 +13,10 @@ function loadEventHandlers() {
         if( $("#chartWindowDiv").css("visibility") == "visible" ) {
             app.createChartQuery();
         }
+        //if table is visible, refresh contents to match radio option chosen
+        if ($('#tableResizable').is(":visible")){
+            app.createTableQuery();
+        }
     });
     /*END RADIO EVENTS*/
 
@@ -29,6 +33,7 @@ function loadEventHandlers() {
             $("#tableButton").show();
         } else{
             $("#tableButton").hide();
+
         }
         generateRenderer();
     });
@@ -40,6 +45,8 @@ function loadEventHandlers() {
             $("#tableButton").show();
         } else{
             $("#tableButton").hide();
+            //and clear/hide table if there is one showing
+            $('#tableResizable').hide();
         }
         populateMetricOptions(e.currentTarget.selectedIndex);
         setAggregateGroup( e.currentTarget.selectedIndex, $(".radio input[type='radio']:checked")[0].id );

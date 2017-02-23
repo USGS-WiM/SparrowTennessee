@@ -1402,8 +1402,11 @@ require([
     function showTableResizeable(){
         app.createTableQuery();
     }
+    function hideTableResizeable(){
+        $('#tableResizable').hide();
+    }
     $('#tableButton').on('click', showTableResizeable);
-
+    $('#tableResizable_Close').on('click', hideTableResizeable);
     $("#legendDiv").niceScroll();
 
     app.maxLegendHeight =  ($('#mapDiv').height()) * 0.90;
