@@ -107,6 +107,9 @@ function loadEventHandlers() {
         if( $("#chartWindowDiv").css("visibility") == "visible" ) {
             app.createChartQuery();
         }
+        if ($('#tableResizable').is(":visible")){
+            app.createTableQuery();
+        }
 
     });
     /*END CLEAR AOI BUTTON EVENT */
