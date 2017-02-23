@@ -363,11 +363,26 @@ function getTableFields(headerKeysArr, sparrowLayerId){
     var htmlHeaderArr = [];
     
     var configArr = [];
-    if(sparrowLayerId == 0){
+    switch(sparrowLayerId){
+        case 0:
+            configArr = Group3;
+            break;
+        case 4:
+            configArr = Group3_st;
+            break;
+        case 7:
+            configArr = Group3_tn;
+            break;
+        case 11:
+            configArr = Group3_st_tn;
+            break;
+    }
+    
+   /* if(sparrowLayerId == 0){
         configArr = Group3;
     } else{
         configArr = Group3_tn;
-    }
+    }*/
     
     $.each(configArr, function(index, item){
         flatArr.push({field: item.field, name: item.name});
