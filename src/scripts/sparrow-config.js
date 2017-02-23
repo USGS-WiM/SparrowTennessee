@@ -5,15 +5,45 @@ var chartUnits = " (lb./yr.)"
 var splitLayers = [4,5,6,11,12,13]; //important! UPDATE layer Ids of all state split layers
 
 var tableOutFields = [
+    { field: "FID", name: "Unique Feature Id"},
     { field: "GRP_1_NAM", name: "Independent Watershed name (in which HUC10 is nested)"},
     { field: "GRP_2_NAM", name: "HUC8 (in which HUC10 is nested)"},
+    { field: "GRP_3_NA_1", name: "Join Field"},
     { field: "Area_g3", name: "HUC10 area (mi2)"}   
 ]
+
+var stateTableOutFields = [
+    { field: "FID", name: "Unique Feature Id"},
+    { field: "ST_GP3_NAM", name: "HUC10/State (combination) ID"},
+    { field: "Area_S3", name: "HUC10 area within the state and the  model area (mi2)"},   
+    { field: "ST", name: "State"},
+    { field: "GRP_1_NAM", name: "Independent Watershed name (in which HUC10 is nested)"},
+    { field: "GRP_2_NAM", name: "HUC8 (in which HUC10 is nested)"},
+    { field: "GRP_3_NAM", name: "HUC10"},
+    { field: "ST_GP1_NAM", name: "State and Independent Watershed"},
+    { field: "ST_GP2_NAM", name: "State amd HUC8"},
+    { field: "ST_gp3_n_1", name: "Join Field"}
+
+]
+
 
 ////PHOSPHORUS LAYER GROUPS______________________________________________________________________________________________________________________________
 //HUC10 Metric choices, service Id 0
 var Group3 = [
-
+    
+    {
+        field: "dy1_g3_tot", 
+        name: "Yield from HUC10 delivered to downstream boundary (lb/yr/mi2)", 
+        chartOutfields: [
+            { attribute: "GRP_3_NAM", label: "HUC10 name"}, 
+            { attribute: "dy1_g3_sc1", label: "Wastewater yield from HUC10 delivered to downstream boundary (lb/yr/mi2)"},
+            { attribute: "dy1_g3_sc2", label: "Urban-land yield from HUC10 delivered to downstream boundary (lb/yr/mi2)"},
+            { attribute: "dy1_g3_sc3", label: "Soil-parent-rock yield from HUC10 delivered to downstream boundary (lb/yr/mi2)"},
+            { attribute: "dy1_g3_sc4", label: "Mined-land yield from HUC10 delivered to downstream boundary (lb/yr/mi2)"},
+            { attribute: "dy1_g3_sc5", label: "Manure yield from HUC10 delivered to downstream boundary (lb/yr/mi2)"},
+            { attribute: "dy1_g3_sc6", label: "Agricultural-land yield from HUC10 delivered to downstream boundary (lb/yr/mi2)"}
+        ]
+    },
 	{
         field: "dl1_g3_tot", 
         name: "Group Aggregate Load delivered to donwstream boundary (lb/yr)", 
@@ -26,19 +56,6 @@ var Group3 = [
             { attribute: "dl1_g3_sc5", label: "Manure load from HUC10 delivered to downstream boundary (lb/yr)"},
             { attribute: "dl1_g3_sc6", label: "Agricultural-land load from HUC10 delivered to downstream boundary (lb/yr)"}
         ] 
-    },
-	{
-        field: "dy1_g3_tot", 
-        name: "Yield from HUC10 delivered to downstream boundary (lb/yr/mi2)", 
-        chartOutfields: [
-            { attribute: "GRP_3_NAM", label: "HUC10 name"}, 
-            { attribute: "dy1_g3_sc1", label: "Wastewater yield from HUC10 delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_g3_sc2", label: "Urban-land yield from HUC10 delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_g3_sc3", label: "Soil-parent-rock yield from HUC10 delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_g3_sc4", label: "Mined-land yield from HUC10 delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_g3_sc5", label: "Manure yield from HUC10 delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_g3_sc6", label: "Agricultural-land yield from HUC10 delivered to downstream boundary (lb/yr/mi2)"}
-        ]
     },
 	{
         field: "dl3_g3_tot", 
@@ -98,6 +115,19 @@ var Group3 = [
 //HUC8 Metric choices, Service Id 1
 var Group2 = [
 
+    {
+        field: "dy1_g2_tot", 
+        name: "Yield from HUC8 delivered to downstream boundary (lb/yr/mi2)", 
+        chartOutfields: [
+            { attribute: "GRP_2_NAM", label: "HUC8 name"}, 
+            { attribute: "dy1_g2_sc1", label: "Wastewater yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"},
+            { attribute: "dy1_g2_sc2", label: "Urban-land yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"},
+            { attribute: "dy1_g2_sc3", label: "Soil-parent-rock yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"},
+            { attribute: "dy1_g2_sc4", label: "Mined-land yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"},
+            { attribute: "dy1_g2_sc5", label: "Manure yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"},
+            { attribute: "dy1_g2_sc6", label: "Agricultural-land yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"}
+        ]
+    },
 	{
         field: "dl1_g2_tot", 
         name: "Load from HUC8 delivered to downstream boundary (lb/yr)", 
@@ -109,19 +139,6 @@ var Group2 = [
             { attribute: "dl1_g2_sc4", label: "Mined-land load from HUC8 delivered to downstream boundary (lb/yr)"},
             { attribute: "dl1_g2_sc5", label: "Manure load from HUC8 delivered to downstream boundary (lb/yr)"},
             { attribute: "dl1_g2_sc6", label: "Agricultural-land load from HUC8 delivered to downstream boundary (lb/yr)"}
-        ]
-    },
-	{
-        field: "dy1_g2_tot", 
-        name: "Yield from HUC8 delivered to downstream boundary (lb/yr/mi2)", 
-        chartOutfields: [
-            { attribute: "GRP_2_NAM", label: "HUC8 name"}, 
-            { attribute: "dy1_g2_sc1", label: "Wastewater yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_g2_sc2", label: "Urban-land yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_g2_sc3", label: "Soil-parent-rock yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_g2_sc4", label: "Mined-land yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_g2_sc5", label: "Manure yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_g2_sc6", label: "Agricultural-land yield from HUC8 delivered to downstream boundary (lb/yr/mi2)"}
         ]
     },
 	{
