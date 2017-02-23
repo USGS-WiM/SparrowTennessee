@@ -43,7 +43,8 @@
     <script type="text/javascript" src="bower_components/bootstrap-sidebar/dist/js/sidebar.js"></script>
     <script type="text/javascript" src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
     <script type="text/javascript" src="bower_components/highcharts/highcharts.js"></script>
-    <script type="text/javascript" src="bower_components/lobipanel/dist/js/lobipanel.min.js"></script>
+    <script type="text/javascript" src="bower_components/lobipanel/dist/js/lobipanel.min.js"></script>    
+    <script type="text/javascript" src="bower_components/tabletoCSV/dist/jquery.tabletoCSV.js"></script>
 
 
     <!--<script src="./lib/highcharts-export-clientside/highcharts-export-clientside.js"></script>--> <!--Needs 4.2 version of highcharts-->
@@ -425,8 +426,12 @@
             <div style="position:absolute; bottom:0; display:none;" id="tableResizable" class="ui-widget-content">
                 <button type='button' class='close pull-left' data-dismiss='tableResizable' id="tableResizable_Close" aria-hidden='true'>x</button>
                 <h3 class="ui-widget-header" id="tableTitle"></h3>
-
-                    <table class="table table-bordered" id="resultsTable"></table>
+                <table class="table table-bordered" id="resultsTable"></table>
+                <div class="btn">
+                    <button type="button" class="btn btn-primary" id="exportTableButton">
+                        Export Table
+                    </button>
+                </div>
             </div>
 
             <div id="homeButton"></div>

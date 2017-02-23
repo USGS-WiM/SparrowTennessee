@@ -20,7 +20,11 @@ function loadEventHandlers() {
     });
     /*END RADIO EVENTS*/
 
-
+    /* EXPORT TABLE EVENT*/
+    $('#exportTableButton').on('click', function(){
+        $("#resultsTable").tableToCSV();
+    });
+    
     /* AOI EVENTS */
     $('.aoiSelect').on('change', AOIChange);
 
