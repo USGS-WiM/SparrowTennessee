@@ -435,7 +435,7 @@ input[type="checkbox"], input[type="radio"] {
 /*jquery resizeable*/
 #tableResizable {
     width: 100%;
-    height: 150px;
+    height: 400px;
     overflow-y:auto;
     overflow-x: scroll;
 
