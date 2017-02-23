@@ -536,15 +536,6 @@ require([
         //setup QueryTask
         tableQueryTask = new esri.tasks.QueryTask(SparrowRankingUrl);
 
-        //Returns chartOutfields Object form config --i.e. {attribute: "VALUE", label: "VALUE"} 
-        //var chartFieldsObj = getChartOutfields(sparrowLayerId); 
-        
-        //grab attributes from chartOutfields object
-        /*var outfieldsArr = [];
-        $.each(chartFieldsObj, function(index, obj){
-            outfieldsArr.push( obj.attribute ); //get attribute value ONLY
-        });*/
-
         //setup esri query
         var tableQuery = new esri.tasks.Query();
         tableQuery.returnGeometry = false;
@@ -1324,11 +1315,25 @@ require([
         
         var table = $("#resultsTable");
         var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
-        if (sparrowLayerId == 0){
-            $("#tableTitle").html("Phosphorus");
-        } else{
-            $("#tableTitle").html("Nitrogen");
+        
+        $("#tableTitle").empty();
+        //SET TABLE TITLES HERE
+        switch(sparrowLayerId){
+            case 0:
+                $("#tableTitle").html("Phosphorus");
+                break;
+            case 4:
+                 $("#tableTitle").html("Phosphorus Split by State");
+                break;
+            case 7:
+                $("#tableTitle").html("Nitrogen");
+                break;
+            case 11:
+                $("#tableTitle").html("Nitrogen Split by State");
+                break;
         }
+        
+        
 
         $("#resultsTable").append("<thead></thead>");
         
