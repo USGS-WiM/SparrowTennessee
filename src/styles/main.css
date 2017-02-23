@@ -446,13 +446,14 @@ input[type="checkbox"], input[type="radio"] {
 
     background: #ccc;
 }
+.esriControlsBR {display: none;}
 
 
 /*Fixing table resize bar*/
 #resultsTable{
   display: block;
   height: 75%;
-  height: calc(100% - 125px);
+  height: calc(100% - 110px);
   overflow-x: scroll;
-  margin: 0 auto 15px auto;
+  margin: 0 auto 5px auto;
 }
