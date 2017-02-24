@@ -633,7 +633,7 @@ function generateRenderer(){
         Legend,
         LayerDrawingOptions,
         SimpleLineSymbol,
-        SimpleFillSymbol,
+        SimpleFillSymbol,        
         ClassBreaksDefinition,
         AlgorithmicColorRamp,
         GenerateRendererParameters,
@@ -689,6 +689,7 @@ function generateRenderer(){
         var params = new GenerateRendererParameters();
         params.classificationDefinition = classDef;
         // limit the renderer to data being shown by the current layer
+        params.formatLabel = true;
         params.where = app.layerDef; 
         var generateRenderer = new GenerateRendererTask(app.Url);
         console.log('execute Renderer w/ params:  ' + params);
