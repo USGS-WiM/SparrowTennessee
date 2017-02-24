@@ -505,7 +505,7 @@ require([
                     app.map.infoWindow.setFeatures([feature]);
                     app.map.infoWindow.show(evt.mapPoint);
                     //showChart(response[0]); //CHECK RESPONSE DATA
-                    $("#popupSmallChartButton").on('click', showChart(response));
+                    //$("#popupSmallChartButton").on('click', showChart(response));
                     $("#popupChartButton").on('click', app.createChartQuery);
                 
                 }       
