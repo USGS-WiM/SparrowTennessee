@@ -483,6 +483,8 @@ require([
                     var attributes = response[0].feature.attributes;
                     var valuePairs = {};
 
+                    var chartQueryArg = response[0].displayFieldName + " = " + "'" + response[0].value + "'";
+
                     $.each(fields, function(index, obj){
                         console.log(obj.attribute);
                     });
@@ -505,8 +507,12 @@ require([
                     app.map.infoWindow.setFeatures([feature]);
                     app.map.infoWindow.show(evt.mapPoint);
                     //showChart(response[0]); //CHECK RESPONSE DATA
-                    //$("#popupSmallChartButton").on('click', showChart(response));
-                    $("#popupChartButton").on('click', app.createChartQuery);
+                    $("#popupSmallChartButton").on('click', function(){
+                        app.createChartQuery(chartQueryArg);
+                    });
+                    $("#popupChartButton").on('click', function(){
+                        app.createChartQuery();
+                    });
                 
                 }       
             }         
@@ -547,17 +553,23 @@ require([
 
     }//END createTableQuery()
 
-    app.createChartQuery = function(){
+    app.createChartQuery = function(optionalWhereClause){
 
         $("#chartContainer").empty();
         console.log('creating chart query');
         var chartQueryTask;
         var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
-        if (app.map.getLayer('SparrowRanking').layerDefinitions){
-            var whereClause = app.map.getLayer('SparrowRanking').layerDefinitions[sparrowLayerId];
+        
+        if (optionalWhereClause == undefined){
+            if (app.map.getLayer('SparrowRanking').layerDefinitions){
+                var whereClause = app.map.getLayer('SparrowRanking').layerDefinitions[sparrowLayerId];
+            } else{
+                var whereClause = "1=1";
+            }
         } else{
-            var whereClause = "1=1";
+            var whereClause = optionalWhereClause;
         }
+        
 
         //add map layer ID to query URL
         var SparrowRankingUrl = serviceBaseURL + sparrowLayerId;
@@ -1237,7 +1249,43 @@ require([
                                         feature.setSymbol(selectedSymbol);
                                         app.map.graphics.add(feature);
                                     }
-                                } 
+                                } ,
+                                click: function(evt){
+                                    function switchWhereField(selectedIndex){
+                                        switch (selectedIndex){
+                                            case 0:
+                                                if( $("#st-select")[0].selectedIndex > 0){
+                                                    return "ST_GP3_NAM";
+                                                }else{
+                                                    return "GRP_3_NAM";
+                                                }
+                                                break;
+                                            case 1:
+                                                if( $("#st-select")[0].selectedIndex > 0){
+                                                    return "ST_GP2_NAM";
+                                                }else{
+                                                    return "GRP_2_NAM";
+                                                }
+                                                break;
+                                            case 2: 
+                                                if( $("#st-select")[0].selectedIndex > 0){
+                                                    return "ST_GP1_NAM";
+                                                }else{
+                                                    return "GRP_1_NAM";
+                                                }
+                                                break;
+                                                
+                                            case 3:
+                                                return "ST";
+                                                break;
+                                        }
+                                    }
+
+                                    var queryField = switchWhereField( $("#groupResultsSelect")[0].selectedIndex );
+                                    var queryString = queryField + " = " + "'" + this.category + "'";
+
+                                    app.createChartQuery(queryString);
+                                }
                             }
                         }
                        
