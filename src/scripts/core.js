@@ -1054,7 +1054,9 @@ require([
 
         var instance = $('#chartWindowDiv').data('lobiPanel');
         instance.unpin();
-
+        //getPosition and setPosition will ensure the x is the same as it should be and the y is higher up (not cut off at bottom)
+        var xPos =  instance.getPosition().x;
+        instance.setPosition(xPos,50);
          $("#chartMinimize").on('click', function(){
             $("#chartWindowDiv").slideDown(250);
             $("#chartWindowDiv").removeClass("chartWindowMaximize");
