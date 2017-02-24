@@ -505,7 +505,7 @@ require([
                     app.map.infoWindow.setFeatures([feature]);
                     app.map.infoWindow.show(evt.mapPoint);
                     //showChart(response[0]); //CHECK RESPONSE DATA
-                    //$("#popupSmallChartButton").on('click', showChart(response));
+                    $("#popupSmallChartButton").on('click', showChart(response));
                     $("#popupChartButton").on('click', app.createChartQuery);
                 
                 }       
@@ -1297,9 +1297,9 @@ require([
         var headerKeyArr = [];
         $.each(response.features[0].attributes, function(key, value){
             //important! UPDATE remove unneeded attributes from header ***must also remove from table below
-            if(key !== 'FID' && key !== "GRP_3_NA_1"){               
+            //if(key !== 'FID' && key !== "GRP_3_NA_1" && key !== "ST_GP3_NAM"){               
                 headerKeyArr.push(key);
-            }
+            //}
         });
 
         var headerHtmlStr = "";
@@ -1317,9 +1317,9 @@ require([
             //$("#tableBody").append("<tr id='row"+rowIndex+"'></tr>");
             $.each(feature.attributes, function(key, value){
                 //important! UPDATE remove unneeded attributes from header ***must also remove from header above
-                if(key !== 'FID' && key !== "GRP_3_NA_1"){
+                //if(key !== 'FID' && key !== "GRP_3_NA_1" && key !== "ST_GP3_NAM"){
                     htmlArr.push('<td>'+ value +'</td>');                    
-                }
+                //}
             });
 
             htmlArr.push("</tr>");

@@ -206,6 +206,11 @@ function AOIChange(e){
         app.createChartQuery();
     }
 
+    //rebuild the table if open
+        if ($('#tableResizable').is(":visible")){
+            app.createTableQuery();
+        }
+
 } //END AOIChange()
 
 
@@ -356,50 +361,63 @@ function getTableFields(headerKeysArr, sparrowLayerId){
     ]*/
 
     var flatArr = [];
-    $.each(tableOutFields, function(i,object){
+    /*$.each(tableOutFields, function(i,object){
         flatArr.push(object);
-    });
+    });*/
 
     var htmlHeaderArr = [];
     
     var configArr = [];
+    var removeField = "";
     switch(sparrowLayerId){
         case 0:
             configArr = Group3;
+            removeField = "GRP_3_NAM";
+            $.each(tableOutFields, function(i,object){
+                flatArr.push(object);
+            });
             break;
         case 4:
             configArr = Group3_st;
+            removeField = "ST_GP3_NAM";
+            $.each(stateTableOutFields, function(i,object){
+                flatArr.push(object);
+            });
             break;
         case 7:
             configArr = Group3_tn;
+             removeField = "GRP_3_NAM"
+             $.each(tableOutFields, function(i,object){
+                flatArr.push(object);
+            });
             break;
         case 11:
             configArr = Group3_st_tn;
+            removeField = "ST_GP3_NAM";
+            $.each(stateTableOutFields, function(i,object){
+                flatArr.push(object);
+            });
             break;
     }
-    
-   /* if(sparrowLayerId == 0){
-        configArr = Group3;
-    } else{
-        configArr = Group3_tn;
-    }*/
+
     
     $.each(configArr, function(index, item){
         flatArr.push({field: item.field, name: item.name});
         $.each(item.chartOutfields, function(i, fields){
-            if (fields.attribute == "GRP_3_NAM" && (flatArr.map(function (f) { return f.field }).indexOf("GRP_3_NAM") < 0)) {// $.inArray(fields.attribute, flatArr) < 0) {
+            if (fields.attribute == removeField && (flatArr.map(function (f) { return f.field }).indexOf(removeField) < 0)) {// $.inArray(fields.attribute, flatArr) < 0) {
                 flatArr.push({field: fields.attribute, name: fields.label});
-            } else if (fields.attribute != "GRP_3_NAM") {
+            } else if (fields.attribute != removeField) {
                 flatArr.push({field:fields.attribute, name:fields.label});
             }
         });  
     });
 
     htmlHeaderArr.push("<tr>");
-    $.each(flatArr, function(index, obj){
-       // console.log(obj.name);
-        $.each(headerKeysArr, function(index, key){
+    $.each(headerKeysArr, function(index, key){
+        console.log(key);
+        $.each(flatArr, function(index, obj){
             if(key == obj.field){
+                console.log(obj.field);
                 htmlHeaderArr.push('<th>' + obj.name + '</th>');
                 return false; //escape the each loop?
             }
