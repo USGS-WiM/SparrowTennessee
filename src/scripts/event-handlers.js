@@ -25,6 +25,10 @@ function loadEventHandlers() {
         $("#resultsTable").tableToCSV();
     });
     
+    //moved this out of exectureIdentifyTask()
+    $("#popupChartButton").on('click', function(){
+        app.createChartQuery();
+    });
     /* AOI EVENTS */
     $('.aoiSelect').on('change', AOIChange);
 

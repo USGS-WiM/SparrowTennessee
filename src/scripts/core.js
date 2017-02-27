@@ -497,8 +497,8 @@ require([
                                                         '<div><b>SPARROW Reach ID: </b>' + responseObj.feature.attributes.MRB_ID + '</div><br>'+
                                                         '<div><b>Fluxmaster Load' + chartUnits +': </b>' + responseObj.feature.attributes.LOAD_A_600 + '</div><br>' +
                                                         '<div><b>SPARROW Estimated Load ' + chartUnits +': </b>' + responseObj.feature.attributes.PLOAD_600 + '</div><br>'*/
-                        '<div class="btn"><button type="button" class="btn btn-primary" id="popupSmallChartButton"><span class="glyphicon glyphicon-signal"></span> Show Chart</button></div><br>'
-                        +'<div class="btn"><button type="button" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></div>');
+                        '<div class="btn"><button type="button" class="btn btn-primary" id="popupSmallChartButton"><span class="glyphicon glyphicon-signal"></span> Show Chart</button></div><br>');
+                       // +'<div class="btn"><button type="button" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></div>');
 
 
                     var graphic = new Graphic();
@@ -510,16 +510,16 @@ require([
                     $("#popupSmallChartButton").on('click', function(){
                         app.createChartQuery(chartQueryArg);
                     });
-                    $("#popupChartButton").on('click', function(){
+/*                    $("#popupChartButton").on('click', function(){
                         app.createChartQuery();
-                    });
+                    }); */
                 
                 }       
             }         
         }); //END deferred callback
     } //END executeIdentifyTask();
 
-
+    
     app.clearFindGraphics = function clearFindGraphics() {
         app.map.infoWindow.hide();
         app.map.graphics.clear();
@@ -1057,24 +1057,32 @@ require([
             $("#chartWindowPanelTitle").text("Nitrogen " + labelySelect() );
         }
         
-        //only create close / minimize if they don't already exist
-        if ($("#chartMinimize").length == 0){
-            $("#chartWindowDiv .dropdown").prepend("<div id='chartClose' title='close'><b>X</b></div>");
-            $("#chartWindowDiv .dropdown").prepend("<div id='chartMinimize' title='collapse'><b>_</b></div>");
+        if (response.features.length <= 1){
+            $("#chartWindowPanelTitle").append("<br/><div class='btn'><button type='button' class='btn btn-primary' id='popupChartButton'><span class='glyphicon glyphicon-signal'></span> Show Full Chart</button></dipopupChartButtonv>");
         }
 
+        //only create close / minimize if they don't already exist
+        //if ($("#chartMinimize").length == 0){
+        if ($("#chartClose").length == 0){
+            $("#chartWindowDiv .dropdown").prepend("<div id='chartClose' title='close'><b>X</b></div>");
+            //$("#chartWindowDiv .dropdown").prepend("<div id='chartMinimize' title='collapse'><b>_</b></div>");
+        }
 
+        //moved this out of exectureIdentifyTask()
+        $("#popupChartButton").on('click', function(){
+            app.createChartQuery();
+        });
         var instance = $('#chartWindowDiv').data('lobiPanel');
         instance.unpin();
         //getPosition and setPosition will ensure the x is the same as it should be and the y is higher up (not cut off at bottom)
         var xPos =  instance.getPosition().x;
         instance.setPosition(xPos,50);
-         $("#chartMinimize").on('click', function(){
+         /*$("#chartMinimize").on('click', function(){
             $("#chartWindowDiv").slideDown(250);
             $("#chartWindowDiv").removeClass("chartWindowMaximize");
             $("#chartWindowDiv").attr('style', '');
             $("#chartWindowDiv").addClass("chartWindowMinimize");
-        });
+        });*/
 
         $("#chartClose").on('click', function(){
             app.map.graphics.clear();
@@ -1108,32 +1116,33 @@ require([
                 chart: {
                     type: 'column',
                     zoomType: "x",
-                    resetZoomButton: {
-                        theme: {
-                            display: 'none'
-                        }
-                    },
+                    //resetZoomButton: {
+                        //theme: {
+                        //    display: 'none'
+                        //}
+                    //},
                     backgroundColor:'rgba(255, 255, 255, 0.1)',
                     events: {
                         selection: function (e) {
-                            var xAxis = e.xAxis[0],
-                            flag = false; // first selected point should deselect old ones
-                            
-                            if(xAxis) {
-                                $.each(this.series, function (i, series) {
-                                    $.each(series.points, function (j, point) {
-                                        console.log(j, point);
-                                       /* if ( point.x >= xAxis.min && point.x <= xAxis.max ) {
+                            if (e.xAxis){
+                                var xAxis = e.xAxis[0],
+                                flag = false; // first selected point should deselect old ones
+                                if(xAxis) {
+                                    $.each(this.series, function (i, series) {
+                                        $.each(series.points, function (j, point) {
+                                            console.log(j, point);
+                                        /* if ( point.x >= xAxis.min && point.x <= xAxis.max ) {
                                             point.select(true, flag);
                                             if (!flag) {
                                                 flag = !flag; // all other points should include previous points
                                             }
                                         }*/
+                                        });
                                     });
-                                });
+                                }
+                                $("#resetButton").prop("disabled", false);
+                                return true; // Zoom to selected bars
                             }
-                            $("#resetButton").prop("disabled", false);
-                            return true; // Zoom to selected bars
                         }
                     }
                 },
