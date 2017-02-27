@@ -120,7 +120,7 @@ function loadEventHandlers() {
  
 
     /* ENABLE/DISABLE SHOW CHART BUTTON PROGRAMATICALLY */
-    $('.nonAOISelect').on('change', function(){
+    /*$('.nonAOISelect').on('change', function(){
         if ($('#groupResultsSelect')[0].selectedIndex == 0){
             if ($('#displayedMetricSelect')[0].selectedIndex == 4 || $('#displayedMetricSelect')[0].selectedIndex == 5){
                 $("#chartButton").addClass('disabled');
@@ -134,6 +134,67 @@ function loadEventHandlers() {
             $("#chartButton").removeClass('disabled');
             $("#chartButton").removeAttr('disabled');
         }
+    });*/
+
+    $('.nonAOISelect').on('change', function(){
+        switch($('#groupResultsSelect')[0].selectedIndex) {
+            case 0:
+                //HUC10
+                //chart button logic
+                if ($('#displayedMetricSelect')[0].selectedIndex == 4 || $('#displayedMetricSelect')[0].selectedIndex == 5){
+                    $("#chartButton").addClass('disabled');
+                    $('#chartButton').attr('disabled','disabled');
+                    //ALSO MAKE SURE YOU REMOVE ANY CHART FROM THE VIEW (Lobipanel only, modal takes care of self.)
+                    if( $("#chartWindowDiv").css("visibility") == "visible"){
+                        $("#chartWindowDiv").css("display", "none"); 
+                    }
+                } else{
+                    $("#chartButton").removeClass('disabled');
+                    $("#chartButton").removeAttr('disabled');
+                }                
+                 //AOI logic
+                 //enable all AOIs
+                $("#grp1-select").removeClass('disabled'); //Independent watersheds                
+                $("#grp1-select").removeAttr('disabled', 'disabled'); 
+                $('#grp1-select').selectpicker('refresh');
+
+                $("#grp2-select").removeClass('disabled'); //huc8
+                $("#grp2-select").removeAttr('disabled'); 
+                $('#grp2-select').selectpicker('refresh');
+                break;
+            case 1:
+                //HUC8
+                $("#chartButton").removeClass('disabled');
+                $("#chartButton").removeAttr('disabled');
+                break;
+            case 2:
+                //independent watershed
+                $("#chartButton").removeClass('disabled');
+                $("#chartButton").removeAttr('disabled');
+                //AOI logic
+                //disable HUC8 and clear value if any
+                if (app.getLayerDefObj().AOI2) {
+                    $('#grp2-select option').attr("selected",false);
+                    $('#grp2-select').selectpicker('refresh');
+                    app.clearOneLayerDefObj("AOI2"); //clear out this one 
+                    var newObj = { currentTarget:{id: 'grp2-select', value: ""} }; //making an 'e' to pass along
+                    AOIChange(newObj); //go through the aoichange event to do the rest                    
+                }
+                $("#grp2-select").attr('disabled', 'disabled');//huc8                   
+                $("#grp2-select").addClass('disabled');                 
+                $('#grp2-select').selectpicker('refresh');
+                break;
+            case 3:
+                //state
+                $("#chartButton").removeClass('disabled');
+                $("#chartButton").removeAttr('disabled');
+                //disable both IW and HUC8
+                $("#grp1-select").addClass('disabled'); //independent watersheds     
+                $("#grp1-select").attr('disabled', 'disabled'); 
+                $("#grp2-select").addClass('disabled'); //huc8       
+                $("#grp2-select").attr('disabled', 'disabled'); 
+                break;
+        }//end switch
     });
 
     /* SHOW CHART BUTTON CLICK */

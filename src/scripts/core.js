@@ -166,6 +166,31 @@ require([
         defaultAOIOptions();
     }
 
+    //disabling dropdown need to clear selection
+    app.clearOneLayerDefObj = function(whichOne){
+        var selectID = "";
+        switch(whichOne){
+            case "AOIST":
+                //$("#st-select").empty();
+                layerDefObj.AOIST = undefined;
+                app.updateAOIs("grp1-select");
+                app.updateAOIs("grp2-select");
+                break;
+            case "AOI1":
+                //$("#grp1-select").empty();
+                layerDefObj.AOI1 = undefined;
+                app.updateAOIs("st-select");
+                app.updateAOIs("grp2-select");
+                break;
+            case "AOI2":
+                //$("#grp2-select").empty();
+                layerDefObj.AOI2 = undefined;
+                app.updateAOIs("grp1-select");
+                app.updateAOIs("st-select");
+                break;
+        }               
+    }
+
     app.updateAOIs = function(selectedId){
         var filteredAOIOptions = [];
 
@@ -187,6 +212,10 @@ require([
                 }
                 else {
                     filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.ST == layerDefObj.AOIST; });    
+                }
+                if (filteredAOIOptions.length == 0) {
+                    //both AOIST and AOI2 empty - give me all
+                    filteredAOIOptions = AllAOIOptions;
                 }
                 
                 /*______________________________________________________ 
@@ -229,6 +258,10 @@ require([
                 else {
                     filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.ST == layerDefObj.AOIST; });   
                 }
+                if (filteredAOIOptions.length == 0) {
+                    //both AOIST and AOI2 empty - give me all
+                    filteredAOIOptions = AllAOIOptions;
+                }
 
                 //get unique group2 values
                 grp2Options = [...new Set(filteredAOIOptions.map(item => item.GRP_2_NAM))];
@@ -260,6 +293,10 @@ require([
                 else {
                     filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_1_NAM == layerDefObj.AOI1 });
                 }
+                if (filteredAOIOptions.length == 0) {
+                    //both AOIST and AOI2 empty - give me all
+                    filteredAOIOptions = AllAOIOptions;
+                }
                 
                 //get unique states in the selected grp1
                 stOptions = [...new Set(filteredAOIOptions.map(item => item.ST))];
@@ -285,6 +322,10 @@ require([
                 }
                 else {
                     filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_1_NAM == layerDefObj.AOI1 });
+                }
+                if (filteredAOIOptions.length == 0) {
+                    //both AOIST and AOI2 empty - give me all
+                    filteredAOIOptions = AllAOIOptions;
                 }
 
                 //get unique group2 options from the grp1 selection
@@ -316,6 +357,10 @@ require([
                 else {
                     filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_2_NAM == layerDefObj.AOI2 });
                 }
+                if (filteredAOIOptions.length == 0) {
+                    //both AOIST and AOI2 empty - give me all
+                    filteredAOIOptions = AllAOIOptions;
+                }
                                 
                 stOptions = [...new Set(filteredAOIOptions.map(item => item.ST))];
                 $.each(stOptions, function(index, option){
@@ -338,6 +383,11 @@ require([
                 else {
                     filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_2_NAM == layerDefObj.AOI2 });
                 }
+                if (filteredAOIOptions.length == 0) {
+                    //both AOIST and AOI2 empty - give me all
+                    filteredAOIOptions = AllAOIOptions;
+                }
+                
                 grp1Options = [...new Set(filteredAOIOptions.map(item => item.GRP_1_NAM))];
                 $.each(grp1Options, function(index, option){
                     $("#grp1-select").append(new Option(option));
@@ -596,7 +646,6 @@ require([
     }//END app.createChartQuery
 
    
-
     function setupQueryTask(url, outFieldsArr, whereClause){
         var queryTask;
         queryTask = new esri.tasks.QueryTask(url);

@@ -195,7 +195,10 @@ function AOIChange(e){
             setAggregateGroup( groupResultsIndex, $(".radio input[type='radio']:checked")[0].id );
     }
 
-    app.setLayerDefObj(newObj);
+    //only update if there's a value to update to (clearing selected values depending on Group Results by selections)
+    if (newObj.selectedValue != ""){
+        app.setLayerDefObj(newObj);
+    }
 
     setLayerDefs();    
 
@@ -260,7 +263,7 @@ function setLayerDefs(){
         layerDefs[13] = definitionString;
         
         app.map.getLayer("SparrowRanking").setLayerDefinitions(layerDefs);
-        generateRenderer();
+      //  generateRenderer();
 
         //updateAOI(layerDefs[0], selectId);
         //updateAOI(layerDefs[0], app.layerDefsObj.selectId);
