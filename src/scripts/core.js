@@ -496,9 +496,8 @@ require([
                                                         '<div><b>Station ID:</b> </b>' + responseObj.feature.attributes.staid + '</div><br>' +
                                                         '<div><b>SPARROW Reach ID: </b>' + responseObj.feature.attributes.MRB_ID + '</div><br>'+
                                                         '<div><b>Fluxmaster Load' + chartUnits +': </b>' + responseObj.feature.attributes.LOAD_A_600 + '</div><br>' +
-                                                        '<div><b>SPARROW Estimated Load ' + chartUnits +': </b>' + responseObj.feature.attributes.PLOAD_600 + '</div><br>'*/
-                        '<div class="btn"><button type="button" class="btn btn-primary" id="popupSmallChartButton"><span class="glyphicon glyphicon-signal"></span> Show Chart</button></div><br>');
-                       // +'<div class="btn"><button type="button" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></div>');
+                                                        '<div><b>SPARROW Estimated Load ' + chartUnits +': </b>' + responseObj.feature.attributes.PLOAD_600 + '</div><br>' +*/
+                        '<div class="btn"><button type="button" class="btn btn-primary" id="popupSmallChartButton"><span class="glyphicon glyphicon-signal"></span> Show Chart</button></div><br>');                       
 
 
                     var graphic = new Graphic();
@@ -1122,7 +1121,7 @@ require([
                         //}
                     //},
                     backgroundColor:'rgba(255, 255, 255, 0.1)',
-                    events: {
+                    /*events: {
                         selection: function (e) {
                             if (e.xAxis){
                                 var xAxis = e.xAxis[0],
@@ -1131,12 +1130,12 @@ require([
                                     $.each(this.series, function (i, series) {
                                         $.each(series.points, function (j, point) {
                                             console.log(j, point);
-                                        /* if ( point.x >= xAxis.min && point.x <= xAxis.max ) {
+                                         if ( point.x >= xAxis.min && point.x <= xAxis.max ) {
                                             point.select(true, flag);
                                             if (!flag) {
                                                 flag = !flag; // all other points should include previous points
                                             }
-                                        }*/
+                                        }
                                         });
                                     });
                                 }
@@ -1144,7 +1143,7 @@ require([
                                 return true; // Zoom to selected bars
                             }
                         }
-                    }
+                    }*/
                 },
                 title:{
                     text: null
