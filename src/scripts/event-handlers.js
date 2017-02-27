@@ -138,9 +138,8 @@ function loadEventHandlers() {
 
     $('.nonAOISelect').on('change', function(){
         switch($('#groupResultsSelect')[0].selectedIndex) {
-            case 0:
-                //HUC10
-                //chart button logic
+            case 0: //HUC10                
+                //CHART button logic
                 if ($('#displayedMetricSelect')[0].selectedIndex == 4 || $('#displayedMetricSelect')[0].selectedIndex == 5){
                     $("#chartButton").addClass('disabled');
                     $('#chartButton').attr('disabled','disabled');
@@ -151,48 +150,86 @@ function loadEventHandlers() {
                 } else{
                     $("#chartButton").removeClass('disabled');
                     $("#chartButton").removeAttr('disabled');
-                }                
-                 //AOI logic
-                 //enable all AOIs
+                }
+
+                //AOI logic (enable both AOIs)                
                 $("#grp1-select").removeClass('disabled'); //Independent watersheds                
-                $("#grp1-select").removeAttr('disabled', 'disabled'); 
+                $("#grp1-select").removeAttr('disabled'); 
                 $('#grp1-select').selectpicker('refresh');
 
                 $("#grp2-select").removeClass('disabled'); //huc8
                 $("#grp2-select").removeAttr('disabled'); 
                 $('#grp2-select').selectpicker('refresh');
                 break;
-            case 1:
-                //HUC8
+            case 1: //HUC8                
+                //CHART button logic
                 $("#chartButton").removeClass('disabled');
                 $("#chartButton").removeAttr('disabled');
+                
+                //AOI logic (enable both AOIs)                
+                $("#grp1-select").removeClass('disabled'); //Independent watersheds                
+                $("#grp1-select").removeAttr('disabled'); 
+                $('#grp1-select').selectpicker('refresh');
+
+                $("#grp2-select").removeClass('disabled'); //huc8
+                $("#grp2-select").removeAttr('disabled'); 
+                $('#grp2-select').selectpicker('refresh');
                 break;
-            case 2:
-                //independent watershed
+            case 2: //INDEPENDENT WATERSHED
+                //CHART button logic                
                 $("#chartButton").removeClass('disabled');
                 $("#chartButton").removeAttr('disabled');
-                //AOI logic
-                //disable HUC8 and clear value if any
+                
+                //AOI logic (disable HUC8 & clear value if any)
                 if (app.getLayerDefObj().AOI2) {
+                    //has value, so unselect it, clear the app's LayerDefObj of this property & trigger AOIChange event
                     $('#grp2-select option').attr("selected",false);
-                    $('#grp2-select').selectpicker('refresh');
+       //             $('#grp2-select').selectpicker('refresh');
                     app.clearOneLayerDefObj("AOI2"); //clear out this one 
                     var newObj = { currentTarget:{id: 'grp2-select', value: ""} }; //making an 'e' to pass along
                     AOIChange(newObj); //go through the aoichange event to do the rest                    
                 }
-                $("#grp2-select").attr('disabled', 'disabled');//huc8                   
-                $("#grp2-select").addClass('disabled');                 
+                //disable the HUC8 dropdown
+                $("#grp2-select").attr('disabled', 'disabled');//huc8
+                $("#grp2-select").addClass('disabled');
                 $('#grp2-select').selectpicker('refresh');
+                
+                //endable Independent watershed (in case it was previously disabled)
+                $("#grp1-select").removeClass('disabled'); //Independent watersheds                
+                $("#grp1-select").removeAttr('disabled'); 
+                $('#grp1-select').selectpicker('refresh');
                 break;
-            case 3:
-                //state
+            case 3: //STATE
+                //CHART button logic
                 $("#chartButton").removeClass('disabled');
                 $("#chartButton").removeAttr('disabled');
-                //disable both IW and HUC8
-                $("#grp1-select").addClass('disabled'); //independent watersheds     
-                $("#grp1-select").attr('disabled', 'disabled'); 
-                $("#grp2-select").addClass('disabled'); //huc8       
-                $("#grp2-select").attr('disabled', 'disabled'); 
+
+                //AOI logic (disable both IW and HUC8 & clear values if any)
+                //independent watershed
+                if (app.getLayerDefObj().AOI1) {
+                    //has value, so unselect it, clear the app's LayerDefObj of this property & trigger AOIChange event
+                    $('#grp1-select option').attr("selected",false);
+       //             $('#grp2-select').selectpicker('refresh');
+                    app.clearOneLayerDefObj("AOI1"); //clear out this one 
+                    var newObj = { currentTarget:{id: 'grp1-select', value: ""} }; //making an 'e' to pass along
+                    AOIChange(newObj); //go through the aoichange event to do the rest                    
+                }
+                $("#grp1-select").attr('disabled', 'disabled'); //independent watersheds     
+                $("#grp1-select").addClass('disabled');
+                $('#grp1-select').selectpicker('refresh');
+                
+                //huc8
+                if (app.getLayerDefObj().AOI2) {
+                    //has value, so unselect it, clear the app's LayerDefObj of this property & trigger AOIChange event
+                    $('#grp2-select option').attr("selected",false);
+       //             $('#grp2-select').selectpicker('refresh');
+                    app.clearOneLayerDefObj("AOI2"); //clear out this one 
+                    var newObj = { currentTarget:{id: 'grp2-select', value: ""} }; //making an 'e' to pass along
+                    AOIChange(newObj); //go through the aoichange event to do the rest                    
+                }
+                $("#grp2-select").attr('disabled', 'disabled'); //huc8       
+                $("#grp2-select").addClass('disabled');
+                $('#grp2-select').selectpicker('refresh');
                 break;
         }//end switch
     });
