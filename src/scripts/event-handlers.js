@@ -155,10 +155,12 @@ function loadEventHandlers() {
                 //AOI logic (enable both AOIs)                
                 $("#grp1-select").removeClass('disabled'); //Independent watersheds                
                 $("#grp1-select").removeAttr('disabled'); 
+                $(".grp1-warning").remove();
                 $('#grp1-select').selectpicker('refresh');
 
                 $("#grp2-select").removeClass('disabled'); //huc8
                 $("#grp2-select").removeAttr('disabled'); 
+                $(".grp2-warning").remove();
                 $('#grp2-select').selectpicker('refresh');
                 break;
             case 1: //HUC8                
@@ -169,10 +171,12 @@ function loadEventHandlers() {
                 //AOI logic (enable both AOIs)                
                 $("#grp1-select").removeClass('disabled'); //Independent watersheds                
                 $("#grp1-select").removeAttr('disabled'); 
+                $(".grp1-warning").remove();
                 $('#grp1-select').selectpicker('refresh');
 
                 $("#grp2-select").removeClass('disabled'); //huc8
                 $("#grp2-select").removeAttr('disabled'); 
+                $(".grp2-warning").remove();
                 $('#grp2-select').selectpicker('refresh');
                 break;
             case 2: //INDEPENDENT WATERSHED
@@ -182,12 +186,13 @@ function loadEventHandlers() {
                 
                 //AOI logic (disable HUC8 & clear value if any)
                 if (app.getLayerDefObj().AOI2) {
+                    $("#clear_btn").append("<a class='grp2-warning' data-toggle='tooltip' data-placement='top' title='Cannot show HUC8 Area of Interest while grouping by Independent Watershed.'>"+
+                        "<span class='glyphicon glyphicon-warning-sign'></span></a>");   
                     //has value, so unselect it, clear the app's LayerDefObj of this property & trigger AOIChange event
                     $('#grp2-select option').attr("selected",false);
-       //             $('#grp2-select').selectpicker('refresh');
                     app.clearOneLayerDefObj("AOI2"); //clear out this one 
-                    var newObj = { currentTarget:{id: 'grp2-select', value: ""} }; //making an 'e' to pass along
-                    AOIChange(newObj); //go through the aoichange event to do the rest                    
+                    var newE1 = { currentTarget:{id: 'grp2-select', value: ""} }; //making an 'e' to pass along
+                    AOIChange(newE1); //go through the aoichange event to do the rest                    
                 }
                 //disable the HUC8 dropdown
                 $("#grp2-select").attr('disabled', 'disabled');//huc8
@@ -197,6 +202,7 @@ function loadEventHandlers() {
                 //endable Independent watershed (in case it was previously disabled)
                 $("#grp1-select").removeClass('disabled'); //Independent watersheds                
                 $("#grp1-select").removeAttr('disabled'); 
+                $(".grp2-warning").remove();
                 $('#grp1-select').selectpicker('refresh');
                 break;
             case 3: //STATE
@@ -207,12 +213,13 @@ function loadEventHandlers() {
                 //AOI logic (disable both IW and HUC8 & clear values if any)
                 //independent watershed
                 if (app.getLayerDefObj().AOI1) {
+                    $("#clear_btn").append("<a class='grp1-warning' data-toggle='tooltip' data-placement='top' title='Cannot show Independent Watershed Area of Interest while grouping by State.'>"+
+                        "<span class='glyphicon glyphicon-warning-sign'></span></a>");   
                     //has value, so unselect it, clear the app's LayerDefObj of this property & trigger AOIChange event
                     $('#grp1-select option').attr("selected",false);
-       //             $('#grp2-select').selectpicker('refresh');
                     app.clearOneLayerDefObj("AOI1"); //clear out this one 
-                    var newObj = { currentTarget:{id: 'grp1-select', value: ""} }; //making an 'e' to pass along
-                    AOIChange(newObj); //go through the aoichange event to do the rest                    
+                    var newE2 = { currentTarget:{id: 'grp1-select', value: ""} }; //making an 'e' to pass along
+                    AOIChange(newE2); //go through the aoichange event to do the rest                    
                 }
                 $("#grp1-select").attr('disabled', 'disabled'); //independent watersheds     
                 $("#grp1-select").addClass('disabled');
@@ -220,12 +227,13 @@ function loadEventHandlers() {
                 
                 //huc8
                 if (app.getLayerDefObj().AOI2) {
+                    $("#clear_btn").append("<a class='grp2-warning' data-toggle='tooltip' data-placement='top' title='Cannot show HUC8 Area of Interest while grouping by State.'>"+
+                        "<span class='glyphicon glyphicon-warning-sign'></span></a>");   
                     //has value, so unselect it, clear the app's LayerDefObj of this property & trigger AOIChange event
                     $('#grp2-select option').attr("selected",false);
-       //             $('#grp2-select').selectpicker('refresh');
                     app.clearOneLayerDefObj("AOI2"); //clear out this one 
-                    var newObj = { currentTarget:{id: 'grp2-select', value: ""} }; //making an 'e' to pass along
-                    AOIChange(newObj); //go through the aoichange event to do the rest                    
+                    var newE3 = { currentTarget:{id: 'grp2-select', value: ""} }; //making an 'e' to pass along
+                    AOIChange(newE3); //go through the aoichange event to do the rest                    
                 }
                 $("#grp2-select").attr('disabled', 'disabled'); //huc8       
                 $("#grp2-select").addClass('disabled');

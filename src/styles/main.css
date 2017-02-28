@@ -457,3 +457,33 @@ input[type="checkbox"], input[type="radio"] {
   overflow-x: scroll;
   margin: 0 auto 5px auto;
 }
+/* Tooltip */
+.grp1-warning + .tooltip > .tooltip-inner {
+    background-color: #73AD21; 
+    color: #FFFFFF; 
+    border: 1px solid green; 
+    padding: 15px;
+    font-size: 20px;
+}
+.grp1-warning{
+  color:red;
+  padding:5px;
+}
+.grp1-warning:hover {
+  color:red;
+}
+
+.grp2-warning + .tooltip > .tooltip-inner {
+    background-color: #73AD21; 
+    color: #FFFFFF; 
+    border: 1px solid green; 
+    padding: 15px;
+    font-size: 20px;
+}
+.grp2-warning{
+  color:red;
+  padding:5px;
+}
+.grp2-warning:hover {
+  color:red;
+}
