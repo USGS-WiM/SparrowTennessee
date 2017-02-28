@@ -487,3 +487,11 @@ input[type="checkbox"], input[type="radio"] {
 .grp2-warning:hover {
   color:red;
 }
+
+.esriLegendLayerLabel{
+    visibility: collapse;
+}
+
+.esriLegendServiceLabel{
+    font-size: 12px;
+}

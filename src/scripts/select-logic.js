@@ -431,6 +431,143 @@ function getTableFields(headerKeysArr, sparrowLayerId){
 }
 
 
+function getLegendLabels(sparrowLayerId){
+    var label = "";
+    switch(sparrowLayerId){
+        /////BEGIN PHOSPHORUS LAYERS___________________________________________________________
+        case 0: 
+            //HUC10
+            $.each(Group3, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                     label = item.name;
+                }
+            });
+            return label;
+            break;
+        case 1:
+            //HUC8
+            $.each(Group2, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                     label = item.name;
+                }
+            });
+            return label;
+            break;
+        case 2: 
+            //Independent Watershed
+             $.each(Group1, function(index, item){
+               if( $("#displayedMetricSelect").val() == item.field ) {
+                     label = item.name;
+                }
+            });
+            return label;
+            break;
+        case 3:
+            //State
+            $.each(ST, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                     label = item.name;
+                }
+            });
+            return label;
+            break;
+        case 4:
+            //grp3 w/ state divisions
+            $.each(Group3_st, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                     label = item.name;
+                }
+            });
+            return label;
+            break;
+        case 5:
+            //grp 2 w/ state divisions
+            $.each(Group2_st, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                     label = item.name;
+                }
+            });
+            return label;
+            break;
+        case 6:
+            //grp1 w/ state divisions
+            $.each(Group1_st, function(index, item){
+               if( $("#displayedMetricSelect").val() == item.field ) {
+                     label = item.name;
+                }
+            });
+            return label;
+            break;
+        /////END PHOSPHORUS LAYERS___________________________________________________________
+        /////BEGIN NITROGEN LAYERS___________________________________________________________
+        case 7: 
+            //HUC10
+            $.each(Group3_tn, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                     label = item.name;
+                }
+            });
+            return label;
+            break;
+        case 8:
+            //HUC8
+            $.each(Group2_tn, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                     label = item.name;
+                }
+            });
+            return label;
+            break;
+        case 9: 
+            //Independent Watershed
+             $.each(Group1_tn, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                     label = item.name;
+                }
+            });
+            return label;
+            break;
+        case 10:
+            //State
+            $.each(ST_tn, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                    label = item.name;
+                }
+            });
+            return label;
+            break;
+        case 11:
+            //grp3 w/ state divisions
+            $.each(Group3_st_tn, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                   label = item.name;
+                }
+            });
+            return label;
+            break;
+        case 12:
+            //grp 2 w/ state divisions
+            $.each(Group2_st_tn, function(index, item){
+               if( $("#displayedMetricSelect").val() == item.field ) {
+                   label = item.name;
+                }
+            });
+            return label;
+            break;
+        case 13:
+            //grp1 w/ state divisions
+            $.each(Group1_st_tn, function(index, item){
+                if( $("#displayedMetricSelect").val() == item.field ) {
+                    label = item.name;
+                }
+            });
+            return label;
+            break;
+        /////END NITROGEN LAYERS___________________________________________________________
+    }
+
+} //END getLegendLabels()
+
 function getChartOutfields(sparrowLayerId){
     var chartFieldsArr = [];
     console.log("in GetChartOutfields()")
@@ -610,8 +747,7 @@ function getChartOutfields(sparrowLayerId){
             break;
         /////END NITROGEN LAYERS___________________________________________________________
     }
-
-} //END getChartOutfields()
+} //END getLegendLabels()
 
 
 function generateRenderer(){
@@ -723,6 +859,11 @@ function generateRenderer(){
 
               if (! app.hasOwnProperty("legend")){
                 createLegend();
+              } else{
+                app.legend.refresh([{
+                    layer: app.map.getLayer("SparrowRanking"),
+                    title : getLegendLabels( app.map.getLayer('SparrowRanking').visibleLayers[0] )
+                }])
               }
 
 
@@ -737,7 +878,7 @@ function generateRenderer(){
                 map : app.map, 
                 layerInfos : [{
                     layer: app.map.getLayer("SparrowRanking"),
-                    title: "Sparrow Nutrient Model"
+                    title: getLegendLabels( app.map.getLayer('SparrowRanking').visibleLayers[0] )
                 }]
             }, dom.byId("legendDiv"));
             app.legend.startup();
