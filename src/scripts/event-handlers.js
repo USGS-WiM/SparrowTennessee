@@ -65,6 +65,7 @@ function loadEventHandlers() {
             app.map.graphics.clear();
             app.createChartQuery();
         }
+
         
     });
     /*END GROUP RESULTS (AGGREGATE LAYER) EVENTS */
