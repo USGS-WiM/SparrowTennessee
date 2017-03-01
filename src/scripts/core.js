@@ -122,19 +122,17 @@ require([
             // what to do when a location is found
             // o.result is geojson point feature of location with properties
             
-            // zoom to location
-            //require(["esri/geometry/Extent"], function(Extent) {
-                app.map.setExtent(
-                    new esri.geometry.Extent({
-                        xmin: o.result.properties.LonMin,
-                        ymin: o.result.properties.LatMin,
-                        xmax: o.result.properties.LonMax,
-                        ymax: o.result.properties.LatMax,
-                        spatialReference: {'wkid':4326}
-                    }),
-                    true
-                );
-            //});
+            // zoom to location            
+            app.map.setExtent(
+                new esri.geometry.Extent({
+                    xmin: o.result.properties.LonMin,
+                    ymin: o.result.properties.LatMin,
+                    xmax: o.result.properties.LonMax,
+                    ymax: o.result.properties.LatMax,
+                    spatialReference: {'wkid':4326}
+                }),
+                true
+            );            
             
             // open popup at location listing all properties
             app.map.infoWindow.setTitle('Search Result');
@@ -143,11 +141,13 @@ require([
                     return '<b>' + property + ': </b>' + o.result.properties[property];
                 }).join('<br/>')
             );
-            //require( ["esri/geometry/Point"], function(Point) {
-                app.map.infoWindow.show(
-                    new Point( o.result.properties.Lon, o.result.properties.Lat )
-                );
-           // });
+            // Close modal
+            $('#geosearchModal').modal('hide');
+            
+            app.map.infoWindow.show(
+                new Point( o.result.properties.Lon, o.result.properties.Lat )
+            );           
+            app.map.setLevel(5);
         }
     });
 
