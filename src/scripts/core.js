@@ -19,6 +19,7 @@ require([
     'esri/dijit/Geocoder',
     'esri/dijit/PopupTemplate',
     'esri/graphic',
+    'esri/geometry/Extent',
     'esri/geometry/Multipoint',
     'esri/geometry/Point',
     "esri/layers/LayerDrawingOptions",
@@ -55,6 +56,7 @@ require([
     Geocoder,
     PopupTemplate,
     Graphic,
+    Extent,
     Multipoint,
     Point,
     LayerDrawingOptions,
@@ -113,6 +115,42 @@ require([
     app.geocoder.on('select', geocodeSelect);
     app.geocoder.on('findResults', geocodeResults);
     app.geocoder.on('clear', app.clearFindGraphics);
+
+     //TX WSC Search API
+    search_api.create( "geosearch_usgs", {
+        on_result: function(o) {
+            // what to do when a location is found
+            // o.result is geojson point feature of location with properties
+            
+            // zoom to location
+            //require(["esri/geometry/Extent"], function(Extent) {
+                app.map.setExtent(
+                    new esri.geometry.Extent({
+                        xmin: o.result.properties.LonMin,
+                        ymin: o.result.properties.LatMin,
+                        xmax: o.result.properties.LonMax,
+                        ymax: o.result.properties.LatMax,
+                        spatialReference: {"wkid":4326}
+                    }),
+                    true
+                );
+            //});
+            
+            // open popup at location listing all properties
+            app.map.infoWindow.setTitle("Search Result");
+            app.map.infoWindow.setContent(
+                $.map( Object.keys(o.result.properties), function(property) {
+                    return "<b>" + property + ": </b>" + o.result.properties[property];
+                }).join("<br/>")
+            );
+            //require( ["esri/geometry/Point"], function(Point) {
+                app.map.infoWindow.show(
+                    new Point( o.result.properties.Lon, o.result.properties.Lat )
+                );
+           // });
+        }
+    });
+
     var layerDefObj = {};
     var AllAOIOptions = [];
 
@@ -131,6 +169,7 @@ require([
             setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, queryParameters[key].nameField, "1=1");
         }     
     }*/
+
 
     app.setLayerDefObj = function(newObj){
         

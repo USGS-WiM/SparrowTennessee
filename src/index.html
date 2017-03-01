@@ -80,9 +80,62 @@
 <script>
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();   
+
+    
+    // create map in element "map2"
+    //var map2;
+    /*require( ["esri/map"], function(Map) {
+        map2 = new Map("map2", {
+            center  : [-99,38],
+            minZoom : 3,
+            maxZoom : 15,
+            zoom    : 3,
+            basemap : "osm"
+        });
+    });*/
+            
+    // create search_api widget in element "search2"
+    /*search_api.create( "search2", {
+        on_result: function(o) {
+            // what to do when a location is found
+            // o.result is geojson point feature of location with properties
+            
+            // zoom to location
+            //require(["esri/geometry/Extent"], function(Extent) {
+                map2.setExtent(
+                    new esri.geometry.Extent({
+                        xmin: o.result.properties.LonMin,
+                        ymin: o.result.properties.LatMin,
+                        xmax: o.result.properties.LonMax,
+                        ymax: o.result.properties.LatMax,
+                        spatialReference: {"wkid":4326}
+                    }),
+                    true
+                );
+            //});
+            
+            // open popup at location listing all properties
+            map2.infoWindow.setTitle("Search Result");
+            map2.infoWindow.setContent(
+                $.map( Object.keys(o.result.properties), function(property) {
+                    return "<b>" + property + ": </b>" + o.result.properties[property];
+                }).join("<br/>")
+            );
+            //require( ["esri/geometry/Point"], function(Point) {
+                map2.infoWindow.show(
+                    new Point( o.result.properties.Lon, o.result.properties.Lat )
+                );
+           // });
+        }
+    });*/
+        
 });
 </script>
-    <!-- endbuild -->
+
+<!-- search_api 2.0 -->
+    <link    rel="stylesheet"     href="https://txpub.usgs.gov/DSS/search_api/2.0/api/search_api.css"/>
+    <script type="text/javascript" src="https://txpub.usgs.gov/DSS/search_api/2.0/api/search_api.min.js"></script>        
+<!-- endbuild -->
 
 </head>
 <body>
@@ -132,9 +185,10 @@ $(document).ready(function(){
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <div id="geosearch"><div id="sapi_searchTextBoxDiv"></div></div>
+                    <!-- <div id="geosearch" style="display:none"><div id="sapi_searchTextBoxDiv"></div></div> -->
+                    <div id="geosearch_usgs" class="search"></div>  
                 </div>
-                <form id="geosearch-form" class="form-inline">
+                <!-- <form id="geosearch-form" class="form-inline">
                     <div class="checkbox">
                         <label>
                             <input id="chkExtent" type="checkbox"> Search in Map Only
@@ -142,7 +196,7 @@ $(document).ready(function(){
                     </div>
                     <button id="btnGeosearch" type="button" class="btn btn-success btn-fixed" data-dismiss="modal"> Go </button>
                     <button id="btnDismiss" type="submit" class="btn btn-default btn-fixed" data-dismiss="modal">Dismiss</button>
-                </form>
+                </form> -->
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -436,6 +490,9 @@ $(document).ready(function(){
                 <!--LOBIPANEL EXPERIMENTAL________________________________________________________________________________________________________________________-->
             
             </div><!--END mapDiv-->
+         <!--  <div id="search2" class="search"></div>-->
+            
+
 
             <div style="position:absolute; bottom:0; display:none;z-index: 100" id="tableResizable" class="ui-widget-content">
                 <!--<button type='button' class='close pull-left' data-dismiss='tableResizable' id="tableResizable_Close" aria-hidden='true'>x</button>-->
