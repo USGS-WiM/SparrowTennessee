@@ -114,12 +114,6 @@ require([
     app.geocoder.startup();
     app.geocoder.on('select', geocodeSelect);
     app.geocoder.on('findResults', geocodeResults);
-<<<<<<< HEAD
-<<<<<<< HEAD
-    app.geocoder.on('clear', app.clearFindGraphics);*/
-=======
-=======
->>>>>>> 503e95f0805b145c4f6cee415262191a5039b7d0
     app.geocoder.on('clear', app.clearFindGraphics);
 
      //TX WSC Search API
@@ -157,10 +151,7 @@ require([
         }
     });
 
-<<<<<<< HEAD
->>>>>>> 9cf432dcdfa4d2f1f8ec56a9b68e4e1f3e0001bf
-=======
->>>>>>> 503e95f0805b145c4f6cee415262191a5039b7d0
+
     var layerDefObj = {};
     var AllAOIOptions = [];
 
