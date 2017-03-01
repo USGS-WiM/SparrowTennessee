@@ -101,7 +101,7 @@ require([
     }, "locateButton");
     app.locate.startup();
 
-    app.geocoder = new Geocoder({
+    /*app.geocoder = new Geocoder({
         value: '',
         maxLocations: 25,
         autoComplete: true,
@@ -112,7 +112,7 @@ require([
     app.geocoder.startup();
     app.geocoder.on('select', geocodeSelect);
     app.geocoder.on('findResults', geocodeResults);
-    app.geocoder.on('clear', app.clearFindGraphics);
+    app.geocoder.on('clear', app.clearFindGraphics);*/
     var layerDefObj = {};
     var AllAOIOptions = [];
 
@@ -715,7 +715,7 @@ require([
             geocoder.activeGeocoder.searchExtent = null;
         }
     }
-    function geosearch() {
+    /*function geosearch() {
         setSearchExtent();
         var def = geocoder.find();
         def.then(function (res){
@@ -723,8 +723,8 @@ require([
         });
         // Close modal
         $('#geosearchModal').modal('hide');
-    }
-    function geocodeSelect(item) {
+    }*/
+    /*function geocodeSelect(item) {
         app.clearFindGraphics();
         var g = (item.graphic ? item.graphic : item.result.feature);
         g.setSymbol(sym);
@@ -749,7 +749,7 @@ require([
         } else {
             //alert('Sorry, address or place not found.');  // TODO
         }
-    }
+    }*/
     function stripTitle(title) {
         var i = title.indexOf(',');
         if (i > 0) {
