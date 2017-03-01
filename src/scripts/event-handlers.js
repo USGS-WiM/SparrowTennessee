@@ -353,5 +353,5 @@ function loadEventHandlers() {
     // });
 
     // Geosearch functions
-    $('#btnGeosearch').on ('click', geosearch);
+  //  $('#btnGeosearch').on ('click', geosearch);
 }
