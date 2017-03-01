@@ -22,7 +22,7 @@ require([
     'esri/geometry/Extent',
     'esri/geometry/Multipoint',
     'esri/geometry/Point',
-    "esri/layers/LayerDrawingOptions",
+    'esri/layers/LayerDrawingOptions',
     'esri/symbols/PictureMarkerSymbol',
     'esri/symbols/SimpleLineSymbol',
     'esri/symbols/SimpleFillSymbol',
@@ -30,8 +30,8 @@ require([
     'esri/tasks/AlgorithmicColorRamp',
     'esri/tasks/GenerateRendererParameters',
     'esri/tasks/GenerateRendererTask',
-    "esri/tasks/IdentifyTask",
-    "esri/tasks/IdentifyParameters",
+    'esri/tasks/IdentifyTask',
+    'esri/tasks/IdentifyParameters',
     'esri/geometry/webMercatorUtils',
     'esri/SpatialReference',
     'dojo/parser',
@@ -94,13 +94,13 @@ require([
     //button for returning to initial extent
     app.home = new HomeButton({
         map: app.map
-    }, "homeButton");
+    }, 'homeButton');
     app.home.startup();
 
     //button for finding and zooming to user's location
     app.locate = new LocateButton({
         map: app.map
-    }, "locateButton");
+    }, 'locateButton');
     app.locate.startup();
 
     app.geocoder = new Geocoder({
@@ -117,7 +117,7 @@ require([
     app.geocoder.on('clear', app.clearFindGraphics);
 
      //TX WSC Search API
-    search_api.create( "geosearch_usgs", {
+    search_api.create( 'geosearch_usgs', {
         on_result: function(o) {
             // what to do when a location is found
             // o.result is geojson point feature of location with properties
@@ -130,18 +130,18 @@ require([
                         ymin: o.result.properties.LatMin,
                         xmax: o.result.properties.LonMax,
                         ymax: o.result.properties.LatMax,
-                        spatialReference: {"wkid":4326}
+                        spatialReference: {'wkid':4326}
                     }),
                     true
                 );
             //});
             
             // open popup at location listing all properties
-            app.map.infoWindow.setTitle("Search Result");
+            app.map.infoWindow.setTitle('Search Result');
             app.map.infoWindow.setContent(
                 $.map( Object.keys(o.result.properties), function(property) {
-                    return "<b>" + property + ": </b>" + o.result.properties[property];
-                }).join("<br/>")
+                    return '<b>' + property + ': </b>' + o.result.properties[property];
+                }).join('<br/>')
             );
             //require( ["esri/geometry/Point"], function(Point) {
                 app.map.infoWindow.show(
@@ -162,7 +162,7 @@ require([
     loadEventHandlers();
 
     //TODO: FIGURE OUT HOW TO USE THE QUERY WHERECLAUSE     Call setupQueryTask for every layer inqueryParameters
-    setupQueryTask(serviceBaseURL + 4, ["ST", "GRP_3_NAM", "GRP_2_NAM", "GRP_1_NAM" ], "1=1");
+    setupQueryTask(serviceBaseURL + 4, ['ST', 'GRP_3_NAM', 'GRP_2_NAM', 'GRP_1_NAM' ], '1=1');
     /*for (var key in queryParameters){
         if (key == 'grp3'){
             setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, ["ST", "GRP_3_NAM", "GRP_2_NAM", "GRP_1_NAM" ], "1=1");
@@ -176,60 +176,70 @@ require([
         
         //UPDATE NOTE: need 1 case for every AOI select
         switch(newObj.selectedId){
-            case "st-select":
+            case 'st-select':
                 layerDefObj.AOIST = newObj.selectedValue;
                 break;
-            case "grp1-select":
+            case 'grp1-select':
                 layerDefObj.AOI1 = newObj.selectedValue;
 
                 break;
-            case "grp2-select":
+            case 'grp2-select':
                 layerDefObj.AOI2 = newObj.selectedValue;
                 break;
-            case "grp3-select":
+            case 'grp3-select':
                 layerDefObj.AOI3 = newObj.selectedValue;
                 break;
         }
         app.updateAOIs(newObj.selectedId);
-    }
+    };
 
     app.getLayerDefObj = function(){
         return layerDefObj;
-    }
+    };
 
     app.clearLayerDefObj = function(){
         layerDefObj = {};
-        $("#st-select").empty();
-        $("#grp1-select").empty();
-        $("#grp2-select").empty();
+        $('#st-select').empty();
+        $('#grp1-select').empty();
+        $('#grp2-select').empty();
         //UPDATE NOTE: add empty method for addtl. AOI selects
         defaultAOIOptions();
-    }
+    };
 
     //disabling dropdown need to clear selection
     app.clearOneLayerDefObj = function(whichOne){
-        var selectID = "";
+        var selectID = '';
         switch(whichOne){
-            case "AOIST":
+            case 'AOIST':
                 //$("#st-select").empty();
                 layerDefObj.AOIST = undefined;
-                app.updateAOIs("grp1-select");
-                app.updateAOIs("grp2-select");
+                app.updateAOIs('grp1-select');
+                app.updateAOIs('grp2-select');
                 break;
-            case "AOI1":
+            case 'AOI1':
                 //$("#grp1-select").empty();
                 layerDefObj.AOI1 = undefined;
-                app.updateAOIs("st-select");
-                app.updateAOIs("grp2-select");
+                app.updateAOIs('st-select');
+                app.updateAOIs('grp2-select');
                 break;
-            case "AOI2":
+            case 'AOI2':
                 //$("#grp2-select").empty();
                 layerDefObj.AOI2 = undefined;
-                app.updateAOIs("grp1-select");
-                app.updateAOIs("st-select");
+                app.updateAOIs('grp1-select');
+                app.updateAOIs('st-select');
                 break;
         }               
-    }
+    };
+    //return unique list of AOIs for dropdowns based on which property to filter by
+    var getUniqueArray = function(originalArray, prop){
+        var uniqueArray = [];
+        for(var i in originalArray) {
+            if (uniqueArray.map(function (p) { return p; }).indexOf(originalArray[i][prop]) < 0){
+                uniqueArray.push(originalArray[i][prop]);
+            }      
+        }
+        return uniqueArray;
+    } 
 
     app.updateAOIs = function(selectedId){
         var filteredAOIOptions = [];
@@ -241,19 +251,19 @@ require([
         switch(selectedId){
             
             //ST SELECT CHANGED
-            case "st-select":
+            case 'st-select':
                 //filter the grp1-select options using the selected ST__________________________________________________________________________________________________________________________________________
-                $("#grp1-select").empty();
-                $("#grp2-select").empty();
+                $('#grp1-select').empty();
+                $('#grp2-select').empty();
 
                 //need to know if ST and grp2 have values
                 if (layerDefObj.AOI2) {
-                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.ST == layerDefObj.AOIST && s.GRP_2_NAM == layerDefObj.AOI2; });  //grp2 AND ST have values
+                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.ST === layerDefObj.AOIST && s.GRP_2_NAM === layerDefObj.AOI2; });  //grp2 AND ST have values
                 }
                 else {
-                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.ST == layerDefObj.AOIST; });    
+                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.ST === layerDefObj.AOIST; });    
                 }
-                if (filteredAOIOptions.length == 0) {
+                if (filteredAOIOptions.length === 0) {
                     //both AOIST and AOI2 empty - give me all
                     filteredAOIOptions = AllAOIOptions;
                 }
@@ -275,81 +285,82 @@ require([
                 ________________________________________________________]
                 */
 
-                //get unique group 1 values
-                grp1Options = [...new Set(filteredAOIOptions.map(item => item.GRP_1_NAM))];
-                
+                //get unique group 1 values                
+                grp1Options = getUniqueArray(filteredAOIOptions, 'GRP_1_NAM');// [...new Set(filteredAOIOptions.map(item => item.GRP_1_NAM))];
+                console.log("newWay: " + grp1Options);
+
                 //set group1 AOI options
                 $.each(grp1Options, function(index, option){
-                    $("#grp1-select").append(new Option(option));
+                    $('#grp1-select').append(new Option(option));
                 });
                 $('#grp1-select').selectpicker('refresh');
                 
                 //if something in grp1 AOI (watershed) was selected previously programatticaly select the option
                 if(layerDefObj.AOI1){
-                    $("#grp1-select").selectpicker('val', layerDefObj.AOI1);
+                    $('#grp1-select').selectpicker('val', layerDefObj.AOI1);
                 }
                 
                 //filter the grp2-select options using the selected ST__________________________________________________________________________________________________________________________________________
                 filteredAOIOptions = [];
                 //need to know if ST and grp1 have values
                 if (layerDefObj.AOI1) {
-                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.ST == layerDefObj.AOIST && s.GRP_1_NAM == layerDefObj.AOI1; }); //ST and grp1 have selected vals
+                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.ST === layerDefObj.AOIST && s.GRP_1_NAM === layerDefObj.AOI1; }); //ST and grp1 have selected vals
                 }
                 else {
-                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.ST == layerDefObj.AOIST; });   
+                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.ST === layerDefObj.AOIST; });   
                 }
-                if (filteredAOIOptions.length == 0) {
+                if (filteredAOIOptions.length === 0) {
                     //both AOIST and AOI2 empty - give me all
                     filteredAOIOptions = AllAOIOptions;
                 }
 
                 //get unique group2 values
-                grp2Options = [...new Set(filteredAOIOptions.map(item => item.GRP_2_NAM))];
+                grp2Options = getUniqueArray(filteredAOIOptions, 'GRP_2_NAM');//[...new Set(filteredAOIOptions.map(item => item.GRP_2_NAM))];
                 
                 //set group2 AOI options
                 $.each(grp2Options, function(index, option){
-                    $("#grp2-select").append(new Option(option));
+                    $('#grp2-select').append(new Option(option));
                 });
                 $('#grp2-select').selectpicker('refresh');
                 
 
                 //if something in grp2 (HUC8) AOI was selected previously, programatically select the previously correct option
                 if(layerDefObj.AOI2){
-                    $("#grp2-select").selectpicker('val', layerDefObj.AOI2);
+                    $('#grp2-select').selectpicker('val', layerDefObj.AOI2);
                 }
 
                 break;
             
             //Group 1 SELECT CHANGED
-            case "grp1-select":
-                $("#st-select").empty();
-                $("#grp2-select").empty();
+            case 'grp1-select':
+                $('#st-select').empty();
+                $('#grp2-select').empty();
 
                 //filter the STATE options using the selected GRP1__________________________________________________________________________________________________________________________________________
                 //need to know if gr1 and grp2 have values
                 if (layerDefObj.AOI2) {
-                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_2_NAM == layerDefObj.AOI2 && s.GRP_1_NAM == layerDefObj.AOI1; });
+                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_2_NAM === layerDefObj.AOI2 && s.GRP_1_NAM === layerDefObj.AOI1; });
                 }
                 else {
-                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_1_NAM == layerDefObj.AOI1 });
+                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_1_NAM === layerDefObj.AOI1; });
                 }
-                if (filteredAOIOptions.length == 0) {
+                if (filteredAOIOptions.length === 0) {
                     //both AOIST and AOI2 empty - give me all
                     filteredAOIOptions = AllAOIOptions;
                 }
                 
                 //get unique states in the selected grp1
-                stOptions = [...new Set(filteredAOIOptions.map(item => item.ST))];
+                stOptions = getUniqueArray(filteredAOIOptions, 'ST');//[...new Set(filteredAOIOptions.map(item => item.ST))];
                 
                 //set the filtered state options
                 $.each(stOptions, function(index, option){
-                    $("#st-select").append(new Option(option));
+                    $('#st-select').append(new Option(option));
                 });
                 $('#st-select').selectpicker('refresh');
                 
                 //if a watershed was previously selected programatically select it now.
                 if(layerDefObj.AOIST){
-                    $("#st-select").selectpicker('val', layerDefObj.AOIST);
+                    $('#st-select').selectpicker('val', layerDefObj.AOIST);
                     /*$("#st-select").val(layerDefObj.AOIST);
                     $('#st-select').selectpicker('render');*/
                 }
@@ -369,85 +380,85 @@ require([
                 }
 
                 //get unique group2 options from the grp1 selection
-                grp2Options = [...new Set(filteredAOIOptions.map(item => item.GRP_2_NAM))];
+                grp2Options = getUniqueArray(filteredAOIOptions, 'GRP_2_NAM');//[...new Set(filteredAOIOptions.map(item => item.GRP_2_NAM))];
                 
                 //set the filtered options
                 $.each(grp2Options, function(index, option){
-                    $("#grp2-select").append(new Option(option));
+                    $('#grp2-select').append(new Option(option));
                 });
                 $('#grp2-select').selectpicker('refresh');
                 
                 //if a group2 was previously selecte, programatticaly select it now.
                 if(layerDefObj.AOI2){
-                    $("#grp2-select").selectpicker('val', layerDefObj.AOI2);
+                    $('#grp2-select').selectpicker('val', layerDefObj.AOI2);
                     /*$("#grp2-select").val(layerDefObj.AOI2);
                     $('#grp2-select').selectpicker('render');*/
                 }
                 break;
             
             //Group 2 SELECT CHANGED
-            case "grp2-select":
-                $("#st-select").empty();
-                $("#grp1-select").empty();
+            case 'grp2-select':
+                $('#st-select').empty();
+                $('#grp1-select').empty();
 
                 //need to know if gr1 and st have values
                 if (layerDefObj.AOIST) {
-                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_2_NAM == layerDefObj.AOI2 && s.ST == layerDefObj.AOIST; });
+                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_2_NAM === layerDefObj.AOI2 && s.ST === layerDefObj.AOIST; });
                 }
                 else {
-                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_2_NAM == layerDefObj.AOI2 });
+                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_2_NAM === layerDefObj.AOI2; });
                 }
-                if (filteredAOIOptions.length == 0) {
+                if (filteredAOIOptions.length === 0) {
                     //both AOIST and AOI2 empty - give me all
                     filteredAOIOptions = AllAOIOptions;
                 }
                                 
-                stOptions = [...new Set(filteredAOIOptions.map(item => item.ST))];
+                stOptions = getUniqueArray(filteredAOIOptions, 'ST');//[...new Set(filteredAOIOptions.map(item => item.ST))];
                 $.each(stOptions, function(index, option){
-                    $("#st-select").append(new Option(option));
+                    $('#st-select').append(new Option(option));
                 });
 
                 $('#st-select').selectpicker('refresh');
                 
                 //of a watershed is selected
                 if(layerDefObj.AOIST){
-                    $("#st-select").val(layerDefObj.AOIST);
+                    $('#st-select').val(layerDefObj.AOIST);
                     $('#st-select').selectpicker('render');
                 }
                 
                 filteredAOIOptions= [];
                 //need to know if st and grp2 have values
                 if (layerDefObj.AOIST) {
-                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_2_NAM == layerDefObj.AOI2 && s.ST == layerDefObj.AOIST; });
+                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_2_NAM === layerDefObj.AOI2 && s.ST === layerDefObj.AOIST; });
                 }
                 else {
-                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_2_NAM == layerDefObj.AOI2 });
+                    filteredAOIOptions = AllAOIOptions.filter(function(s){ return s.GRP_2_NAM === layerDefObj.AOI2; });
                 }
                 if (filteredAOIOptions.length == 0) {
                     //both AOIST and AOI2 empty - give me all
                     filteredAOIOptions = AllAOIOptions;
                 }
                 
-                grp1Options = [...new Set(filteredAOIOptions.map(item => item.GRP_1_NAM))];
+                grp1Options = getUniqueArray(filteredAOIOptions, 'GRP_1_NAM');//[...new Set(filteredAOIOptions.map(item => item.GRP_1_NAM))];
                 $.each(grp1Options, function(index, option){
-                    $("#grp1-select").append(new Option(option));
+                    $('#grp1-select').append(new Option(option));
                 });
 
                 $('#grp1-select').selectpicker('refresh');
                 
                 //of a watershed is selected
                 if(layerDefObj.AOI1){
-                    $("#grp1-select").val(layerDefObj.AOI1);
+                    $('#grp1-select').val(layerDefObj.AOI1);
                     $('#grp1-select').selectpicker('render');
                 }
                 break;
 
 
-                case "grp3-select":
-                    console.log("currently no filtering setup for AOI3");
+                case 'grp3-select':
+                    console.log('currently no filtering setup for AOI3');
                 break;
         } 
-    }
+    };
 
     app.initMapScale = function() {
         var scale = app.map.getScale().toFixed(0);
@@ -458,8 +469,8 @@ require([
     };
 
     app.updateMousePosition = function(cursorPosition) {
-        $('#mapCenterLabel').css("display", "none");
-        if (cursorPosition.mapPoint != null) {
+        $('#mapCenterLabel').css('display', 'none');
+        if (cursorPosition.mapPoint !== null) {
             var geographicMapPt = webMercatorUtils.webMercatorToGeographic(cursorPosition.mapPoint);
             $('#latitude').html(geographicMapPt.y.toFixed(3));
             $('#longitude').html(geographicMapPt.x.toFixed(3));
@@ -468,7 +479,7 @@ require([
 
     app.updateMapCenter = function(extent) {
         //displays latitude and longitude of map center
-        $('#mapCenterLabel').css("display", "inline");
+        $('#mapCenterLabel').css('display', 'inline');
         var geographicMapCenter = webMercatorUtils.webMercatorToGeographic(extent.getCenter());
         $('#latitude').html(geographicMapCenter.y.toFixed(3));
         $('#longitude').html(geographicMapCenter.x.toFixed(3));
@@ -476,8 +487,8 @@ require([
 
     app.setupDraggableInfoWindow = function() {
         //code for adding draggability to infoWindow. http://www.gavinr.com/2015/04/13/arcgis-javascript-draggable-infowindow/
-        if (app.dragInfoWindows == true) {
-            var handle = query(".title",app.map.infoWindow.domNode)[0];
+        if (app.dragInfoWindows === true) {
+            var handle = query('.title',app.map.infoWindow.domNode)[0];
             var dnd = new Moveable(app.map.infoWindow.domNode, {
                 handle: handle
             });
@@ -485,19 +496,19 @@ require([
             // when the infoWindow is moved, hide the arrow:
             on(dnd, 'FirstMove', function() {
                 // hide pointer and outerpointer (used depending on where the pointer is shown)
-                var arrowNode =  query(".outerPointer",app.map.infoWindow.domNode)[0];
-                domClass.add(arrowNode, "hidden");
+                var arrowNode =  query('.outerPointer',app.map.infoWindow.domNode)[0];
+                domClass.add(arrowNode, 'hidden');
 
-                var arrowNode =  query(".pointer",app.map.infoWindow.domNode)[0];
-                domClass.add(arrowNode, "hidden");
+                var arrowNode1 =  query('.pointer',app.map.infoWindow.domNode)[0];
+                domClass.add(arrowNode1, 'hidden');
             }.bind(this));
    
         }
-    }
+    };
 
     app.executeIdentifyTask = function(evt){
-        console.log(evt)
-        var sparrowLayer = app.map.getLayer("SparrowRanking").visibleLayers[0];
+        console.log(evt);
+        var sparrowLayer = app.map.getLayer('SparrowRanking').visibleLayers[0];
 
         app.identifyParams.layerIds = [sparrowLayer];
 
@@ -505,13 +516,13 @@ require([
         var i;
         var calibrationId;
         for (i in visLayers){
-            if (visLayers[i].id == "nitroCalibration" && app.map.getLayer('nitroCalibration').visible == true){
-                calibrationId = app.map.getLayer("nitroCalibration").visibleLayers[0];
+            if (visLayers[i].id === 'nitroCalibration' && app.map.getLayer('nitroCalibration').visible === true){
+                calibrationId = app.map.getLayer('nitroCalibration').visibleLayers[0];
                 app.identifyParams.layerIds.push(calibrationId);
                 
             }
-            if (visLayers[i].id == "phosCalibration" && app.map.getLayer('phosCalibration').visible == true){
-                calibrationId = app.map.getLayer("phosCalibration").visibleLayers[0];
+            if (visLayers[i].id === 'phosCalibration' && app.map.getLayer('phosCalibration').visible === true){
+                calibrationId = app.map.getLayer('phosCalibration').visibleLayers[0];
                 app.identifyParams.layerIds.push(calibrationId);
             }
         }        
@@ -528,8 +539,8 @@ require([
             if (response.length >= 1){
                 $.each(response, function(index, responseObj){
                     //Phosphorus Calibration Site InfoWindow
-                    if (responseObj.layerId == '14'){
-                        var model = "Phosphorus";
+                    if (responseObj.layerId === '14'){
+                        var model = 'Phosphorus';
                         var calibrationTemplate = new esri.InfoTemplate();
                         calibrationTemplate.setTitle('SPARROW ' + model + ' Calibration Site');
                         calibrationTemplate.setContent('<div><b>Station Name:</b> ' + responseObj.feature.attributes.name + '</div><br>' +
@@ -547,11 +558,11 @@ require([
                     }
 
                     //Phosphorus Calibration Site InfoWindow
-                    if (responseObj.layerId == '15'){
-                        var model = "Nitrogen";
-                        var calibrationTemplate = new esri.InfoTemplate();
-                        calibrationTemplate.setTitle('SPARROW ' + model + ' Calibration Site');
-                        calibrationTemplate.setContent('<div><b>Station Name:</b> ' + responseObj.feature.attributes.name + '</div><br>' +
+                    if (responseObj.layerId === '15'){
+                        var modelN = 'Nitrogen';
+                        var calibrationTemplateN = new esri.InfoTemplate();
+                        calibrationTemplateN.setTitle('SPARROW ' + modelN + ' Calibration Site');
+                        calibrationTemplateN.setContent('<div><b>Station Name:</b> ' + responseObj.feature.attributes.name + '</div><br>' +
                                                         '<div><b>Station ID:</b> </b>' + responseObj.feature.attributes.staid + '</div><br>' +
                                                         '<div><b>SPARROW Reach ID: </b>' + responseObj.feature.attributes.MRB_ID + '</div><br>'+
                                                         '<div><b>Fluxmaster Load' + chartUnits +': </b>' + responseObj.feature.attributes.LOAD_A_600 + '</div><br>' +
@@ -559,7 +570,7 @@ require([
                 
                         var graphic = new Graphic();
                         var feature = graphic;
-                        responseObj.feature.setInfoTemplate(calibrationTemplate);
+                        responseObj.feature.setInfoTemplate(calibrationTemplateN);
                         app.map.infoWindow.setFeatures([responseObj.feature]);
                         app.map.infoWindow.show(evt.mapPoint);
                         calibrationInfoWindow = true;
@@ -573,7 +584,7 @@ require([
                     var attributes = response[0].feature.attributes;
                     var valuePairs = {};
 
-                    var chartQueryArg = response[0].displayFieldName + " = " + "'" + response[0].value + "'";
+                    var chartQueryArg = response[0].displayFieldName + ' = ' + '"' + response[0].value + '"';
 
                     $.each(fields, function(index, obj){
                         console.log(obj.attribute);
@@ -581,7 +592,7 @@ require([
 
                     var template = new esri.InfoTemplate();
                     
-                    template.setTitle(fields[0].label + ": " + response[0].value);
+                    template.setTitle(fields[0].label + ': ' + response[0].value);
                     template.setContent(/*'<div><b>Station Name:</b> ' + responseObj.feature.attributes.name + '</div><br>' +
                                                         '<div><b>Station ID:</b> </b>' + responseObj.feature.attributes.staid + '</div><br>' +
                                                         '<div><b>SPARROW Reach ID: </b>' + responseObj.feature.attributes.MRB_ID + '</div><br>'+
@@ -596,7 +607,7 @@ require([
                     app.map.infoWindow.setFeatures([feature]);
                     app.map.infoWindow.show(evt.mapPoint);
                     //showChart(response[0]); //CHECK RESPONSE DATA
-                    $("#popupSmallChartButton").on('click', function(){
+                    $('#popupSmallChartButton').on('click', function(){
                         app.createChartQuery(chartQueryArg);
                     });
 /*                    $("#popupChartButton").on('click', function(){
@@ -622,7 +633,7 @@ require([
         if (app.map.getLayer('SparrowRanking').layerDefinitions){
             var whereClause = app.map.getLayer('SparrowRanking').layerDefinitions[sparrowLayerId];
         } else{
-            var whereClause = "1=1";
+            var whereClause = '1=1';
         }
 
         //add map layer ID to query URL
@@ -644,7 +655,7 @@ require([
 
     app.createChartQuery = function(optionalWhereClause){
 
-        $("#chartContainer").empty();
+        $('#chartContainer').empty();
         console.log('creating chart query');
         var chartQueryTask;
         var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
@@ -653,7 +664,7 @@ require([
             if (app.map.getLayer('SparrowRanking').layerDefinitions){
                 var whereClause = app.map.getLayer('SparrowRanking').layerDefinitions[sparrowLayerId];
             } else{
-                var whereClause = "1=1";
+                var whereClause = '1=1';
             }
         } else{
             var whereClause = optionalWhereClause;
@@ -714,23 +725,23 @@ require([
         //IF options already exist, be sure to REMOVE OLD OPTIONS before calling this function
         
         // get UNIQUE options from AllAOIOptions global Object
-        let grp2Options = [...new Set(AllAOIOptions.map(item => item.GRP_2_NAM))];
-        let grp1Options = [...new Set(AllAOIOptions.map(item => item.GRP_1_NAM))];
-        let STOptions = [...new Set(AllAOIOptions.map(item => item.ST))];
+        var grp2Options = getUniqueArray(AllAOIOptions, 'GRP_2_NAM');// [...new Set(AllAOIOptions.map(item => item.GRP_2_NAM))];
+        var grp1Options = getUniqueArray(AllAOIOptions, 'GRP_1_NAM');//[...new Set(AllAOIOptions.map(item => item.GRP_1_NAM))];
+        var STOptions = getUniqueArray(AllAOIOptions, 'ST');//[...new Set(AllAOIOptions.map(item => item.ST))];
         
-        console.log("ST options: " + STOptions);
-        console.log("grp1 options: " + grp1Options);
-        console.log("grp1 options: " + grp2Options);
+        console.log('ST options: ' + STOptions);
+        console.log('grp1 options: ' + grp1Options);
+        console.log('grp1 options: ' + grp2Options);
         
         
         $.each(grp2Options, function(index, option){
-            $("#grp2-select").append(new Option(option));
+            $('#grp2-select').append(new Option(option));
         });
         $.each(grp1Options, function(index, option){
-            $("#grp1-select").append(new Option(option));
+            $('#grp1-select').append(new Option(option));
         });
         $.each(STOptions, function(index, option){
-            $("#st-select").append(new Option(option));
+            $('#st-select').append(new Option(option));
         });
         
         $('#grp2-select').selectpicker('refresh');
@@ -882,7 +893,7 @@ require([
         var sum = 0;
         $.each(featureSort, function(index, obj){
             $.each(obj, function(i, attribute){
-                if(jQuery.type(attribute) !== "string"){
+                if(jQuery.type(attribute) !== 'string'){
                     sum += attribute;
                 }
             });
@@ -893,7 +904,7 @@ require([
             return parseFloat(b.total) - parseFloat(a.total);
         });
         
-        console.log("featureSort", featureSort);
+        console.log('featureSort', featureSort);
 
         //create array of field names
         $.each(response.features[0].attributes, function(key, value){
@@ -970,19 +981,19 @@ require([
 
         //TODO: DYNAMICALLY LABEL BASED ON DROPDOWN VALUES????
         function labelxSelect(){
-            var dropdown = $("#groupResultsSelect")[0].selectedIndex;
+            var dropdown = $('#groupResultsSelect')[0].selectedIndex;
             switch ( dropdown ){
                 case 0:
-                    return "HUC10";
+                    return 'HUC10';
                     break;
                 case 1:
-                    return "HUC8";
+                    return 'HUC8';
                     break;
                 case 2: 
-                    return "Independent Watershed";
+                    return 'Independent Watershed';
                     break;
                 case 3:
-                    return "State";
+                    return 'State';
                     break;
             }
         }
@@ -993,98 +1004,98 @@ require([
             switch( layerId ){
                 case 0:
                    $.each(Group3, function(index, object){
-                        if (object.field == $("#displayedMetricSelect").val() ){
+                        if (object.field == $('#displayedMetricSelect').val() ){
                             label = object.name;
                         }
                    });
                     break;
                 case 1:
                     $.each(Group2, function(index, object){
-                        if (object.field == $("#displayedMetricSelect").val() ){
+                        if (object.field == $('#displayedMetricSelect').val() ){
                             label = object.name;
                         }
                    });
                     break;
                 case 2: 
                     $.each(Group1, function(index, object){
-                        if (object.field == $("#displayedMetricSelect").val() ){
+                        if (object.field == $('#displayedMetricSelect').val() ){
                             label = object.name;
                         }
                    });
                     break;
                 case 3:
                     $.each(ST, function(index, object){
-                        if (object.field == $("#displayedMetricSelect").val() ){
+                        if (object.field == $('#displayedMetricSelect').val() ){
                             label = object.name;
                         }
                    });
                     break;
                 case 4:
                     $.each(Group3_st, function(index, object){
-                        if (object.field == $("#displayedMetricSelect").val() ){
+                        if (object.field == $('#displayedMetricSelect').val() ){
                             label = object.name;
                         }
                    });
                     break;
                 case 5: 
                     $.each(Group2_st, function(index, object){
-                        if (object.field == $("#displayedMetricSelect").val() ){
+                        if (object.field == $('#displayedMetricSelect').val() ){
                             label = object.name;
                         }
                    });
                     break;
                 case 6:
                     $.each(Group1_st, function(index, object){
-                        if (object.field == $("#displayedMetricSelect").val() ){
+                        if (object.field == $('#displayedMetricSelect').val() ){
                             label = object.name;
                         }
                    });
                     break;
                 case 7:
                    $.each(Group3_tn, function(index, object){
-                        if (object.field == $("#displayedMetricSelect").val() ){
+                        if (object.field == $('#displayedMetricSelect').val() ){
                             label = object.name;
                         }
                    });
                     break;
                 case 8:
                     $.each(Group2_tn, function(index, object){
-                        if (object.field == $("#displayedMetricSelect").val() ){
+                        if (object.field == $('#displayedMetricSelect').val() ){
                             label = object.name;
                         }
                    });
                     break;
                 case 9: 
                     $.each(Group1_tn, function(index, object){
-                        if (object.field == $("#displayedMetricSelect").val() ){
+                        if (object.field == $('#displayedMetricSelect').val() ){
                             label = object.name;
                         }
                    });
                     break;
                 case 10:
                     $.each(ST_tn, function(index, object){
-                        if (object.field == $("#displayedMetricSelect").val() ){
+                        if (object.field == $('#displayedMetricSelect').val() ){
                             label = object.name;
                         }
                    });
                     break;
                 case 11:
                     $.each(Group3_st_tn, function(index, object){
-                        if (object.field == $("#displayedMetricSelect").val() ){
+                        if (object.field == $('#displayedMetricSelect').val() ){
                             label = object.name;
                         }
                    });
                     break;
                 case 12: 
                     $.each(Group2_st_tn, function(index, object){
-                        if (object.field == $("#displayedMetricSelect").val() ){
+                        if (object.field == $('#displayedMetricSelect').val() ){
                             label = object.name;
                         }
                    });
                     break;
                 case 13:
                     $.each(Group1_st_tn, function(index, object){
-                        if (object.field == $("#displayedMetricSelect").val() ){
+                        if (object.field == $('#displayedMetricSelect').val() ){
                             label = object.name;
                         }
                    });
@@ -1118,7 +1129,7 @@ require([
         }*/
 
         //START LOBIPANEL-------------------------------------------------------------------------------------------------------
-        $("#chartWindowDiv").lobiPanel({
+        $('#chartWindowDiv').lobiPanel({
             unpin: false,
             reload: false,
             minimize: false,
@@ -1134,30 +1145,30 @@ require([
         
         });
 
-        $("#chartWindowDiv").addClass( "chartWindowMaximize" );
-        $("#chartWindowDiv").removeClass( "chartWindowMinimize" );
-        $("#chartWindowDiv").css("visibility", "visible");
+        $('#chartWindowDiv').addClass( 'chartWindowMaximize' );
+        $('#chartWindowDiv').removeClass( 'chartWindowMinimize' );
+        $('#chartWindowDiv').css('visibility', 'visible');
 
         //Important! UPDATE if nutrient Models change names.
-        if( $(".radio input[type='radio']:checked")[0].id == "radio1"){
-            $("#chartWindowPanelTitle").text("Phosphorus " + labelySelect() );
+        if( $('.radio input[type="radio"]:checked')[0].id == 'radio1'){
+            $('#chartWindowPanelTitle').text('Phosphorus ' + labelySelect() );
         }   else{
-            $("#chartWindowPanelTitle").text("Nitrogen " + labelySelect() );
+            $('#chartWindowPanelTitle').text('Nitrogen ' + labelySelect() );
         }
         
         if (response.features.length <= 1){
-            $("#chartWindowPanelTitle").append("<br/><div class='btn'><button type='button' class='btn btn-primary' id='popupChartButton'><span class='glyphicon glyphicon-signal'></span> Show Full Chart</button></dipopupChartButtonv>");
+            $('#chartWindowPanelTitle').append('<br/><div class="btn"><button type="button" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></dipopupChartButtonv>');
         }
 
         //only create close / minimize if they don't already exist
         //if ($("#chartMinimize").length == 0){
-        if ($("#chartClose").length == 0){
-            $("#chartWindowDiv .dropdown").prepend("<div id='chartClose' title='close'><b>X</b></div>");
+        if ($('#chartClose').length == 0){
+            $('#chartWindowDiv .dropdown').prepend('<div id="chartClose" title="close"><b>X</b></div>');
             //$("#chartWindowDiv .dropdown").prepend("<div id='chartMinimize' title='collapse'><b>_</b></div>");
         }
 
         //moved this out of exectureIdentifyTask()
-        $("#popupChartButton").on('click', function(){
+        $('#popupChartButton').on('click', function(){
             app.createChartQuery();
         });
         var instance = $('#chartWindowDiv').data('lobiPanel');
@@ -1172,18 +1183,18 @@ require([
             $("#chartWindowDiv").addClass("chartWindowMinimize");
         });*/
 
-        $("#chartClose").on('click', function(){
+        $('#chartClose').on('click', function(){
             app.map.graphics.clear();
-            $("#chartWindowDiv").css("visibility", "hidden");
-            $("#chartWindowContainer").empty();
-            $("#chartWindowPanelTitle").empty();
+            $('#chartWindowDiv').css('visibility', 'hidden');
+            $('#chartWindowContainer').empty();
+            $('#chartWindowPanelTitle').empty();
             
         });
 
         //need listener to resize chart
-        $("#chartWindowDiv").resize(function() {
-            var height = $("#chartWindowDiv").height()
-            var width = $("#chartWindowDiv").width()
+        $('#chartWindowDiv').resize(function() {
+            var height = $('#chartWindowDiv').height()
+            var width = $('#chartWindowDiv').width()
             $('#chartWindowContainer').highcharts().setSize(width-50, height-75, true);
         });
 
@@ -1243,7 +1254,7 @@ require([
                 xAxis: {
                     categories: columnLabels,
                     title: {
-                        text: "Ranked by " + labelxSelect()
+                        text: 'Ranked by ' + labelxSelect()
                     }
                 },
                 yAxis: {
@@ -1294,29 +1305,29 @@ require([
                                     function switchWhereField(selectedIndex){
                                         switch (selectedIndex){
                                             case 0:
-                                                if( $("#st-select")[0].selectedIndex > 0){
-                                                    return "ST_GP3_NAM";
+                                                if( $('#st-select')[0].selectedIndex > 0){
+                                                    return 'ST_GP3_NAM';
                                                 }else{
-                                                    return "GRP_3_NAM";
+                                                    return 'GRP_3_NAM';
                                                 }
                                                 break;
                                             case 1:
-                                                if( $("#st-select")[0].selectedIndex > 0){
-                                                    return "ST_GP2_NAM";
+                                                if( $('#st-select')[0].selectedIndex > 0){
+                                                    return 'ST_GP2_NAM';
                                                 }else{
-                                                    return "GRP_2_NAM";
+                                                    return 'GRP_2_NAM';
                                                 }
                                                 break;
                                             case 2: 
-                                                if( $("#st-select")[0].selectedIndex > 0){
-                                                    return "ST_GP1_NAM";
+                                                if( $('#st-select')[0].selectedIndex > 0){
+                                                    return 'ST_GP1_NAM';
                                                 }else{
-                                                    return "GRP_1_NAM";
+                                                    return 'GRP_1_NAM';
                                                 }
                                                 break;
                                                 
                                             case 3:
-                                                return "ST";
+                                                return 'ST';
                                                 break;
                                         }
                                     }
@@ -1325,7 +1336,7 @@ require([
                                     var category = this.category;  //refers to the selected chart area
                                     var visibleLayers = app.map.getLayer('SparrowRanking').visibleLayers[0];
                                     var URL = app.map.getLayer('SparrowRanking').url;
-                                    var fieldName = switchWhereField( $("#groupResultsSelect")[0].selectedIndex );
+                                    var fieldName = switchWhereField( $('#groupResultsSelect')[0].selectedIndex );
 
                                     var queryTask;
                                     queryTask = new esri.tasks.QueryTask(URL + visibleLayers.toString() );
@@ -1351,34 +1362,34 @@ require([
                                     function switchWhereField(selectedIndex){
                                         switch (selectedIndex){
                                             case 0:
-                                                if( $("#st-select")[0].selectedIndex > 0){
-                                                    return "ST_GP3_NAM";
+                                                if( $('#st-select')[0].selectedIndex > 0){
+                                                    return 'ST_GP3_NAM';
                                                 }else{
-                                                    return "GRP_3_NAM";
+                                                    return 'GRP_3_NAM';
                                                 }
                                                 break;
                                             case 1:
-                                                if( $("#st-select")[0].selectedIndex > 0){
-                                                    return "ST_GP2_NAM";
+                                                if( $('#st-select')[0].selectedIndex > 0){
+                                                    return 'ST_GP2_NAM';
                                                 }else{
-                                                    return "GRP_2_NAM";
+                                                    return 'GRP_2_NAM';
                                                 }
                                                 break;
                                             case 2: 
-                                                if( $("#st-select")[0].selectedIndex > 0){
-                                                    return "ST_GP1_NAM";
+                                                if( $('#st-select')[0].selectedIndex > 0){
+                                                    return 'ST_GP1_NAM';
                                                 }else{
-                                                    return "GRP_1_NAM";
+                                                    return 'GRP_1_NAM';
                                                 }
                                                 break;
                                                 
                                             case 3:
-                                                return "ST";
+                                                return 'ST';
                                                 break;
                                         }
                                     }
 
-                                    var queryField = switchWhereField( $("#groupResultsSelect")[0].selectedIndex );
+                                    var queryField = switchWhereField( $('#groupResultsSelect')[0].selectedIndex );
                                     var queryString = queryField + " = " + "'" + this.category + "'";
 
                                     app.createChartQuery(queryString);
@@ -1403,7 +1414,7 @@ require([
         
         }); //END self-invoking highcharts function
 
-        $("#downloadXLS").click(function(){
+        $('#downloadXLS').click(function(){
             var chart = $('#chartWindowContainer').highcharts();
             alert(chart.getCSV());
             //window.open('data:application/vnd.ms-excel,' + chart.getTable() );
@@ -1411,35 +1422,35 @@ require([
       
     } //END ShowChart()
 
-    $("#tableResizable").resizable({
+    $('#tableResizable').resizable({
         handles: 'n'
     });
 
     
     function buildTable(response){        
-        var table = $("#resultsTable");
+        var table = $('#resultsTable');
         var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
         
-        $("#tableTitle").empty();
+        $('#tableTitle').empty();
         //SET TABLE TITLES HERE
         switch(sparrowLayerId){
             case 0:
-                $("#tableTitle").html("Phosphorus");
+                $('#tableTitle').html('Phosphorus');
                 break;
             case 4:
-                 $("#tableTitle").html("Phosphorus Split by State");
+                 $('#tableTitle').html('Phosphorus Split by State');
                 break;
             case 7:
-                $("#tableTitle").html("Nitrogen");
+                $('#tableTitle').html('Nitrogen');
                 break;
             case 11:
-                $("#tableTitle").html("Nitrogen Split by State");
+                $('#tableTitle').html('Nitrogen Split by State');
                 break;
         }
         
         
 
-        $("#resultsTable").append("<thead></thead>");
+        $('#resultsTable').append('<thead></thead>');
         
         var headerKeyArr = [];
         $.each(response.features[0].attributes, function(key, value){
@@ -1451,10 +1462,10 @@ require([
 
         var headerHtmlStr = "";
         headerHtmlStr = getTableFields(headerKeyArr, sparrowLayerId);
-        $("#resultsTable").find( "thead" ).html(headerHtmlStr);
+        $('#resultsTable').find( 'thead' ).html(headerHtmlStr);
 
         var htmlArr =[];
-        $('#resultsTable').append("<tbody id='tableBody'></tbody>");
+        $('#resultsTable').append('<tbody id="tableBody"></tbody>');
         $.each(response.features, function(rowIndex, feature) {
            // console.log('feature(outer)' + feature);
             var rowI = rowIndex;
@@ -1475,7 +1486,7 @@ require([
     
     $('#tableResizable').show();
     
-    var newWidth = $("#resultsTable").width();
+    var newWidth = $('#resultsTable').width();
     $('.ui-widget-header').css('width', newWidth );
     $('.ui-resizable-handle').css('width', newWidth );
     }//END buildTable
@@ -1502,10 +1513,10 @@ require([
     }
     $('#tableButton').on('click', showTableModal);*/
 
-    $("#html").niceScroll();
-    $("#sidebar").niceScroll();
-    $("#sidebar").scroll(function () {
-        $("#sidebar").getNiceScroll().resize();
+    $('#html').niceScroll();
+    $('#sidebar').niceScroll();
+    $('#sidebar').scroll(function () {
+        $('#sidebar').getNiceScroll().resize();
     });
 
     function showTableResizeable(){
@@ -1516,7 +1527,7 @@ require([
     }
     $('#tableButton').on('click', showTableResizeable);
     $('#tableResizable_Close').on('click', hideTableResizeable);
-    $("#legendDiv").niceScroll();
+    $('#legendDiv').niceScroll();
 
     app.maxLegendHeight =  ($('#mapDiv').height()) * 0.90;
     $('#legendElement').css('max-height', app.maxLegendHeight);
@@ -1715,23 +1726,23 @@ require([
                 //if it does already exist, append to it
                 $('#' + groupDivID).append(button);
                 //begin opacity slider logic
-                if ($("#opacity"+camelize(layerName)).length > 0) {
-                    $("#opacity"+camelize(layerName)).hover(function () {
+                if ($('#opacity'+camelize(layerName)).length > 0) {
+                    $('#opacity'+camelize(layerName)).hover(function () {
                         $(".opacitySlider").remove();
                         var currOpacity = app.map.getLayer(options.id).opacity;
                         var slider = $('<div class="opacitySlider"><label id="opacityValue">Opacity: ' + currOpacity + '</label><label class="opacityClose pull-right">X</label><input id="slider" type="range"></div>');
-                        $("body").append(slider);[0]
+                        $('body').append(slider);[0]
 
-                        $("#slider")[0].value = currOpacity*100;
-                        $(".opacitySlider").css('left', event.clientX-180);
-                        $(".opacitySlider").css('top', event.clientY-50);
+                        $('#slider')[0].value = currOpacity*100;
+                        $('.opacitySlider').css('left', event.clientX-180);
+                        $('.opacitySlider').css('top', event.clientY-50);
 
-                        $(".opacitySlider").mouseleave(function() {
-                            $(".opacitySlider").remove();
+                        $('.opacitySlider').mouseleave(function() {
+                            $('.opacitySlider').remove();
                         });
 
-                        $(".opacityClose").click(function() {
-                            $(".opacitySlider").remove();
+                        $('.opacityClose').click(function() {
+                            $('.opacitySlider').remove();
                         });
 
                         $('#slider').change(function(event) {
