@@ -147,7 +147,7 @@ require([
             app.map.infoWindow.show(
                 new Point( o.result.properties.Lon, o.result.properties.Lat )
             );           
-            app.map.setLevel(5);
+            //app.map.setLevel(5);
         }
     });
 
