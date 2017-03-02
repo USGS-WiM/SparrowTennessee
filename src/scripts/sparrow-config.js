@@ -1,5 +1,5 @@
 
-var serviceBaseURL = "http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/";
+var serviceBaseURL = "https://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/";
 var chartUnits = " (lb./yr.)"
 
 var splitLayers = [4,5,6,11,12,13]; //important! UPDATE layer Ids of all state split layers
