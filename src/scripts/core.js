@@ -584,8 +584,9 @@ require([
                     var attributes = response[0].feature.attributes;
                     var valuePairs = {};
 
-                    var chartQueryArg = response[0].displayFieldName + ' = ' + '"' + response[0].value + '"';
+                    //need to wrap value in single quotes for ESRI REST Service query.
 
+                    var chartQueryArg = response[0].displayFieldName + " = " + "'" + response[0].value + "'"; 
                     $.each(fields, function(index, obj){
                         console.log(obj.attribute);
                     });
