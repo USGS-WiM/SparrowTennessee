@@ -12,7 +12,8 @@
     "lobipanel": "^0.7.1",
     "highcharts": "^5.0.6",
     "bootstrap-select": "^1.12.1",
-    "tabletoCSV": "^0.1.0"
+    "tabletoCSV": "^0.1.0",
+    "highcharts-export-clientside": "^1.1.4"
   },
   "resolutions": {
     "bootstrap": "3.3.7"

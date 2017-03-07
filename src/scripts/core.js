@@ -157,7 +157,7 @@ require([
 
 
     //load additional basemap
-    var nationalMapBasemap = new ArcGISTiledMapServiceLayer('http://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer');
+    var nationalMapBasemap = new ArcGISTiledMapServiceLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer');
 
     loadEventHandlers();
 
@@ -539,7 +539,7 @@ require([
             if (response.length >= 1){
                 $.each(response, function(index, responseObj){
                     //Phosphorus Calibration Site InfoWindow
-                    if (responseObj.layerId === '14'){
+                    if (responseObj.layerId === 14){
                         var model = 'Phosphorus';
                         var calibrationTemplate = new esri.InfoTemplate();
                         calibrationTemplate.setTitle('SPARROW ' + model + ' Calibration Site');
@@ -558,7 +558,7 @@ require([
                     }
 
                     //Phosphorus Calibration Site InfoWindow
-                    if (responseObj.layerId === '15'){
+                    if (responseObj.layerId === 15){
                         var modelN = 'Nitrogen';
                         var calibrationTemplateN = new esri.InfoTemplate();
                         calibrationTemplateN.setTitle('SPARROW ' + modelN + ' Calibration Site');
@@ -591,15 +591,10 @@ require([
                         console.log(obj.attribute);
                     });
 
-                    var template = new esri.InfoTemplate();
+/*                    var template = new esri.InfoTemplate();
                     
                     template.setTitle(fields[0].label + ': ' + response[0].value);
-                    template.setContent(/*'<div><b>Station Name:</b> ' + responseObj.feature.attributes.name + '</div><br>' +
-                                                        '<div><b>Station ID:</b> </b>' + responseObj.feature.attributes.staid + '</div><br>' +
-                                                        '<div><b>SPARROW Reach ID: </b>' + responseObj.feature.attributes.MRB_ID + '</div><br>'+
-                                                        '<div><b>Fluxmaster Load' + chartUnits +': </b>' + responseObj.feature.attributes.LOAD_A_600 + '</div><br>' +
-                                                        '<div><b>SPARROW Estimated Load ' + chartUnits +': </b>' + responseObj.feature.attributes.PLOAD_600 + '</div><br>' +*/
-                        '<div class="btn"><button type="button" class="btn btn-primary" id="popupSmallChartButton"><span class="glyphicon glyphicon-signal"></span> Show Chart</button></div><br>');                       
+                    template.setContent('<div class="btn"><button type="button" class="btn btn-primary" id="popupSmallChartButton"><span class="glyphicon glyphicon-signal"></span> Show Chart</button></div><br>');                       
 
 
                     var graphic = new Graphic();
@@ -610,11 +605,9 @@ require([
                     //showChart(response[0]); //CHECK RESPONSE DATA
                     $('#popupSmallChartButton').on('click', function(){
                         app.createChartQuery(chartQueryArg);
-                    });
-/*                    $("#popupChartButton").on('click', function(){
-                        app.createChartQuery();
-                    }); */
-                
+                    });*/
+
+                    app.createChartQuery(chartQueryArg);
                 }       
             }         
         }); //END deferred callback
@@ -1158,8 +1151,10 @@ require([
         }
         
         if (response.features.length <= 1){
-            $('#chartWindowPanelTitle').append('<br/><div class="btn"><button type="button" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></dipopupChartButtonv>');
+            $('#chartWindowPanelTitle').append('<br/><div class="btn"><button type="button" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></div>');
         }
+
+        $('#chartWindowPanelTitle').append('<br/><div class="btn"><button type="button" class="btn btn-primary" id="exportButton"><span class="glyphicon glyphicon-signal"></span> Export Chart Data</button></div>');
 
         //only create close / minimize if they don't already exist
         //if ($("#chartMinimize").length == 0){
@@ -1286,8 +1281,11 @@ require([
                 tooltip: {
                     formatter: function(){
                         var rank = this.point.index + 1; 
-                        return '<b>'+ labelxSelect() + ': ' + this.point.category + '</b><br/>' 
-                                + this.series.name + ': ' + this.point.y.toFixed(2) + this.point.stackTotal.toFixed(2) + '<br/> Rank: ' + rank;
+                        var percentOfTotal = (this.point.y / this.point.stackTotal) * 100;
+                        return '<b>' + labelxSelect() + ': ' + '<b>' + this.point.category  + '</b></b><br/>' 
+                                + this.series.name + ': ' + '<b>' + this.point.y.toFixed(2) + ' (' + percentOfTotal.toFixed(2) + '%)' + '</b></b><br/>' 
+                                + labelySelect() + ' Total: ' + '<b>' + this.point.stackTotal.toFixed(2) + '</b></b><br/>' 
+                                + 'Rank: ' + '<b>' + rank + '</b>';  
                     },
                 },
                 plotOptions: {
@@ -1415,9 +1413,13 @@ require([
         
         }); //END self-invoking highcharts function
 
-        $('#downloadXLS').click(function(){
+        $('#exportButton').click(function(){
             var chart = $('#chartWindowContainer').highcharts();
-            alert(chart.getCSV());
+            //alert(chart.getCSV());
+
+            chart.exportChartLocal({                           // All attributes are optionals (defaut type is "image/png").
+                type: Highcharts.exporting.MIME_TYPES.JPEG     // For your convenience, MIME_TYPES are stored in an object.
+            });
             //window.open('data:application/vnd.ms-excel,' + chart.getTable() );
         });
       
