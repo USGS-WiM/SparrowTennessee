@@ -1154,7 +1154,7 @@ require([
             $('#chartWindowPanelTitle').append('<br/><div class="btn"><button type="button" class="btn btn-primary" id="popupChartButton"><span class="glyphicon glyphicon-signal"></span> Show Full Chart</button></div>');
         }
 
-        $('#chartWindowPanelTitle').append('<br/><div class="btn"><button type="button" class="btn btn-primary" id="exportButton"><span class="glyphicon glyphicon-signal"></span> Export Chart Data</button></div>');
+        //$('#chartWindowPanelTitle').append('<br/><div class="btn"><button type="button" class="btn btn-primary" id="exportButton"><span class="glyphicon glyphicon-signal"></span> Export Chart Data</button></div>');
 
         //only create close / minimize if they don't already exist
         //if ($("#chartMinimize").length == 0){
@@ -1247,6 +1247,26 @@ require([
                 subtitle:{
                     text: null
                 },
+                exporting:{
+                    buttons:{
+                        contextButton:{
+                            menuItems:[
+                                {
+                                    text: 'Download CSV',
+                                    onclick: function(){
+                                        this.downloadCSV();
+                                    }
+                                },                                                                                                                                                                                       
+                                {
+                                    text: 'Download Excel',
+                                    onclick: function(){
+                                        this.downloadXLS();
+                                    }
+                                }    
+                            ]
+                        }
+                    }
+                },
                 xAxis: {
                     categories: columnLabels,
                     title: {
@@ -1300,7 +1320,6 @@ require([
                         point:{
                              events:{
                                 mouseOver: function(){
-
                                     function switchWhereField(selectedIndex){
                                         switch (selectedIndex){
                                             case 0:
@@ -1413,15 +1432,7 @@ require([
         
         }); //END self-invoking highcharts function
 
-        $('#exportButton').click(function(){
-            var chart = $('#chartWindowContainer').highcharts();
-            //alert(chart.getCSV());
-
-            chart.exportChartLocal({                           // All attributes are optionals (defaut type is "image/png").
-                type: Highcharts.exporting.MIME_TYPES.JPEG     // For your convenience, MIME_TYPES are stored in an object.
-            });
-            //window.open('data:application/vnd.ms-excel,' + chart.getTable() );
-        });
+         
       
     } //END ShowChart()
 
