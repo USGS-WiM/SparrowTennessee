@@ -122,6 +122,7 @@ require([
             // what to do when a location is found
             // o.result is geojson point feature of location with properties
             
+
             // zoom to location            
             app.map.setExtent(
                 new esri.geometry.Extent({
@@ -147,8 +148,15 @@ require([
             app.map.infoWindow.show(
                 new Point( o.result.properties.Lon, o.result.properties.Lat )
             );           
-            //app.map.setLevel(5);
-        }
+            app.map.setLevel(8);
+        },
+        "include_usgs_sw" : true,
+        "include_huc2" : true,
+        "include_huc4" : true,
+        "include_huc6" : true,
+        "include_huc8" : true,
+        "include_huc12" : true
+
     });
 
 
