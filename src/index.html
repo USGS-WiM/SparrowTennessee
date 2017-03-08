@@ -41,14 +41,15 @@
     <script type="text/javascript" src="bower_components/highcharts/highcharts.js"></script>
     <script type="text/javascript" src="bower_components/lobipanel/dist/js/lobipanel.min.js"></script>    
     <script type="text/javascript" src="bower_components/tabletoCSV/dist/jquery.tabletoCSV.js"></script>
+    <script type="text/javascript" src="bower_components/export-csv/export-csv.js"></script>
 
 
-    <script type="text/javascript" src="bower_components/highcharts-export-clientside/highcharts-export-clientside.js"></script> <!--Needs 4.2 version of highcharts-->
+    <!--<script type="text/javascript" src="bower_components/highcharts-export-clientside/highcharts-export-clientside.js"></script>--> <!--Needs 4.2 version of highcharts-->
 
     <!-- endbower -->
     <!-- endbuild -->
     <script type="text/javascript" src="https://js.arcgis.com/3.19/"></script>
-    <script type="text/javascript" src="https://highcharts.github.io/export-csv/export-csv.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
     
     <!-- build:js scripts/combined.js -->
     <script type="text/javascript" src="scripts/utilities.js"></script>
@@ -63,6 +64,10 @@
     <script type="text/javascript" src="scripts/event-handlers.js"></script>
     <script type="text/javascript" src="scripts/select-logic.js"></script>
     <!-- endbuild -->
+
+    
+    
+
    <!-- analytics -->
    <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -421,7 +426,7 @@
                     </div>
                     <div class="panel-body" id="chartWindowContainer">
                         <div>
-                          <button id="downloadXLS" class="btn btn-default" data-type="application/vnd.ms-excel">Export Data</button>
+                          <!--<button id="downloadXLS" class="btn btn-default" data-type="application/vnd.ms-excel">Export Data</button>-->
                           <button id="resetButton" class="btn btn-default" disable="true">Reset Zoom</button>
                        </div>
                         
@@ -446,9 +451,9 @@
                 <h3 class="ui-widget-header" id="tableTitle"></h3>
                 <table class="table table-bordered" id="resultsTable"></table>
                 <div class="btn">
-                    <button type="button" class="btn btn-primary" id="exportTableButton">
+                    <!--<button type="button" class="btn btn-primary" id="exportTableButton">
                         <span class="glyphicon glyphicon-download-alt"></span>Export Table
-                    </button>
+                    </button>-->
                     <button type="button" class="btn btn-danger" id="tableResizable_Close">
                         <span class="glyphicon glyphicon-remove"></span>Close Table
                     </button>
