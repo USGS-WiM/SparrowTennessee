@@ -1258,6 +1258,10 @@ require([
                 exporting:{
                     buttons:{
                         contextButton:{
+                            text: "Chart Options",
+                            height: 80,
+                            symbol: null,
+                            align: 'right',
                             menuItems:[
                                 {
                                     text: 'Download CSV',
@@ -1270,7 +1274,21 @@ require([
                                     onclick: function(){
                                         this.downloadXLS();
                                     }
-                                }    
+                                },
+                                {
+                                    text: 'Change Background Transparency',
+                                    onclick: function(){
+                                        if(this.chartBackground.element.attributes.fill.value != 'rgba(255, 255, 255, .9)'){
+                                            this.chartBackground.attr({
+                                                fill: 'rgba(255, 255, 255, .9)'
+                                            });
+                                        }else{
+                                            this.chartBackground.attr({
+                                                fill: 'rgba(255, 255, 255, .1)'
+                                            });
+                                        }
+                                    }
+                                }  
                             ]
                         }
                     }
@@ -1295,7 +1313,7 @@ require([
                     }
                 },
                 legend: {
-                    align: 'center',
+                    align: 'left',
                     x: 10,
                     verticalAlign: 'top',
                     y: 0,
