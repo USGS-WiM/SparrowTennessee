@@ -1166,7 +1166,7 @@ require([
 
 
         //END LOBIPANEL-------------------------------------------------------------------------------------------------------
-        
+        var colorArr = ( $('.radio input[type="radio"]:checked')[0].id == 'radio1' ? ['#29667F', '#B43E33', '#64A87E', '#FFE271', '#7F754A', '#F7C97F'] : ['#29667F', '#B43E33', '#82BEFF', '#B89769', '#FFC943'] );
 
         var chart = $('#chartWindowContainer').highcharts(); 
 
@@ -1174,7 +1174,8 @@ require([
             Highcharts.setOptions({
                 lang: {
                     thousandsSep: ','
-                }
+                },
+                colors: colorArr
             });
             
             $('#chartWindowContainer').highcharts({
@@ -1359,7 +1360,7 @@ require([
                                     function responseHandler(response){
                                         app.map.graphics.clear();                                        
                                         var feature = response.features[0];                                       
-                                        var selectedSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255,0,0]), 2);
+                                        var selectedSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([150,49,37]), 2);
                                         feature.setSymbol(selectedSymbol);
                                         app.map.graphics.add(feature);
                                     }
