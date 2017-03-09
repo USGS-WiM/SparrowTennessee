@@ -148,7 +148,7 @@ require([
             app.map.infoWindow.show(
                 new Point( o.result.properties.Lon, o.result.properties.Lat )
             );           
-            app.map.setLevel(8);
+            //app.map.centerAndZoom(12);
         },
         "include_usgs_sw" : true,
         "include_huc2" : true,
@@ -1259,7 +1259,7 @@ require([
                     buttons:{
                         contextButton:{
                             text: "Chart Options",
-                            height: 80,
+                            height: 40,
                             symbol: null,
                             align: 'right',
                             menuItems:[
