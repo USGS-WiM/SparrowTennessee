@@ -1258,6 +1258,8 @@ require([
                 exporting:{
                     buttons:{
                         contextButton:{
+                            text: "Download",
+                            symbol: null,
                             menuItems:[
                                 {
                                     text: 'Download CSV',
@@ -1272,6 +1274,20 @@ require([
                                     }
                                 }    
                             ]
+                        },
+                        opacityButton:{
+                            text: "Change Background",
+                            onclick: function(){
+                                if(this.chartBackground.element.attributes.fill.value != 'rgba(255, 255, 255, .9)'){
+                                    this.chartBackground.attr({
+                                        fill: 'rgba(255, 255, 255, .9)'
+                                    });
+                                }else{
+                                    this.chartBackground.attr({
+                                        fill: 'rgba(255, 255, 255, .1)'
+                                    });
+                                }
+                            }
                         }
                     }
                 },
