@@ -807,7 +807,8 @@ function generateRenderer(){
         classDef.breakCount = 5;
         classDef.baseSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
                 new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
-                new Color([192,192,192]), 0.1)
+                new Color([168,168,168]), 0.1)
+                //new Color([192,192,192]), 0.1)
             );
         
           
@@ -815,11 +816,17 @@ function generateRenderer(){
         var colorRamp = new AlgorithmicColorRamp();
         //different ramps for phos/nitro
         if( $(".radio input[type='radio']:checked")[0].id == "radio1" ){
-            colorRamp.fromColor = Color.fromHex("#ffffcc");
-            colorRamp.toColor = Color.fromHex("#006837");
+            colorRamp.fromColor = Color.fromHex("#F5EBB8");
+            colorRamp.toColor = Color.fromHex("#004120");
+            //original
+            /*colorRamp.fromColor = Color.fromHex("#ffffcc");
+            colorRamp.toColor = Color.fromHex("#006837");*/
         } else{
-            colorRamp.fromColor = Color.fromHex("#ffd084");
-            colorRamp.toColor = Color.fromHex("#845305");
+            colorRamp.fromColor = Color.fromHex("#FFF1DC");
+            colorRamp.toColor = Color.fromHex("#632E0E");
+            //original
+            /*colorRamp.fromColor = Color.fromHex("#ffd084");
+            colorRamp.toColor = Color.fromHex("#845305");*/
         }
           
         colorRamp.algorithm = "hsv"; // options are:  "cie-lab", "hsv", "lab-lch"
