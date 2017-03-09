@@ -83,11 +83,24 @@ require([
     app.dragInfoWindows = true;
     app.defaultMapCenter = [-86, 36];
 
-    //setup map
+    //setup map 
     app.map = Map('mapDiv', {
         basemap: 'gray',
         center: app.defaultMapCenter,
-        zoom: 7
+        zoom: 1,
+        lods: [  
+          {"level" : 0, "resolution" : 2445.98490512499, "scale" : 9244648.868618},   
+          {"level" : 1, "resolution" : 1222.99245256249, "scale" : 4622324.434309},   
+          {"level" : 2, "resolution" : 611.49622628138, "scale" : 2311162.217155},   
+          {"level" : 3, "resolution" : 305.748113140558, "scale" : 1155581.108577},   
+          {"level" : 4, "resolution" : 152.874056570411, "scale" : 577790.554289},   
+          {"level" : 5, "resolution" : 76.4370282850732, "scale" : 288895.277144},   
+          {"level" : 6, "resolution" : 38.2185141425366, "scale" : 144447.638572},   
+          {"level" : 7, "resolution" : 19.1092570712683, "scale" : 72223.819286},   
+          {"level" : 8, "resolution" : 9.55462853563415, "scale" : 36111.909643},   
+          {"level" : 9, "resolution" : 4.77731426794937, "scale" : 18055.954822},   
+          {"level" : 10, "resolution" : 2.38865713397468, "scale" : 9027.977411}  
+        ]  
     });
 
 
@@ -148,7 +161,7 @@ require([
             app.map.infoWindow.show(
                 new Point( o.result.properties.Lon, o.result.properties.Lat )
             );           
-            //app.map.centerAndZoom(12);
+            
         },
         "include_usgs_sw" : true,
         "include_huc2" : true,
@@ -598,23 +611,7 @@ require([
                     $.each(fields, function(index, obj){
                         console.log(obj.attribute);
                     });
-
-/*                    var template = new esri.InfoTemplate();
-                    
-                    template.setTitle(fields[0].label + ': ' + response[0].value);
-                    template.setContent('<div class="btn"><button type="button" class="btn btn-primary" id="popupSmallChartButton"><span class="glyphicon glyphicon-signal"></span> Show Chart</button></div><br>');                       
-
-
-                    var graphic = new Graphic();
-                    var feature = graphic;
-                    feature.setInfoTemplate(template);
-                    app.map.infoWindow.setFeatures([feature]);
-                    app.map.infoWindow.show(evt.mapPoint);
-                    //showChart(response[0]); //CHECK RESPONSE DATA
-                    $('#popupSmallChartButton').on('click', function(){
-                        app.createChartQuery(chartQueryArg);
-                    });*/
-
+                    //No infoWindow, just call the chart query
                     app.createChartQuery(chartQueryArg);
                 }       
             }         
@@ -843,41 +840,6 @@ require([
             });
     }
 
-/*    function createChartQuery(){
-        $("#chartContainer").empty();
-        console.log('creating chart query');
-        var chartQueryTask;
-        var sparrowLayerId = app.map.getLayer('SparrowRanking').visibleLayers[0];
-        if (app.map.getLayer('SparrowRanking').layerDefinitions){
-            var whereClause = app.map.getLayer('SparrowRanking').layerDefinitions[sparrowLayerId];
-        } else{
-            var whereClause = "1=1";
-        }
-
-        //add map layer ID to query URL
-        var SparrowRankingUrl = serviceBaseURL + sparrowLayerId;
-
-        //setup QueryTask
-        chartQueryTask = new esri.tasks.QueryTask(SparrowRankingUrl);
-
-        //Returns chartOutfields Object form config --i.e. {attribute: "VALUE", label: "VALUE"} 
-        var chartFieldsObj = getChartOutfields(sparrowLayerId); 
-        
-        //grab attributes from chartOutfields object
-        var outfieldsArr = [];
-        $.each(chartFieldsObj, function(index, obj){
-            outfieldsArr.push( obj.attribute ); //get attribute value ONLY
-        });
-
-        //setup esri query
-        var chartQuery = new esri.tasks.Query();
-        chartQuery.returnGeometry = false;
-        chartQuery.outFields = outfieldsArr;
-        chartQuery.where = whereClause;
-
-        chartQueryTask.execute(chartQuery, showChart);
-
-    }*/
 
     function showChart(response){
 
@@ -1583,119 +1545,6 @@ require([
         $('#legendElement').css('height', 'initial');
     });
     
-
-    /* HANDLE SIDEBAR UI EVENTS_____________________________________________________________*/
-
-    /*RADIO EVENTS*/
-    /*$('.radio').on('change', function(e){
-        var groupBySelectedIndex = $("#groupResultsSelect")[0].selectedIndex;
-        var selectedRadio = this.firstElementChild.id;
-        
-        populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
-        setAggregateGroup(groupBySelectedIndex, selectedRadio);   
-        generateRenderer();
-
-        //reflow the chart if it's open
-        if( $("#chartWindowDiv").css("visibility") == "visible" ) {
-            app.createChartQuery();
-        }
-    });*/
-
-
-    /* AOI EVENTS */
-    //$('.aoiSelect').on('change', AOIChange);
-
-    //removed from eventhandlers________________________________________________________________________________________
-    /*GROUP RESULTS*/
-/*    $("#groupResultsSelect").on('changed.bs.select', function(e){  
-        populateMetricOptions(e.currentTarget.selectedIndex);
-        setAggregateGroup( e.currentTarget.selectedIndex, $(".radio input[type='radio']:checked")[0].id );
-        generateRenderer();
-
-        if( $("#chartWindowDiv").css("visibility") == "visible" ) {
-            app.map.graphics.clear();
-            app.createChartQuery();
-        }
-        
-    });*/
-
-    /*METRIC*/
-    /*$("#displayedMetricSelect").on('changed.bs.select', function(e){
-        generateRenderer();
-
-        if( $("#chartWindowDiv").css("visibility") == "visible" ) {
-            app.createChartQuery();
-        }
-    });*/
-    //END removed from eventhandlers________________________________________________________________________________________
-
-    /*CLEAR AOI SELECTIONS */
-    /*$("#clearAOIButton").on('click', function(){
-        var sparrowId = app.map.getLayer('SparrowRanking').visibleLayers[0];
-        
-        //revert to default layer from split layer
-        if( $.inArray(sparrowId, splitLayers) > -1 ){
-            sparrowId = returnDefaultLayer( sparrowId, $(".radio input[type='radio']:checked")[0].id );
-            var layerArr = [];
-            layerArr.push(sparrowId);
-            app.map.getLayer('SparrowRanking').setVisibleLayers(layerArr);
-            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(true); //don't refresh yet.
-            //app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
-
-            
-        }else{
-            app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions(true); //don't refresh yet.
-            //app.map.getLayer('SparrowRanking').setDefaultLayerDefinitions();
-        }
-
-        //reset the selects
-        $('.aoiSelect').selectpicker('val', '');  // 'hack' because selectpicker('deselectAll') method only works when bootstrap-select is open.
-        //$('.aoiSelect').selectpicker('refresh'); //don't need refresh apparently
-        populateMetricOptions($("#groupResultsSelect")[0].selectedIndex);
-        //redraw the symbols
-
-        //return to Default AOI options for ALL AOI selects 
-        app.clearLayerDefObj();
-        generateRenderer();
-
-        if( $("#chartWindowDiv").css("visibility") == "visible" ) {
-            app.createChartQuery();
-        }
-
-    });*/
-
-
-    // enable/disable Show Chart button 
-    /*$('.nonAOISelect').on('change', function(){
-        if ($('#groupResultsSelect')[0].selectedIndex == 0){
-            if ($('#displayedMetricSelect')[0].selectedIndex == 4 || $('#displayedMetricSelect')[0].selectedIndex == 5){
-                $("#chartButton").addClass('disabled');
-                $('#chartButton').attr('disabled','disabled');
-                //TODO:  ALSO MAKE SURE YOU REMOVE ANY CHART FROM THE VIEW (Lobipanel only, modal takes care of self.)
-            } else{
-                $("#chartButton").removeClass('disabled');
-                $("#chartButton").removeAttr('disabled');
-            }
-        } else {
-            $("#chartButton").removeClass('disabled');
-            $("#chartButton").removeAttr('disabled');
-        }
-    });*/
-
-    //Start the Chart Chain of Events
-    //$("#chartButton").on("click", app.createChartQuery);
-
-    /* END UI SIDEBAR EVENTS______________________________________________________________*/
-
-    // var layer = new ArcGISDynamicMapServiceLayer("http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer", {
-    //     "id": "SparrowRanking",
-    //     "opacity": 0.75,
-    //     "visible": true
-    // });
-    // app.map.addLayer(layer);
-    // layer.setVisibleLayers([0]);
-
-    // console.log(app.map)
 
     require([
         'dijit/form/CheckBox'
