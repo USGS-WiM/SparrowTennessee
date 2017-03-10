@@ -21,8 +21,9 @@ function loadEventHandlers() {
     /*END RADIO EVENTS*/
 
     /* EXPORT TABLE EVENT*/
+
     $('#exportTableButton').on('click', function(){
-        $("#resultsTable").tableToCSV();
+        $("#resultsTable").tableToCSV();  //https://github.com/cyriac/jquery.tabletoCSV
     });
     
     //moved this out of exectureIdentifyTask()

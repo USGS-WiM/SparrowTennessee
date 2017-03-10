@@ -87,20 +87,7 @@ require([
     app.map = Map('mapDiv', {
         basemap: 'gray',
         center: app.defaultMapCenter,
-        zoom: 1,
-        lods: [  
-          {"level" : 0, "resolution" : 2445.98490512499, "scale" : 9244648.868618},   
-          {"level" : 1, "resolution" : 1222.99245256249, "scale" : 4622324.434309},   
-          {"level" : 2, "resolution" : 611.49622628138, "scale" : 2311162.217155},   
-          {"level" : 3, "resolution" : 305.748113140558, "scale" : 1155581.108577},   
-          {"level" : 4, "resolution" : 152.874056570411, "scale" : 577790.554289},   
-          {"level" : 5, "resolution" : 76.4370282850732, "scale" : 288895.277144},   
-          {"level" : 6, "resolution" : 38.2185141425366, "scale" : 144447.638572},   
-          {"level" : 7, "resolution" : 19.1092570712683, "scale" : 72223.819286},   
-          {"level" : 8, "resolution" : 9.55462853563415, "scale" : 36111.909643},   
-          {"level" : 9, "resolution" : 4.77731426794937, "scale" : 18055.954822},   
-          {"level" : 10, "resolution" : 2.38865713397468, "scale" : 9027.977411}  
-        ]  
+        zoom: 7
     });
 
 
@@ -134,9 +121,30 @@ require([
         on_result: function(o) {
             // what to do when a location is found
             // o.result is geojson point feature of location with properties
-            
+            var noExtents = ["GNIS_MAJOR", "GNIS_MINOR", "ZIPCODE", "AREACODE"];
+                var noExtentCheck = noExtents.indexOf(o.result.properties["Source"])
+                if (noExtentCheck == -1) {
+                    app.map.setExtent(
+                        new esri.geometry.Extent({
+                            xmin: o.result.properties.LonMin,
+                            ymin: o.result.properties.LatMin,
+                            xmax: o.result.properties.LonMax,
+                            ymax: o.result.properties.LatMax,
+                            spatialReference: {"wkid":4326}
+                        }),
+                        true
+                    );
+                } else {
+                    //map.setCenter();
+                    //require( ["esri/geometry/Point"], function(Point) {
+                        app.map.centerAndZoom(
+                            new Point( o.result.properties.Lon, o.result.properties.Lat ),
+                            12
+                        );
+                    //});
+                }
 
-            // zoom to location            
+            /*// zoom to location            
             app.map.setExtent(
                 new esri.geometry.Extent({
                     xmin: o.result.properties.LonMin,
@@ -146,7 +154,7 @@ require([
                     spatialReference: {'wkid':4326}
                 }),
                 true
-            );            
+            );            */
             
             // open popup at location listing all properties
             app.map.infoWindow.setTitle('Search Result');
