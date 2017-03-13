@@ -164,18 +164,19 @@
             <div id="aboutModalBody" class="modal-body">
                 <ul class="nav nav-tabs" id="aboutModalTabs">
                     <li role="presentation"><a id="aboutTab" href="#aboutTabPane" data-toggle="tab"><i class="fa fa-question-circle"></i>&nbsp;About the application</a></li>
-                    <li role="presentation" class="active"><a id="disclaimerTab" href="#disclaimerTabPane" data-toggle="tab"><i class="fa fa-exclamation-circle"></i>&nbsp;Disclaimer</a></li>
+                    <li role="presentation" class="active"><a id="dataLimitationsTabPane" href="#disclaimerTabPane" data-toggle="tab"><i class="fa fa-exclamation-circle"></i>&nbsp;Data Limitations</a></li>
                     <li role="presentation"><a id="contactTab" href="#contactTabPane" data-toggle="tab"><i class="fa fa-envelope-o"></i>&nbsp;Contact Information</a></li>
+                    <li role="presentation"><a id="definitionsTab" href="#definitionsTabPane" data-toggle="tab"><i class="fa fa-envelope-o"></i>&nbsp;Definitions</a></li>
+                    <li role="presentation"><a id="downloadTab" href="#downloadTabPane" data-toggle="tab"><i class="fa fa-envelope-o"></i>&nbsp;Download Data</a></li>
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane" id="aboutTabPane"></br>
                         <p style="color:black; font-size: larger">SPARROW Modeling: <a href="http://water.usgs.gov/nawqa/sparrow/" target="_blank">http://water.usgs.gov/nawqa/sparrow/</a></p>
                         <p style="color:black; font-size: larger">SPARROW Decision Support System (DSS): <a href="http://cida.usgs.gov/sparrow/" target="_blank">http://cida.usgs.gov/sparrow/</a></p>
                     </div>
-                    <div role="tabpanel" class="tab-pane active" id="disclaimerTabPane"></br>
+                    <div role="tabpanel" class="tab-pane active" id="dataLimitationsTabPane"></br>
                         <h3>Data Limitations</h3>
                         <p>Data are provisional and are subject to revision until thoroughly reviewed and approved.</p>
-                        <p>Data disclaimer continues here</p>
                     </div>
                     <div role="tabpanel" class="tab-pane active" id="contactTabPane"></br>
                         <h3>Anne Hoos</h3>
@@ -183,8 +184,23 @@
                         <p>615-837-4760</p>
                         <p><a href="mailto:abhoos@usgs.gov">abhoos@usgs.gov</a></p>
                         <p><a href="https://profile.usgs.gov/abhoos">https://profile.usgs.gov/abhoos</a></p>
-
-
+                    </div>
+                    <div role="tabpanel" class="tab-pane active" id="definitionsTabPane"></br>
+                        <h3>Content Here</h3>
+                    </div>
+                    <div role="tabpanel" class="tab-pane active" id="downloadTabPane"></br>
+                        <h3>Data Downloads</h3>
+                        <div class="btn">
+                            <button type="button" class="btn btn-primary"  id="phosphorusDownload">
+                                <span class="glyphicon glyphicon-download"></span> Download Phosphorus Model Results
+                            </button>
+                        </div>
+                        <div class="btn">
+                            <button type="button" class="btn btn-primary"  id="nitrogenDownload">
+                                <span class="glyphicon glyphicon-download"></span> Download Nitrogen Model Results
+                            </button>
+                        </div>
+                        
                     </div>
 
                 </div>
@@ -384,6 +400,8 @@
                                 <span class="glyphicon glyphicon-list-alt"></span> Show Table
                             </button>
                         </div>
+
+                        
 
 
                     </div><!--END panel body-->
