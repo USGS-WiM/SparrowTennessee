@@ -1,3 +1,4 @@
 node_modules
 *.log
+.svn/
 bower_components
