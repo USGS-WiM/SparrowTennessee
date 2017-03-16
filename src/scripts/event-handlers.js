@@ -21,8 +21,20 @@ function loadEventHandlers() {
     /*END RADIO EVENTS*/
 
     /* EXPORT TABLE EVENT*/
+
     $('#exportTableButton').on('click', function(){
-        $("#resultsTable").tableToCSV();
+        $("#resultsTable").tableToCSV();  //https://github.com/cyriac/jquery.tabletoCSV
+    });
+
+    //UPDATE: important! make sure the file name is updated_____________________________________________________
+    $("#phosphorusDownload").click(function() {
+        // hope the server sets Content-Disposition: attachment!
+        window.location = '/SparrowTennessee/downloads/tenn_shapefiles_phosphorus.zip';
+    });
+    //UPDATE: important! make sure the file name is updated_____________________________________________________
+    $("#nitrogenDownload").click(function() {
+        // hope the server sets Content-Disposition: attachment!
+        window.location = '/SparrowTennessee/downloads/tenn_shapefiles_nitrogen.zip';
     });
     
     //moved this out of exectureIdentifyTask()
