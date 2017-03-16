@@ -1195,7 +1195,7 @@ require([
                         //    display: 'none'
                         //}
                     //},
-                    backgroundColor:'rgba(255, 255, 255, 0.1)',
+                    backgroundColor:'rgba(255, 255, 255, 0.45)',
                     /*events: {
                         selection: function (e) {
                             if (e.xAxis){
