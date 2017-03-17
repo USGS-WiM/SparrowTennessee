@@ -152,8 +152,8 @@ function loadEventHandlers() {
     $('.nonAOISelect').on('change', function(){
         switch($('#groupResultsSelect')[0].selectedIndex) {
             case 0: //HUC10                
-                //CHART button logic
-                if ($('#displayedMetricSelect')[0].selectedIndex == 4 || $('#displayedMetricSelect')[0].selectedIndex == 5){
+                //CHART button logic  commented out @ cooperator's request see github issue #82
+/*                if ($('#displayedMetricSelect')[0].selectedIndex == 4 || $('#displayedMetricSelect')[0].selectedIndex == 5){
                     $("#chartButton").addClass('disabled');
                     $('#chartButton').attr('disabled','disabled');
                     //ALSO MAKE SURE YOU REMOVE ANY CHART FROM THE VIEW (Lobipanel only, modal takes care of self.)
@@ -163,7 +163,7 @@ function loadEventHandlers() {
                 } else{
                     $("#chartButton").removeClass('disabled');
                     $("#chartButton").removeAttr('disabled');
-                }
+                }*/
 
                 //AOI logic (enable both AOIs)                
                 $("#grp1-select").removeClass('disabled'); //Independent watersheds                
@@ -177,9 +177,9 @@ function loadEventHandlers() {
                 $('#grp2-select').selectpicker('refresh');
                 break;
             case 1: //HUC8                
-                //CHART button logic
-                $("#chartButton").removeClass('disabled');
-                $("#chartButton").removeAttr('disabled');
+                //CHART button logic no longer needed but keep in case cooperator wants to switch back to no ACC load/yield charts
+                /*$("#chartButton").removeClass('disabled');
+                $("#chartButton").removeAttr('disabled');*/
                 
                 //AOI logic (enable both AOIs)                
                 $("#grp1-select").removeClass('disabled'); //Independent watersheds                
@@ -193,9 +193,9 @@ function loadEventHandlers() {
                 $('#grp2-select').selectpicker('refresh');
                 break;
             case 2: //INDEPENDENT WATERSHED
-                //CHART button logic                
-                $("#chartButton").removeClass('disabled');
-                $("#chartButton").removeAttr('disabled');
+                //CHART button logic no longer needed but keep in case cooperator wants to switch back to no ACC load/yield charts               
+                /*$("#chartButton").removeClass('disabled');
+                $("#chartButton").removeAttr('disabled');*/
                 
                 //AOI logic (disable HUC8 & clear value if any)
                 if (app.getLayerDefObj().AOI2) {
@@ -219,9 +219,9 @@ function loadEventHandlers() {
                 $('#grp1-select').selectpicker('refresh');
                 break;
             case 3: //STATE
-                //CHART button logic
-                $("#chartButton").removeClass('disabled');
-                $("#chartButton").removeAttr('disabled');
+                //CHART button logic no longer needed but keep in case cooperator wants to switch back to no ACC load/yield charts
+                /*$("#chartButton").removeClass('disabled');
+                $("#chartButton").removeAttr('disabled');*/
 
                 //AOI logic (disable both IW and HUC8 & clear values if any)
                 //independent watershed

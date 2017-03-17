@@ -1,3 +1,8 @@
+/*
+CONFIG FILE FOR USE WITH tenn_shapefiles_tn_20170103  AND  tenn_shapefiles_tp_20161218 (1)
+Use this with SPARROW TENNESSEE DEV rest services 
+prior to data update on 3/17/2017
+*/
 
 var serviceBaseURL = "https://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/";
 var chartUnits = " (lb./yr.)"
