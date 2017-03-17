@@ -420,15 +420,15 @@ input[type="checkbox"], input[type="radio"] {
 
 
 #tableBody{
-    font-size:8px;
+    font-size:12px;
 }
 
 .table thead tr td{
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .table th {
-    font-size: 10px;
+    font-size: 12px;
 }
 
 
@@ -443,8 +443,12 @@ input[type="checkbox"], input[type="radio"] {
 #tableResizable h3 { text-align: left; padding-left: 20px; }
 
 .ui-widget-header{
-
-    background: #ccc;
+    border: none;
+    background: rgb(30,39,50);
+    padding: 5px;
+    font-weight: 300;
+    letter-spacing: 1.25px;
+    font-family: arial, sans-serif;
 }
 .esriControlsBR {display: none;}
 
@@ -502,7 +506,7 @@ input[type="checkbox"], input[type="radio"] {
 #legendElement{
     max-width: 280px;
     height: auto !important;
-    overflow: scroll;
+    overflow: auto;  /*Erik Edited from scroll to auto 3/17/17*/
     max-height: 400px;
 }
 #chartWindowPanelTitle{

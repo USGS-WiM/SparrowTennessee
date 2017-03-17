@@ -816,17 +816,19 @@ function generateRenderer(){
         var colorRamp = new AlgorithmicColorRamp();
         //different ramps for phos/nitro
         if( $(".radio input[type='radio']:checked")[0].id == "radio1" ){
-            colorRamp.fromColor = Color.fromHex("#F5EBB8");
-            colorRamp.toColor = Color.fromHex("#004120");
-            //original
-            /*colorRamp.fromColor = Color.fromHex("#ffffcc");
-            colorRamp.toColor = Color.fromHex("#006837");*/
-        } else{
+            //phos = brown
             colorRamp.fromColor = Color.fromHex("#FFF1DC");
             colorRamp.toColor = Color.fromHex("#632E0E");
             //original
             /*colorRamp.fromColor = Color.fromHex("#ffd084");
             colorRamp.toColor = Color.fromHex("#845305");*/
+        } else{
+            //nitro = green
+            colorRamp.fromColor = Color.fromHex("#F5EBB8");
+            colorRamp.toColor = Color.fromHex("#004120");
+            //original
+            /*colorRamp.fromColor = Color.fromHex("#ffffcc");
+            colorRamp.toColor = Color.fromHex("#006837");*/
         }
           
         colorRamp.algorithm = "hsv"; // options are:  "cie-lab", "hsv", "lab-lch"
