@@ -116,39 +116,55 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button class="close" type="button" data-dismiss="modal" aria-hidden="true" style="color:gray;">&times;</button>
-                <h4 class="modal-title">SPARROW Tennessee v0.9.0</h4>
+                <h4 class="modal-title">About SPARROW Tennessee v0.9.0</h4>
             </div>
             <div id="aboutModalBody" class="modal-body">
                 <ul class="nav nav-tabs" id="aboutModalTabs">
                     <li role="presentation"><a id="aboutTab" href="#aboutTabPane" data-toggle="tab"><i class="fa fa-question-circle"></i>&nbsp;About the application</a></li>
-                    <li role="presentation" class="active"><a id="dataLimitationsTabPane" href="#dataLimitationsTabPane" data-toggle="tab"><i class="fa fa-exclamation-circle"></i>&nbsp;Data Limitations</a></li>
+                    <li role="presentation" class="active"><a id="dataLimitationsTab" href="#dataLimitationsTabPane" data-toggle="tab"><i class="fa fa-exclamation-circle"></i>&nbsp;Data Limitations</a></li>
                     <li role="presentation"><a id="contactTab" href="#contactTabPane" data-toggle="tab"><i class="fa fa-envelope-o"></i>&nbsp;Contact Information</a></li>
-                    <li role="presentation"><a id="definitionsTab" href="#definitionsTabPane" data-toggle="tab"><i class="fa fa-envelope-o"></i>&nbsp;Definitions</a></li>
-
-                    <li role="presentation"><a id="downloadTab" href="#downloadTabPane" data-toggle="tab"><i class="fa glyphicon-download-alt"></i>&nbsp;Download Data</a></li>
-
+                    <li role="presentation"><a id="definitionsTab" href="#definitionsTabPane" data-toggle="tab"><i class="fa fa-info-circle"></i>&nbsp;Definitions</a></li>
+                    <li role="presentation"><a id="downloadTab" href="#downloadTabPane" data-toggle="tab"><i class="fa fa-arrow-circle-o-down"></i>&nbsp;Download Data</a></li>
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane" id="aboutTabPane"></br>
-                        <p style="color:black; font-size: larger">SPARROW Modeling: <a href="http://water.usgs.gov/nawqa/sparrow/" target="_blank">http://water.usgs.gov/nawqa/sparrow/</a></p>
-                        <p style="color:black; font-size: larger">SPARROW Decision Support System (DSS): <a href="http://cida.usgs.gov/sparrow/" target="_blank">http://cida.usgs.gov/sparrow/</a></p>
+                        <p style="color:black; font-size: larger">SPARROW Surface Water-Quality Modeling <a href="https://water.usgs.gov/nawqa/sparrow/" target="blank">https://water.usgs.gov/nawqa/sparrow/</a></p>
+
+                        <p style="color:black; font-size: larger">Documentation of the SPARROW model for Tennessee</p>
+                        <p>Hoos, A.B., and Wang, S., 2017, Adapting a regional water-quality model for a statewide watershed management application – example for the southeastern U.S.: Journal TBD**</p>
+                        
+                        <p style="color:black; font-size: larger">Documentation of the modeling tool SPARROW (SPAtially Referenced Regression On Watershed attributes)</p>
+                         <p>Schwarz, G.E., A.B. Hoos, R.B. Alexander, and R.A. Smith, 2006. The SPARROW Surface Water-Quality Model: Theory, Application, and User Documentation. U.S. Geological Survey Techniques and Methods Report, Book 6, Chapter B3. <a href="https://pubs.usgs.gov/tm/2006/tm6b3/" target="blank">https://pubs.usgs.gov/tm/2006/tm6b3/</a>;</p> 
+                         <p>Preston, S.D., Alexander, R.B., Woodside, M.D., and Hamilton, P.A., 2009, SPARROW MODELING—Enhancing Understanding of the Nation’s Water Quality: U.S. Geological Survey Fact Sheet 2009–3019, 6 p. <a href="https://pubs.usgs.gov/fs/2009/3019/" target="blank">https://pubs.usgs.gov/fs/2009/3019/</a></p>
+                       
                     </div>
                     <div role="tabpanel" class="tab-pane active" id="dataLimitationsTabPane"></br>
-                        <h3>Data Limitations</h3>
-                        <p>Data are provisional and are subject to revision until thoroughly reviewed and approved.</p>
+                        <p><b>The relationship between the scale of reporting of model results and uncertainty:</b>  Model results can be displayed at several watershed scales.  The smallest scale that could be used for reporting is the catchment scale at which model computations are made – for the Tennessee model these are RF1 catchments, typical watershed size is about 30 square miles.  Results can be aggregated up to larger scales for reporting:  HUC10 (typical watershed size is 200 square miles), HUC8 (typical watershed size is 1,200 square miles) or larger.  The SPARROW model is, in theory, “scale independent.” However, the uncertainty associated with SPARROW predictions is expected to increase for drainage basin sizes smaller than those of stream monitoring sites used to calibrate the model.</p> 
+                        
+                        <p>The HUC10 watershed scale is the smallest scale chosen for reporting for the Tennessee mapper application (that is, results at the model computation scale are not reported in the Tennessee mapper).  The HUC10 watershed scale is large enough to provide greater certainty of model results, because the typical HUC10 size (about 200 square miles on average for the Tennessee model domain) is larger than almost one-third of the stream monitoring sites/basins used to calibrate the model (Saad and others, 2011; Tables S1 and S3).</p>
+
+                        <p><b>Delineated HUC10 boundaries in this mapper may differ from the official boundaries for these units published in the Water Boundary Dataset:</b> A HUC10 unit is typically comprised of five or six RF1 catchments that lie completely or mostly within the HUC10 unit. Because parts of some of these catchments lie outside the official HUC10 boundary, the aggregate boundary of the group of catchments does not in all cases align with the official delineated boundary of the HUC10 from the Watershed Boundary Dataset (U.S. Department of Agriculture-Natural Resources Conservation Service, U.S. Geological Survey, and Environmental Protection Agency, 2016).  Hence the drainage area load reported for some of these aggregated HUC10 units departs from the official delineated unit.   In contrast, for the HUC8 aggregated units, which are typically comprised of about 40 RF1 catchments, the aggregate boundary of the group of RF1 catchments aligns well with the official delineated boundary of the HUC8. </p>
+
+                        <p style="color:black; font-size: larger">References:</p>
+                        <p>Saad, D.A., G.E. Schwarz, D.M. Robertson, and N.L. Booth, 2011. A Multi-Agency Nutrient Dataset Used to Estimate Loads, Improve Monitoring Design, and Calibrate Regional Nutrient SPARROW Models. Journal of the American Water Resources Association 47(5):933–949, doi: 10.1111/j.1752-1688.2011.00575.x.
+                        U.S. Department of Agriculture-Natural Resources Conservation Service, U.S. Geological Survey, and Environmental Protection Agency, 2016, Watershed Boundary Dataset: <a href="http://datagateway.nrcs.usda.gov" target="blank">http://datagateway.nrcs.usda.gov [Accessed 2/2/2016].</a></p>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="contactTabPane"></br>
                         <h3>Anne Hoos</h3>
-                        <p>Hydrologist</p>
-                        <p>615-837-4760</p>
-                        <p><a href="mailto:abhoos@usgs.gov">abhoos@usgs.gov</a></p>
-                        <p><a href="https://profile.usgs.gov/abhoos">https://profile.usgs.gov/abhoos</a></p>
+                        <p>Hydrologist<br/>615-837-4760<br/><a href="mailto:abhoos@usgs.gov">abhoos@usgs.gov</a><br/><a href="https://www.usgs.gov/staff-profiles/anne-b-hoos" target="blank">https://www.usgs.gov/staff-profiles/anne-b-hoos</a></p>
+
+                        <h3>Victor Roland</h3>
+                        <p>Hydrologist<br/>615-837-4754<br/><a href="mailto:vroland@usgs.gov">vroland@usgs.gov</a><br/><a href="https://www.usgs.gov/staff-profiles/victor-l-roland" target="blank">https://www.usgs.gov/staff-profiles/victor-l-roland</a></p>
+
+                        <h3>USGS Lower Mississippi Gulf Water Science Center</h3>
+                        <p>640 Grassmere Park, Suite 100<br/>Nashville, TN  37211<br/><a href="https://www.usgs.gov/centers/lmg-water" target="blank">https://www.usgs.gov/centers/lmg-water</a></p>
+
+                        
                     </div>
                     <div role="tabpanel" class="tab-pane" id="definitionsTabPane"></br>
-                        <h3>Content Here</h3>
+                        <p>Coming Soon</p>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="downloadTabPane"></br>
-                        <h3>Data Downloads</h3>
                         <div class="btn">
                             <button type="button" class="btn btn-primary"  id="phosphorusDownload">
                                 <span class="glyphicon glyphicon-download"></span> Download Phosphorus Model Results
@@ -420,9 +436,9 @@
                 <h3 class="ui-widget-header" id="tableTitle"></h3>
                 <table class="table table-bordered" id="resultsTable"></table>
                 <div class="btn">
-                    <!--<button type="button" class="btn btn-primary" id="exportTableButton">
+                    <button type="button" class="btn btn-primary" id="exportTableButton">
                         <span class="glyphicon glyphicon-download-alt"></span>Export Table
-                    </button>-->
+                    </button>
                     <button type="button" class="btn btn-danger" id="tableResizable_Close">
                         <span class="glyphicon glyphicon-remove"></span>Close Table
                     </button>
