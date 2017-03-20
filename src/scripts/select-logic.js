@@ -794,7 +794,7 @@ function generateRenderer(){
             app.layerDef = null;
         }
         
-        app.Url = "https://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeDev/MapServer/" + sparrowId;
+        app.Url = "https://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennessee/MapServer/" + sparrowId;
         
         var selectedMetric = $('#displayedMetricSelect')[0].value;
         app.outFields = [selectedMetric];

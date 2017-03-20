@@ -54,7 +54,8 @@
     <!-- build:js scripts/combined.js -->
     <script type="text/javascript" src="scripts/utilities.js"></script>
     
-    <script type="text/javascript" src="scripts/sparrow-config.js"></script>
+    <script type="text/javascript" src="scripts/sparrow-config-03-17-2017-update.js"></script>
+    <!--<script type="text/javascript" src="scripts/sparrow-config.js"></script>-->
     <script type="text/javascript" src="scripts/layers.js"></script>
     
     <!--<script type="text/javascript" src="scripts/chart-window.js"></script>-->
@@ -136,9 +137,24 @@
                 <h4 class="modal-title">Geosearch</h4>
             </div>
             <div class="modal-body">
+
                 <div class="form-group">
                     <!-- <div id="geosearch" style="display:none"><div id="sapi_searchTextBoxDiv"></div></div> -->
                     <div id="geosearch_usgs" class="search"></div>  
+                </div>
+                <div class="wim-alert">
+                    <h6 class="wim-list-header">Supported search strings:</h6>
+                    <p>Use 'enter' key or "Go!" button to submit</p>
+                    <ul>
+                        <li>GNIS locations</li>
+                        <li>USGS Sites</li>
+                        <li>Zip Codes</li>
+                        <li>Area Codes</li>
+                        <li>States</li>
+                        <li>Lat/Long (ie. '43.9,-72.1')</li>
+                        <li>Street Address</li>
+                    </ul>
+                    <p>Search provided by <a href="https://txpub.usgs.gov/dss/search_api/2.0/" target="_blank">USGS Search JavaScript API</a></p>
                 </div>
                 <!-- <form id="geosearch-form" class="form-inline">
                     <div class="checkbox">
@@ -163,10 +179,10 @@
             </div>
             <div id="aboutModalBody" class="modal-body">
                 <ul class="nav nav-tabs" id="aboutModalTabs">
-                    <li role="presentation"><a id="aboutTab" href="#aboutTabPane" data-toggle="tab"><i class="fa fa-question-circle"></i>&nbsp;About the application</a></li>
+                    <li role="presentation"><a id="aboutTab" href="#aboutTabPane" data-toggle="tab"><i class="fa fa-info-circle"></i>&nbsp;Model Documentation</a></li>
                     <li role="presentation" class="active"><a id="dataLimitationsTab" href="#dataLimitationsTabPane" data-toggle="tab"><i class="fa fa-exclamation-circle"></i>&nbsp;Data Limitations</a></li>
                     <li role="presentation"><a id="contactTab" href="#contactTabPane" data-toggle="tab"><i class="fa fa-envelope-o"></i>&nbsp;Contact Information</a></li>
-                    <li role="presentation"><a id="definitionsTab" href="#definitionsTabPane" data-toggle="tab"><i class="fa fa-info-circle"></i>&nbsp;Definitions</a></li>
+                    <li role="presentation"><a id="definitionsTab" href="#definitionsTabPane" data-toggle="tab"><i class="fa fa-question-circle"></i>&nbsp;Definitions</a></li>
                     <li role="presentation"><a id="downloadTab" href="#downloadTabPane" data-toggle="tab"><i class="fa fa-arrow-circle-o-down"></i>&nbsp;Download Data</a></li>
                 </ul>
                 <div class="tab-content">
@@ -205,7 +221,27 @@
                         
                     </div>
                     <div role="tabpanel" class="tab-pane" id="definitionsTabPane"></br>
-                        <p>Coming Soon</p>
+                        <p><b>Accumulated Load (often referred to as "Total Load"): </b>The predicted mean annual load of the constituent (kilograms per year) leaving a stream reach that reflects the accumulated mass of the constituent contributed by all sources in the total drainage area upstream of the reach outlet. The accumulated load value includes the effects of in-stream attenuation processes in all upstream reaches. For results grouped by HUC8, tributary outlet, main river basin, or State, accumulated load represents the sum of incremental loads for those areas. Results grouped by State are approximations based on stream reaches that are located entirely or mostly within that State.
+                        Please note: Accumulated load values for stream reaches that include drainage from Canada do not include load from the Canadian portion of those watersheds.</p>
+
+                        <p><b>Incremental Load: </b>The predicted mean annual load of the constituent (kilograms per year) leaving a stream reach that reflects only those sources contributed from within the incremental drainage area of that reach. The incremental load value includes the effects of in-stream attenuation processes associated with one half of the incremental reach length. Incremental drainage areas are represented here as “catchments”.</p>
+
+                        <p><b>Accumulated Yield: </b>The Accumulated Load divided by the total drainage area upstream of the reach outlet or total of the “grouped by” area. Units are kilograms per square kilometer per year.</p>
+
+                        <p><b>Incremental Yield: </b>The Incremental Load divided by the incremental drainage area of the reach. Units are kilograms per square kilometer per year</p>
+
+                        <p><b>Delivered Accumulated Load: </b>Accumulated load multiplied by the delivery fraction. Delivery fraction is defined below.</p>
+
+                        <p><b>Delivered Incremental Load: </b>Incremental load multiplied by the delivery fraction. Delivery fraction is defined below.</p>
+
+                        <p><b>Delivered Accumulated Yield: </b>The Delivered Accumulated Load divided by the total drainage area upstream of the reach outlet or total of the “grouped by” area. Units are kilograms per square kilometer per year.</p>
+
+                        <p><b>Delivered Incremental Yield: </b>The Delivered Incremental Load divided by the incremental drainage area of the reach. Units are kilograms per square kilometer per year.</p>
+
+                        <p><b>Delivery Fraction (definition): </b>The fraction of the load leaving a reach that is not attenuated or removed by natural processes during downstream transport to a specified downstream target reach. A delivery fraction of 1 indicates that 100 percent of the load leaving the reach is delivered to the downstream target. Please note: For delivered results shown here, downstream targets represent the outlet reaches of the Mississippi and Atchafalaya Rivers.</p>
+
+
+
                     </div>
                     <div role="tabpanel" class="tab-pane" id="downloadTabPane"></br>
                         <div class="btn">
