@@ -1174,7 +1174,8 @@ require([
 
 
         //END LOBIPANEL-------------------------------------------------------------------------------------------------------
-        var colorArr = ( $('.radio input[type="radio"]:checked')[0].id == 'radio1' ? ['#29667F', '#B43E33', '#64A87E', '#FFE271', '#7F754A', '#F7C97F'] : ['#29667F', '#B43E33', '#82BEFF', '#B89769', '#FFC943'] );
+        //var colorArr = ( $('.radio input[type="radio"]:checked')[0].id == 'radio1' ? ['#29667F', '#B43E33', '#64A87E', '#FFE271', '#7F754A', '#F7C97F'] : ['#29667F', '#B43E33', '#82BEFF', '#B89769', '#FFC943'] );
+        var colorArr = ( $('.radio input[type="radio"]:checked')[0].id == 'radio1' ? ['#0070C0', '#97DA7C', '#663100', '#FFEC99', '#FFCCFF', '#BF0000'] : ['#0070C0', '#663100', '#FFEC99', '#FFCCFF', '#BF0000'] );
 
         var chart = $('#chartWindowContainer').highcharts(); 
 

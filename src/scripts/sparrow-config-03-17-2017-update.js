@@ -13,7 +13,7 @@ var tableOutFields = [
     { field: "FID", name: "Unique Feature Id"},
     { field: "GRP_1_NAM", name: "Independent Watershed name (in which HUC10 is nested)"},
     { field: "GRP_2_NAM", name: "HUC8 (in which HUC10 is nested)"},
-    { field: "GRP_3_NA_1", name: "Join Field"},
+    { field: "GRP_3_NA_1", name: "same as GRP_3_NAM,  from join file"},
     { field: "GRP_3_DESC", name: "HUC10 Description"},
     { field: "Area_g3", name: "HUC10 area (mi2), aggregated from individual model catchments (may differ from WBD)"}   
 ]
@@ -21,7 +21,7 @@ var tableOutFields = [
 var stateTableOutFields = [
     { field: "FID", name: "Unique Feature Id"},
     { field: "ST_GP3_NAM", name: "HUC10/State (combination) ID"},
-    { field: "Area_S3", name: "HUC10 area within the state and the  model area (mi2)"},   
+    { field: "Area_S3", name: "HUC10 area within the state and the  model area (mi2), aggregated from individual model catchments"},   
     { field: "ST", name: "State"},
     { field: "GRP_1_NAM", name: "Independent Watershed name (in which HUC10 is nested)"},
     { field: "GRP_2_NAM", name: "HUC8 (in which HUC10 is nested)"},
