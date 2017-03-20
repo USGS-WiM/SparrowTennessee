@@ -500,6 +500,23 @@ input[type="checkbox"], input[type="radio"] {
     font-size: 12px;
 }
 
+/*used in geosearch modal body*/
+.wim-alert {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 18px;
+    margin: 10px 0;
+    font-size: 9pt;
+    letter-spacing: .8px;
+    border: 1px solid #d3d3d3;
+    color: #fff;
+    border-radius: 3px;
+    font-weight: 400;
+    background-color: #e2e2e2;
+    color: #2d3146;
+}
+
 
 
 /*Mitch Mar 9*/

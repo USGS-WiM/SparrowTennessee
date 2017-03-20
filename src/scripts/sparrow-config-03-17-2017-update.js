@@ -14,7 +14,8 @@ var tableOutFields = [
     { field: "GRP_1_NAM", name: "Independent Watershed name (in which HUC10 is nested)"},
     { field: "GRP_2_NAM", name: "HUC8 (in which HUC10 is nested)"},
     { field: "GRP_3_NA_1", name: "Join Field"},
-    { field: "Area_g3", name: "HUC10 area (mi2)"}   
+    { field: "GRP_3_DESC", name: "HUC10 Description"},
+    { field: "Area_g3", name: "HUC10 area (mi2), aggregated from individual model catchments (may differ from WBD)"}   
 ]
 
 var stateTableOutFields = [
@@ -25,8 +26,8 @@ var stateTableOutFields = [
     { field: "GRP_1_NAM", name: "Independent Watershed name (in which HUC10 is nested)"},
     { field: "GRP_2_NAM", name: "HUC8 (in which HUC10 is nested)"},
     { field: "GRP_3_NAM", name: "HUC10"},
-    { field: "ST_GP1_NAM", name: "State and Independent Watershed"},
-    { field: "ST_GP2_NAM", name: "State amd HUC8"},
+    { field: "ST_GP1_NAM", name: "Independent Watershed/State (combination) ID"},
+    { field: "ST_GP2_NAM", name: "HUC8/State (combination) ID"},
     { field: "ST_gp3_n_1", name: "Join Field"}
 
 ]
@@ -582,29 +583,29 @@ var Group1_tn = [
     }
 ]
 
-var ST_tn = [  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+var ST_tn = [  
     {
         field: "dy1_ST_tot", 
-        name: "Yield from State delivered to downstream boundary (lb/yr)", 
+        name: "Yield from State delivered to downstream model boundary (lb/yr/acre)", 
         chartOutfields: [
             { attribute: "ST", label: "State"},
-            { attribute: "dy1_ST_sc1", label: "Wastewater yield from State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dy1_ST_sc2", label: "Urban-land yield from State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dy1_ST_sc3", label: "Atmospheric deposition yield from State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dy1_ST_sc4", label: "Manure yield from State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dy1_ST_sc5", label: "Fertilizer yield from State delivered to downstream boundary (lb/yr)"}
+            { attribute: "dy1_ST_sc1", label: "Atmospheric-deposition yield from State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_ST_sc2", label: "Manure yield from State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_ST_sc3", label: "Agricultural-land yield from State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_ST_sc4", label: "Urban-land yield from State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_ST_sc5", label: "Wastewater yield from State delivered to downstream model boundary (lb/yr/acre)"}
         ]
     },
     {
         field: "dl1_ST_tot", 
-        name: "Load from State delivered to downstream boundary (lb/yr)", 
+        name: "Load from State delivered to downstream model boundary (lb/yr)", 
         chartOutfields: [
             { attribute: "ST", label: "State"}, 
-            { attribute: "dl1_ST_sc1", label: "Wastewater load from State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_ST_sc2", label: "Urban-land load from State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_ST_sc3", label: "Atmospheric deposition load from State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_ST_sc4", label: "Manure load from State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_ST_sc5", label: "Fertilizer load from State delivered to downstream boundary (lb/yr)"}
+            { attribute: "dl1_ST_sc1", label: "Atmospheric-deposition load from State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_ST_sc2", label: "Manure load from State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_ST_sc3", label: "Fertilizer load from State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_ST_sc4", label: "Urban-land load from State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_ST_sc5", label: "Wastewater load from State delivered to downstream model boundary (lb/yr)"}
         ]
     },    
     {
@@ -612,23 +613,23 @@ var ST_tn = [  /////////////////////////////////////////////////////////////////
         name: "Load from State within model area (lb/yr)", 
         chartOutfields: [
             { attribute: "ST", label: "State"},
-            { attribute: "l_ST_sc1", label: "Wastewater load from State within model area (lb/yr)"},
-            { attribute: "l_ST_sc2", label: "Urban-land load from State within model area (lb/yr)"},
-            { attribute: "l_ST_sc3", label: "Atmospheric-deposition load from State within model area (lb/yr)"},
-            { attribute: "l_ST_sc4", label: "Manure load from State within model area (lb/yr)"},
-            { attribute: "l_ST_sc5", label: "Fertilizer load from State within model area (lb/yr)"}
+            { attribute: "l_ST_sc1", label: "Atmospheric-deposition load from State within model area (lb/yr)"},
+            { attribute: "l_ST_sc2", label: "Manure load from State within model area (lb/yr)"},
+            { attribute: "l_ST_sc3", label: "Fertilizer load from State within model area (lb/yr)"},
+            { attribute: "l_ST_sc4", label: "Urban-land load from State within model area (lb/yr)"},
+            { attribute: "l_ST_sc5", label: "Wastewater load from State within model area (lb/yr)"}
         ]
     },
     {
         field: "y_ST_tot", 
-        name: "Yield from State within model area (lb/yr/mi2)", 
+        name: "Yield from State within model area (lb/yr/acre)", 
         chartOutfields: [
             { attribute: "ST", label: "State"},
-            { attribute: "y_ST_sc1", label: "Wastewater yield from State within model area (lb/yr)"},
-            { attribute: "y_ST_sc2", label: "Urban-land yield from State within model area (lb/yr)"},
-            { attribute: "y_ST_sc3", label: "Atmospheric-deposition yield from State within model area (lb/yr)"},
-            { attribute: "y_ST_sc4", label: "Manure yield from State within model area (lb/yr)"},
-            { attribute: "y_ST_sc5", label: "Fertilizer yield from State within model area (lb/yr)"}
+            { attribute: "y_ST_sc1", label: "Atmospheric-deposition yield from State within model area (lb/yr/acre)"},
+            { attribute: "y_ST_sc2", label: "Manure yield from State within model area (lb/yr/acre)"},
+            { attribute: "y_ST_sc3", label: "Fertilizer yield from State within model area (lb/yr/acre)"},
+            { attribute: "y_ST_sc4", label: "Urban-land yield from State within model area (lb/yr/acre)"},
+            { attribute: "y_ST_sc5", label: "Wastewater yield from State within model area (lb/yr/acre)"}
         ]
     }
 ]
@@ -639,23 +640,23 @@ var Group3_st_tn = [
         name: "Yield from HUC10/State delivered to downstream boundary (lb/yr/mi2)", 
         chartOutfields: [
             { attribute: "ST_GP3_NAM", label: "HUC10/State"},
-            { attribute: "dy1_S3_sc1", label: "Wastewater yield from HUC10/State delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_S3_sc2", label: "Urban-land yield from HUC10/State delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_S3_sc3", label: "Atmospheric deposition yield from HUC10/State delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_S3_sc4", label: "Manure yield from HUC10/State delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_S3_sc5", label: "Fertilizer yield from HUC10/State delivered to downstream boundary (lb/yr/mi2)"}
+            { attribute: "dy1_S3_sc1", label: "Atmospheric-deposition yield from HUC10/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S3_sc2", label: "Manure yield from HUC10/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S3_sc3", label: "Fertilizer yield from HUC10/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S3_sc4", label: "Urban-land yield from HUC10/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S3_sc5", label: "Wastewater yield from HUC10/State delivered to downstream model boundary (lb/yr/acre)"}
         ]
     },
     {
         field: "dl1_S3_tot", 
-        name: "Load from HUC10/State delivered to downstream boundary (lb/yr)", 
+        name: "Load from HUC10/State delivered to downstream model boundary (lb/yr)", 
         chartOutfields: [
             { attribute: "ST_GP3_NAM", label: "HUC10/State"}, 
-            { attribute: "dl1_S3_sc1", label: "Wastewater load from HUC10/State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_S3_sc2", label: "Urban-land load from HUC10/State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_S3_sc3", label: "Atmospheric deposition load from HUC10/State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_S3_sc4", label: "Manure load from HUC10/State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_S3_sc5", label: "Fertilizer load from HUC10/State delivered to downstream boundary (lb/yr)"}
+            { attribute: "dl1_S3_sc1", label: "Atmospheric-deposition load from HUC10/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S3_sc2", label: "Manure load from HUC10/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S3_sc3", label: "Fertilizer load from HUC10/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S3_sc4", label: "Urban-land load from HUC10/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S3_sc5", label: "Wastewater load from HUC10/State delivered to downstream model boundary (lb/yr)"}
         ]
     },    
     {
@@ -663,11 +664,11 @@ var Group3_st_tn = [
         name: "Load from HUC10/State within model area (lb/yr)", 
         chartOutfields: [
             { attribute: "ST_GP3_NAM", label: "HUC10/State"},
-            { attribute: "l_S3_sc1", label: "Wastewater load from HUC10/State within model area (lb/yr)"},
-            { attribute: "l_S3_sc2", label: "Urban-land load from HUC10/State within model area (lb/yr)"},
-            { attribute: "l_S3_sc3", label: "Atmospheric-deposition load from HUC10/State within model area (lb/yr)"},
-            { attribute: "l_S3_sc4", label: "Manure load from HUC10/State within model area (lb/yr)"},
-            { attribute: "l_S3_sc5", label: "Fertilizer load from HUC10/State within model area (lb/yr)"}
+            { attribute: "l_S3_sc1", label: "Atmospheric-deposition load from HUC10/State within model area (lb/yr)"},
+            { attribute: "l_S3_sc2", label: "Manure load from HUC10/State within model area (lb/yr)"},
+            { attribute: "l_S3_sc3", label: "Fertilizer load from HUC10/State within model area (lb/yr)"},
+            { attribute: "l_S3_sc4", label: "Urban-land load from HUC10/State within model area (lb/yr)"},
+            { attribute: "l_S3_sc5", label: "Wastewater load from HUC10/State within model area (lb/yr)"}
         ]
     },
     {
@@ -675,11 +676,11 @@ var Group3_st_tn = [
         name: "Yield from HUC10/State within model area (lb/yr)", 
         chartOutfields: [
             { attribute: "ST_GP3_NAM", label: "HUC10/State"},
-            { attribute: "y_S3_sc1", label: "Wastewater yield from HUC10/State within model area (lb/yr)"},
-            { attribute: "y_S3_sc2", label: "Urban-land yield from HUC10/State within model area (lb/yr)"},
-            { attribute: "y_S3_sc3", label: "Atmospheric-deposition yield from HUC10/State within model area (lb/yr)"},
-            { attribute: "y_S3_sc4", label: "Manure yield from HUC10/State within model area (lb/yr)"},
-            { attribute: "y_S3_sc5", label: "Fertilizer yield from HUC10/State within model area (lb/yr)"}
+            { attribute: "y_S3_sc1", label: "Atmospheric-deposition yield from HUC10/State within model area (lb/yr/acre)"},
+            { attribute: "y_S3_sc2", label: "Manure yield from HUC10/State within model area (lb/yr/acre)"},
+            { attribute: "y_S3_sc3", label: "Fertilizer yield from HUC10/State within model area (lb/yr/acre)"},
+            { attribute: "y_S3_sc4", label: "Urban-land yield from HUC10/State within model area (lb/yr/acre)"},
+            { attribute: "y_S3_sc5", label: "Wastewater yield from HUC10/State within model area (lb/yr/acre)"}
         ]
     }
 ]
@@ -687,26 +688,26 @@ var Group3_st_tn = [
 var Group2_st_tn = [
     {
         field: "dy1_S2_tot", 
-        name: "Yield from HUC8/State delivered to downstream boundary (lb/yr/mi2)", 
+        name: "Yield from HUC8/State delivered to downstream model boundary (lb/yr/acre)", 
         chartOutfields: [
             { attribute: "ST_GP2_NAM", label: "HUC8/State"},
-            { attribute: "dy1_S2_sc1", label: "Wastewater yield from HUC8/State delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_S2_sc2", label: "Urban-land yield from HUC8/State delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_S2_sc3", label: "Atmospheric deposition yield from HUC8/State delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_S2_sc4", label: "Manure yield from HUC8/State delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_S2_sc5", label: "Fertilizer yield from HUC8/State delivered to downstream boundary (lb/yr/mi2)"}
+            { attribute: "dy1_S2_sc1", label: "Atmospheric-deposition yield from HUC8/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S2_sc2", label: "Manure yield from HUC8/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S2_sc3", label: "Fertilizer yield from HUC8/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S2_sc4", label: "Urban-land yield from HUC8/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S2_sc5", label: "Wastewater yield from HUC8/State delivered to downstream model boundary (lb/yr/acre)"}
         ]
     },
     {
         field: "dl1_S2_tot", 
-        name: "Load from HUC8/State delivered to downstream boundary (lb/yr)", 
+        name: "Load from HUC8/State delivered to downstream model boundary (lb/yr)", 
         chartOutfields: [
             { attribute: "ST_GP2_NAM", label: "HUC8/State"}, 
-            { attribute: "dl1_S2_sc1", label: "Wastewater load from HUC8/State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_S2_sc2", label: "Urban-land load from HUC8/State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_S2_sc3", label: "Atmospheric deposition load from HUC8/State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_S2_sc4", label: "Manure load from HUC8/State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_S2_sc5", label: "Fertilizer load from HUC8/State delivered to downstream boundary (lb/yr)"}
+            { attribute: "dl1_S2_sc1", label: "Atmospheric-deposition load from HUC8/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S2_sc2", label: "Manure load from HUC8/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S2_sc3", label: "Fertilizer load from HUC8/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S2_sc4", label: "Urban-land load from HUC8/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S2_sc5", label: "Wastewater load from HUC8/State delivered to downstream model boundary (lb/yr)"}
         ]
     },
     {
@@ -714,23 +715,23 @@ var Group2_st_tn = [
         name: "Load from HUC8/State within model area (lb/yr)", 
         chartOutfields: [
             { attribute: "ST_GP2_NAM", label: "HUC8/State"},
-            { attribute: "l_S2_sc1", label: "Wastewater load from HUC8/State within model area (lb/yr)"},
-            { attribute: "l_S2_sc2", label: "Urban-land load from HUC8/State within model area (lb/yr)"},
-            { attribute: "l_S2_sc3", label: "Atmospheric-deposition load from HUC8/State within model area (lb/yr)"},
-            { attribute: "l_S2_sc4", label: "Manure load from HUC8/State within model area (lb/yr)"},
-            { attribute: "l_S2_sc5", label: "Fertilizer load from HUC8/State within model area (lb/yr)"}
+            { attribute: "l_S2_sc1", label: "Atmospheric-deposition load from HUC8/State within model area (lb/yr)"},
+            { attribute: "l_S2_sc2", label: "Manure load from HUC8/State within model area (lb/yr)"},
+            { attribute: "l_S2_sc3", label: "Fertilizer load from HUC8/State within model area (lb/yr)"},
+            { attribute: "l_S2_sc4", label: "Urban-land load from HUC8/State within model area (lb/yr)"},
+            { attribute: "l_S2_sc5", label: "Wastewater load from HUC8/State within model area (lb/yr)"}
         ]
     },
     {
         field: "y_S2_tot", 
-        name: "Yield from HUC8/State within model area (lb/yr)", 
+        name: "Yield from HUC8/State within model area (lb/yr/acre)", 
         chartOutfields: [
             { attribute: "ST_GP2_NAM", label: "HUC8/State"},
-            { attribute: "y_S2_sc1", label: "Wastewater yield from HUC8/State within model area (lb/yr)"},
-            { attribute: "y_S2_sc2", label: "Urban-land yield from HUC8/State within model area (lb/yr)"},
-            { attribute: "y_S2_sc3", label: "Atmospheric-deposition yield from HUC8/State within model area (lb/yr)"},
-            { attribute: "y_S2_sc4", label: "Manure yield from HUC8/State within model area (lb/yr)"},
-            { attribute: "y_S2_sc5", label: "Fertilizer yield from HUC8/State within model area (lb/yr)"}
+            { attribute: "y_S2_sc1", label: "Atmospheric-deposition yield from HUC8/State within model area (lb/yr/acre)"},
+            { attribute: "y_S2_sc2", label: "Manure yield from HUC8/State within model area (lb/yr/acre)"},
+            { attribute: "y_S2_sc3", label: "Fertilizer yield from HUC8/State within model area (lb/yr/acre)"},
+            { attribute: "y_S2_sc4", label: "Urban-land yield from HUC8/State within model area (lb/yr/acre)"},
+            { attribute: "y_S2_sc5", label: "Wastewater yield from HUC8/State within model area (lb/yr/acre)"}
         ]
     }
 ]
@@ -738,50 +739,50 @@ var Group2_st_tn = [
 var Group1_st_tn = [
     {
         field: "dy1_S1_tot", 
-        name: "Yield from watershed/State delivered to downstream boundary (lb/yr/mi2)", 
+        name: "Yield from watershed/State delivered to downstream model boundary (lb/yr/acre)", 
         chartOutfields: [
-            { attribute: "ST_GP1_NAM", label: "Independend Watershed/State"},
-            { attribute: "dy1_S1_sc1", label: "Wastewater yield from Independend Watershed/State delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_S1_sc2", label: "Urban-land yield from Independend Watershed/State delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_S1_sc3", label: "Atmospheric deposition yield from Independend Watershed/State delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_S1_sc4", label: "Manure yield from Independend Watershed/State delivered to downstream boundary (lb/yr/mi2)"},
-            { attribute: "dy1_S1_sc5", label: "Fertilizer yield from Independend Watershed/State delivered to downstream boundary (lb/yr/mi2)"}
+            { attribute: "ST_GP1_NAM", label: "Independent Watershed/State"},
+            { attribute: "dy1_S1_sc1", label: "Atmospheric-deposition yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S1_sc2", label: "Manure yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S1_sc3", label: "Agricultural-land yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S1_sc4", label: "Urban-land yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S1_sc5", label: "Wastewater yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"}
         ]
     },
     {
         field: "dl1_S1_tot", 
-        name: "Load from watershed/State delivered to downstream boundary (lb/yr)", 
+        name: "Load from watershed/State delivered to downstream model boundary (lb/yr)", 
         chartOutfields: [
-            { attribute: "ST_GP1_NAM", label: "Independend Watershed/State"}, 
-            { attribute: "dl1_S1_sc1", label: "Wastewater load from Independend Watershed/State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_S1_sc2", label: "Urban-land load from Independend Watershed/State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_S1_sc3", label: "Atmospheric deposition load from Independend Watershed/State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_S1_sc4", label: "Manure load from Independend Watershed/State delivered to downstream boundary (lb/yr)"},
-            { attribute: "dl1_S1_sc5", label: "Fertilizer load from Independend Watershed/State delivered to downstream boundary (lb/yr)"}
+            { attribute: "ST_GP1_NAM", label: "Independent Watershed/State"}, 
+            { attribute: "dl1_S1_sc1", label: "Atmospheric-deposition load from watershed/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S1_sc2", label: "Fertilizer load from watershed/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S1_sc3", label: "Agricultural-land yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dl1_S1_sc4", label: "Urban-land load from watershed/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S1_sc5", label: "Wastewater load from watershed/State delivered to downstream model boundary (lb/yr)"}
         ]
     },
     {
         field: "l_S1_tot", 
         name: "Load from watershed/State within model area (lb/yr)", 
         chartOutfields: [
-            { attribute: "ST_GP1_NAM", label: "Independend Watershed/State"},
-            { attribute: "l_S1_sc1", label: "Wastewater load from Independend Watershed/State within model area (lb/yr)"},
-            { attribute: "l_S1_sc2", label: "Urban-land load from Independend Watershed/State within model area (lb/yr)"},
-            { attribute: "l_S1_sc3", label: "Atmospheric-deposition load from Independend Watershed/State within model area (lb/yr)"},
-            { attribute: "l_S1_sc4", label: "Manure load from Independend Watershed/State within model area (lb/yr)"},
-            { attribute: "l_S1_sc5", label: "Fertilizer load from Independend Watershed/State within model area (lb/yr)"}
+            { attribute: "ST_GP1_NAM", label: "Independent Watershed/State"},
+            { attribute: "l_S1_sc1", label: "Atmospheric-deposition load from watershed/State within model area (lb/yr)"},
+            { attribute: "l_S1_sc2", label: "Manure load from watershed/State within model area (lb/yr)"},
+            { attribute: "l_S1_sc3", label: "Fertilizer load from watershed/State within model area (lb/yr)"},
+            { attribute: "l_S1_sc4", label: "Urban-land load from watershed/State within model area (lb/yr)"},
+            { attribute: "l_S1_sc5", label: "Wastewater load from watershed/State within model area (lb/yr)"}
         ]
     },
     {
         field: "y_S1_tot", 
-        name: "Yield from watershed/State within model area (lb/yr/mi2)", 
+        name: "Yield from watershed/State within model area (lb/yr/acre)", 
         chartOutfields: [
-            { attribute: "ST_GP1_NAM", label: "Independend Watershed/State"},
-            { attribute: "y_S1_sc1", label: "Wastewater yield from Independend Watershed/State within model area (lb/yr)"},
-            { attribute: "y_S1_sc2", label: "Urban-land yield from Independend Watershed/State within model area (lb/yr)"},
-            { attribute: "y_S1_sc3", label: "Atmospheric-deposition yield from Independend Watershed/State within model area (lb/yr)"},
-            { attribute: "y_S1_sc4", label: "Manure yield from Independend Watershed/State within model area (lb/yr)"},
-            { attribute: "y_S1_sc5", label: "Fertilizer yield from Independend Watershed/State within model area (lb/yr)"}
+            { attribute: "ST_GP1_NAM", label: "Independent Watershed/State"},
+            { attribute: "y_S1_sc1", label: "Atmospheric-deposition yield from watershed/State within model area (lb/yr/acre)"},
+            { attribute: "y_S1_sc2", label: "Manure yield from watershed/State within model area (lb/yr/acre)"},
+            { attribute: "y_S1_sc3", label: "Fertilizer yield from watershed/State within model area (lb/yr/acre)"},
+            { attribute: "y_S1_sc4", label: "Urban-land yield from watershed/State within model area (lb/yr/acre)"},
+            { attribute: "y_S1_sc5", label: "Wastewater yield from watershed/State within model area (lb/yr/acre)"}
         ]
     }
 ]
