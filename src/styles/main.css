@@ -113,14 +113,36 @@ body {
 .identification {
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-size: 9pt;
+    font-size: 8.5pt;
     display: block;
     width: 100%;
     margin: 0;
     padding: 0 0 0 8px;
     opacity: .75;
+    font-weight: bolder !important;
     text-align: center;
-    color: #6E7490;
+    color: rgba(0,0,0,0.85);
+    transition: 0.1s;
+}
+.indentification:hover{
+    transition: 0.1s;
+}
+.sidebar-footer{
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 0 10px 10px 10px;
+    font-size: 8pt;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+.sidebar-footer a{
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0 6px;
 }
 
 .latLngScale {
