@@ -1197,7 +1197,7 @@ require([
                         //}
                     //},
                     backgroundColor:'rgba(255, 255, 255, 0.45)',
-                    /*events: {
+                    events: {
                         selection: function (e) {
                             if (e.xAxis){
                                 var xAxis = e.xAxis[0],
@@ -1206,20 +1206,21 @@ require([
                                     $.each(this.series, function (i, series) {
                                         $.each(series.points, function (j, point) {
                                             console.log(j, point);
-                                         if ( point.x >= xAxis.min && point.x <= xAxis.max ) {
+                                            console.log("category = " + point.category);
+                                         /*if ( point.x >= xAxis.min && point.x <= xAxis.max ) {
                                             point.select(true, flag);
                                             if (!flag) {
                                                 flag = !flag; // all other points should include previous points
                                             }
-                                        }
+                                        }*/
                                         });
                                     });
                                 }
-                                $("#resetButton").prop("disabled", false);
-                                return true; // Zoom to selected bars
+                                //$("#resetButton").prop("disabled", false);
+                                //return true; // Zoom to selected bars
                             }
                         }
-                    }*/
+                    }
                 },
                 title:{
                     text: null
@@ -1373,7 +1374,7 @@ require([
                                         feature.setSymbol(selectedSymbol);
                                         app.map.graphics.add(feature);
                                     }
-                                } ,
+                                },
                                 click: function(evt){
                                     function switchWhereField(selectedIndex){
                                         switch (selectedIndex){
