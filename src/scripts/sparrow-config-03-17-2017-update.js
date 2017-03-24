@@ -371,29 +371,29 @@ var Group2_st = [
 
 var Group1_st = [
     {
-        field: "dl1_S1_tot", 
+        field: "dy1_S1_tot", 
         name: "Yield from watershed/State delivered to downstream model boundary (lb/yr/acre)", 
         chartOutfields: [
             { attribute: "ST_GP1_NAM", label: "Independend Watershed/State"}, 
-            { attribute: "dl1_S1_sc1", label: "Soil-parent-rock yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
-            { attribute: "dl1_S1_sc2", label: "Mined-land yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
-            { attribute: "dl1_S1_sc3", label: "Manure yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
-            { attribute: "dl1_S1_sc4", label: "Agricultural-land yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
-            { attribute: "dl1_S1_sc5", label: "Urban-land yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
-            { attribute: "dl1_S1_sc6", label: "Wastewater yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"}
+            { attribute: "dy1_S1_sc1", label: "Soil-parent-rock yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S1_sc2", label: "Mined-land yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S1_sc3", label: "Manure yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S1_sc4", label: "Agricultural-land yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S1_sc5", label: "Urban-land yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"},
+            { attribute: "dy1_S1_sc6", label: "Wastewater yield from watershed/State delivered to downstream model boundary (lb/yr/acre)"}
         ]
     },    
     {
-        field: "dy1_S1_tot", 
+        field: "dl1_S1_tot", 
         name: "Load from watershed/State delivered to downstream model boundary (lb/yr)", 
         chartOutfields: [
             { attribute: "ST_GP1_NAM", label: "Independend Watershed/State"},
-            { attribute: "dy1_S1_sc1", label: "Soil-parent-rock load from watershed/State delivered to downstream model boundary (lb/yr)"},
-            { attribute: "dy1_S1_sc2", label: "Mined-land load from watershed/State delivered to downstream model boundary (lb/yr)"},
-            { attribute: "dy1_S1_sc3", label: "Manure load from watershed/State delivered to downstream model boundary (lb/yr)"},
-            { attribute: "dy1_S1_sc4", label: "Agricultural-land load from watershed/State delivered to downstream model boundary (lb/yr)"},
-            { attribute: "dy1_S1_sc5", label: "Urban-land load from watershed/State delivered to downstream model boundary (lb/yr)"},
-            { attribute: "dy1_S1_sc6", label: "Wastewater load from watershed/State delivered to downstream model boundary (lb/yr)"}
+            { attribute: "dl1_S1_sc1", label: "Soil-parent-rock load from watershed/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S1_sc2", label: "Mined-land load from watershed/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S1_sc3", label: "Manure load from watershed/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S1_sc4", label: "Agricultural-land load from watershed/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S1_sc5", label: "Urban-land load from watershed/State delivered to downstream model boundary (lb/yr)"},
+            { attribute: "dl1_S1_sc6", label: "Wastewater load from watershed/State delivered to downstream model boundary (lb/yr)"}
         ]
     },
     {

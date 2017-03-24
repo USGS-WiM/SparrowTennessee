@@ -1199,25 +1199,99 @@ require([
                     backgroundColor:'rgba(255, 255, 255, 0.45)',
                     events: {
                         selection: function (e) {
+                            function switchWhereField(selectedIndex){
+                                        switch (selectedIndex){
+                                            case 0:
+                                                if( $('#st-select')[0].selectedIndex > 0){
+                                                    return 'ST_GP3_NAM';
+                                                }else{
+                                                    return 'GRP_3_NAM';
+                                                }
+                                                break;
+                                            case 1:
+                                                if( $('#st-select')[0].selectedIndex > 0){
+                                                    return 'ST_GP2_NAM';
+                                                }else{
+                                                    return 'GRP_2_NAM';
+                                                }
+                                                break;
+                                            case 2: 
+                                                if( $('#st-select')[0].selectedIndex > 0){
+                                                    return 'ST_GP1_NAM';
+                                                }else{
+                                                    return 'GRP_1_NAM';
+                                                }
+                                                break;
+                                                
+
+                                            case 3:
+                                                return 'ST';
+                                                break;
+                                        }
+                                    }
+
+                            var categoryArr = []        
+
                             if (e.xAxis){
-                                var xAxis = e.xAxis[0],
-                                flag = false; // first selected point should deselect old ones
+                                var xAxis = e.xAxis[0]
+                                var newArr = [];
+                                
                                 if(xAxis) {
                                     $.each(this.series, function (i, series) {
                                         $.each(series.points, function (j, point) {
-                                            console.log(j, point);
-                                            console.log("category = " + point.category);
-                                         /*if ( point.x >= xAxis.min && point.x <= xAxis.max ) {
-                                            point.select(true, flag);
-                                            if (!flag) {
-                                                flag = !flag; // all other points should include previous points
+
+                                            //find data inside max/min selected axes
+                                            if ( point.x >= xAxis.min && point.x <= xAxis.max ) {
+                                                //check if point.category is already in the array, if not add it
+                                                if (categoryArr.indexOf(point.category) == -1){
+                                                    categoryArr.push(point.category);
+                                                }
                                             }
-                                        }*/
                                         });
                                     });
                                 }
-                                //$("#resetButton").prop("disabled", false);
-                                //return true; // Zoom to selected bars
+                                console.log(categoryArr);
+                            }
+
+
+                            var categoryStr = "";
+                            $.each(categoryArr, function(i, category){
+                                categoryStr += "'" + category + "', "
+                            });  
+                            var queryStr = categoryStr.slice(0, categoryStr.length - 2);
+                            var visibleLayers = app.map.getLayer('SparrowRanking').visibleLayers[0];
+                            var URL = app.map.getLayer('SparrowRanking').url;
+                            var fieldName = switchWhereField( $('#groupResultsSelect')[0].selectedIndex );
+
+                            var queryTask;
+                            queryTask = new esri.tasks.QueryTask(URL + visibleLayers.toString() );
+
+                            var graphicsQuery = new esri.tasks.Query();
+                            graphicsQuery.returnGeometry = true; //important!
+                            graphicsQuery.outSpatialReference = app.map.spatialReference;  //important!
+                            graphicsQuery.outFields = [fieldName];
+                            graphicsQuery.where = fieldName + " IN (" + queryStr + ")";
+
+                                                                
+                            queryTask.execute(graphicsQuery, responseHandler);
+
+                            function responseHandler(response){
+
+                                $.each(app.map.graphics.graphics, function(i, obj){
+                                    if (obj.symbol.id == 'zoomhighlight'){
+                                        app.map.graphics.remove(obj);
+                                    }
+                                });
+                                //app.map.graphics.clear();   
+                                //var feature, selectedSymbol;
+                                $.each(response.features, function(i, feature){
+                                    var feature = feature;                                       
+                                    var selectedSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255,255,0]), 2);
+                                    selectedSymbol.id = 'zoomHighlight'
+                                    feature.setSymbol(selectedSymbol);
+                                    app.map.graphics.add(feature);
+                                });                                   
+                                
                             }
                         }
                     }
@@ -1361,7 +1435,7 @@ require([
                                     var graphicsQuery = new esri.tasks.Query();
                                     graphicsQuery.returnGeometry = true; //important!
                                     graphicsQuery.outSpatialReference = app.map.spatialReference;  //important!
-                                    graphicsQuery.outFields = ["*"];
+                                    graphicsQuery.outFields = [fieldName];
                                     graphicsQuery.where = fieldName + "= '" + category + "'";
 
                                                                 
@@ -1422,11 +1496,20 @@ require([
                 series: series
             });
             //Custom Reset Button
-            $('#resetButton').click(function() {
+            /*$('#resetButton').click(function() {
                 var chart = $('#chartWindowContainer').highcharts();
                 chart.xAxis[0].setExtremes(null,null);
                 $("#resetButton").prop("disabled", true);
+                 
                 //chart.resetZoomButton.hide();
+            });*/
+
+            $(".highcharts-reset-zoom").click(function(){
+                $.each(app.map.graphics.graphics, function(i, obj){
+                    if (obj.symbol.id == 'zoomhighlight'){
+                        app.map.graphics.remove(obj);
+                    }
+                });
             });
         
         }); //END self-invoking highcharts function
