@@ -1286,7 +1286,7 @@ require([
                                 //var feature, selectedSymbol;
                                 $.each(response.features, function(i, feature){
                                     var feature = feature;                                       
-                                    var selectedSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255,255,0]), 2);
+                                    var selectedSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255,255,0]), 1);
                                     selectedSymbol.id = 'zoomHighlight'
                                     feature.setSymbol(selectedSymbol);
                                     app.map.graphics.add(feature);
@@ -1442,9 +1442,15 @@ require([
                                     queryTask.execute(graphicsQuery, responseHandler);
 
                                     function responseHandler(response){
-                                        app.map.graphics.clear();                                        
+                                        //remove only the mouseover graphic
+                                        $.each(app.map.graphics.graphics, function(i, graphic){
+                                            if (graphic.symbol.id == undefined || graphic.symbol.id !== "zoomHighlight"){
+                                                app.map.graphics.remove(graphic);
+                                            }
+                                        });
+                                                  
                                         var feature = response.features[0];                                       
-                                        var selectedSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([150,49,37]), 2);
+                                        var selectedSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([150,49,37]), 2), new Color([150,49,37, 0.33]) );
                                         feature.setSymbol(selectedSymbol);
                                         app.map.graphics.add(feature);
                                     }
@@ -1483,7 +1489,20 @@ require([
                                     var queryField = switchWhereField( $('#groupResultsSelect')[0].selectedIndex );
                                     var queryString = queryField + " = " + "'" + this.category + "'";
 
+                                    //clear any zoom graphics
+                                   /* $.each(app.map.graphics.graphics, function(i, graphic){
+                                        if(graphic.symbol.id){
+                                            if ( graphic.symbol.id == "zoomHighlight"){
+                                                app.map.graphics.remove(graphic);
+                                            }
+                                        }
+                                            
+                                    });*/
+                                    app.map.graphics.clear();
+
                                     app.createChartQuery(queryString);
+
+
                                 }
                             }
                         }
@@ -1504,7 +1523,7 @@ require([
                 //chart.resetZoomButton.hide();
             });*/
 
-            $(".highcharts-reset-zoom").click(function(){
+            $(".highcharts-button-box").click(function(){
                 $.each(app.map.graphics.graphics, function(i, obj){
                     if (obj.symbol.id == 'zoomhighlight'){
                         app.map.graphics.remove(obj);
