@@ -183,15 +183,17 @@ require([
 
     var layerDefObj = {};
     var AllAOIOptions = [];
+    var Grp2NamDescArr = [];
 
 
     //load additional basemap
     var nationalMapBasemap = new ArcGISTiledMapServiceLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer');
 
     loadEventHandlers();
-
+    setupQueryTask(serviceBaseURL + 1, [ 'GRP_2_NAM', 'GRP_2_DESC' ], '1=1');
     //TODO: FIGURE OUT HOW TO USE THE QUERY WHERECLAUSE     Call setupQueryTask for every layer inqueryParameters
     setupQueryTask(serviceBaseURL + 4, ['ST', 'GRP_3_NAM', 'GRP_2_NAM', 'GRP_1_NAM' ], '1=1');
+
     /*for (var key in queryParameters){
         if (key == 'grp3'){
             setupQueryTask(serviceBaseURL + queryParameters[key].serviceId, ["ST", "GRP_3_NAM", "GRP_2_NAM", "GRP_1_NAM" ], "1=1");
@@ -348,7 +350,9 @@ require([
                 
                 //set group2 AOI options
                 $.each(grp2Options, function(index, option){
-                    $('#grp2-select').append(new Option(option));
+                    var grp2Desc = Grp2NamDescArr.filter(function(s){ return s.GRP_2_NAM === option; })[0].GRP_2_DESC;
+                    //$('#grp2-select').append(new Option(option));
+                    $('#grp2-select').append('<option value="' + option + '">' + option + ' - ' + grp2Desc + '</option>');
                 });
                 $('#grp2-select').selectpicker('refresh');
                 
@@ -413,7 +417,9 @@ require([
                 
                 //set the filtered options
                 $.each(grp2Options, function(index, option){
-                    $('#grp2-select').append(new Option(option));
+                    var grp2Desc = Grp2NamDescArr.filter(function(s){ return s.GRP_2_NAM === option; })[0].GRP_2_DESC;
+                    //$('#grp2-select').append(new Option(option));
+                    $('#grp2-select').append('<option value="' + option + '">' + option + ' - ' + grp2Desc + '</option>');
                 });
                 $('#grp2-select').selectpicker('refresh');
                 
@@ -712,15 +718,27 @@ require([
         query.returnGeometry = false;
         query.outFields = outFieldsArr;
         query.where = whereClause;
-
-        queryTask.execute(query, populateAOI)
+        if(url == "https://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennessee/MapServer/1"){
+            queryTask.execute(query, populateGrp2Arr);
+        }else{
+            queryTask.execute(query, populateAOI);
+        }
+        
     }
 
     //WHEN UPDATING APP: check strings, especially ST
     //Populates AOI Selects on app INIT
+    function populateGrp2Arr(response){
+
+        $.each(response.features, function(index, feature){
+            Grp2NamDescArr.push(feature.attributes);  
+        });
+    }
+
     function populateAOI(response){
 
         $.each(response.features, function(index, feature){
+            
             AllAOIOptions.push(feature.attributes);  
         });
 
@@ -735,6 +753,7 @@ require([
         var grp2Options = getUniqueArray(AllAOIOptions, 'GRP_2_NAM');// [...new Set(AllAOIOptions.map(item => item.GRP_2_NAM))];
         var grp1Options = getUniqueArray(AllAOIOptions, 'GRP_1_NAM');//[...new Set(AllAOIOptions.map(item => item.GRP_1_NAM))];
         var STOptions = getUniqueArray(AllAOIOptions, 'ST');//[...new Set(AllAOIOptions.map(item => item.ST))];
+
         
         console.log('ST options: ' + STOptions);
         console.log('grp1 options: ' + grp1Options);
@@ -742,7 +761,9 @@ require([
         
         
         $.each(grp2Options, function(index, option){
-            $('#grp2-select').append(new Option(option));
+            var grp2Desc = Grp2NamDescArr.filter(function(s){ return s.GRP_2_NAM === option; })[0].GRP_2_DESC;
+            //$('#grp2-select').append(new Option(option));
+            $('#grp2-select').append('<option value="' + option + '">' + option + ' - ' + grp2Desc + '</option>');
         });
         $.each(grp1Options, function(index, option){
             $('#grp1-select').append(new Option(option));
