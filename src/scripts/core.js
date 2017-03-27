@@ -1197,29 +1197,104 @@ require([
                         //}
                     //},
                     backgroundColor:'rgba(255, 255, 255, 0.45)',
-                    /*events: {
+                    events: {
                         selection: function (e) {
+                            function switchWhereField(selectedIndex){
+                                        switch (selectedIndex){
+                                            case 0:
+                                                if( $('#st-select')[0].selectedIndex > 0){
+                                                    return 'ST_GP3_NAM';
+                                                }else{
+                                                    return 'GRP_3_NAM';
+                                                }
+                                                break;
+                                            case 1:
+                                                if( $('#st-select')[0].selectedIndex > 0){
+                                                    return 'ST_GP2_NAM';
+                                                }else{
+                                                    return 'GRP_2_NAM';
+                                                }
+                                                break;
+                                            case 2: 
+                                                if( $('#st-select')[0].selectedIndex > 0){
+                                                    return 'ST_GP1_NAM';
+                                                }else{
+                                                    return 'GRP_1_NAM';
+                                                }
+                                                break;
+                                                
+
+                                            case 3:
+                                                return 'ST';
+                                                break;
+                                        }
+                                    }
+
+                            var categoryArr = []        
+
                             if (e.xAxis){
-                                var xAxis = e.xAxis[0],
-                                flag = false; // first selected point should deselect old ones
+                                var xAxis = e.xAxis[0]
+                                var newArr = [];
+                                
                                 if(xAxis) {
                                     $.each(this.series, function (i, series) {
                                         $.each(series.points, function (j, point) {
-                                            console.log(j, point);
-                                         if ( point.x >= xAxis.min && point.x <= xAxis.max ) {
-                                            point.select(true, flag);
-                                            if (!flag) {
-                                                flag = !flag; // all other points should include previous points
+
+                                            //find data inside max/min selected axes
+                                            if ( point.x >= xAxis.min && point.x <= xAxis.max ) {
+                                                //check if point.category is already in the array, if not add it
+                                                if (categoryArr.indexOf(point.category) == -1){
+                                                    categoryArr.push(point.category);
+                                                }
                                             }
-                                        }
                                         });
                                     });
                                 }
-                                $("#resetButton").prop("disabled", false);
-                                return true; // Zoom to selected bars
+                                console.log(categoryArr);
+                            }
+
+
+                            var categoryStr = "";
+                            $.each(categoryArr, function(i, category){
+                                categoryStr += "'" + category + "', "
+                            });  
+                            var queryStr = categoryStr.slice(0, categoryStr.length - 2);
+                            var visibleLayers = app.map.getLayer('SparrowRanking').visibleLayers[0];
+                            var URL = app.map.getLayer('SparrowRanking').url;
+                            var fieldName = switchWhereField( $('#groupResultsSelect')[0].selectedIndex );
+
+                            var queryTask;
+                            queryTask = new esri.tasks.QueryTask(URL + visibleLayers.toString() );
+
+                            var graphicsQuery = new esri.tasks.Query();
+                            graphicsQuery.returnGeometry = true; //important!
+                            graphicsQuery.outSpatialReference = app.map.spatialReference;  //important!
+                            graphicsQuery.outFields = [fieldName];
+                            graphicsQuery.where = fieldName + " IN (" + queryStr + ")";
+
+                                                                
+                            queryTask.execute(graphicsQuery, responseHandler);
+
+                            function responseHandler(response){
+
+                                $.each(app.map.graphics.graphics, function(i, obj){
+                                    if (obj.symbol.id == 'zoomhighlight'){
+                                        app.map.graphics.remove(obj);
+                                    }
+                                });
+                                //app.map.graphics.clear();   
+                                //var feature, selectedSymbol;
+                                $.each(response.features, function(i, feature){
+                                    var feature = feature;                                       
+                                    var selectedSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255,255,0]), 1);
+                                    selectedSymbol.id = 'zoomHighlight'
+                                    feature.setSymbol(selectedSymbol);
+                                    app.map.graphics.add(feature);
+                                });                                   
+                                
                             }
                         }
-                    }*/
+                    }
                 },
                 title:{
                     text: null
@@ -1360,20 +1435,26 @@ require([
                                     var graphicsQuery = new esri.tasks.Query();
                                     graphicsQuery.returnGeometry = true; //important!
                                     graphicsQuery.outSpatialReference = app.map.spatialReference;  //important!
-                                    graphicsQuery.outFields = ["*"];
+                                    graphicsQuery.outFields = [fieldName];
                                     graphicsQuery.where = fieldName + "= '" + category + "'";
 
                                                                 
                                     queryTask.execute(graphicsQuery, responseHandler);
 
                                     function responseHandler(response){
-                                        app.map.graphics.clear();                                        
+                                        //remove only the mouseover graphic
+                                        $.each(app.map.graphics.graphics, function(i, graphic){
+                                            if (graphic.symbol.id == undefined || graphic.symbol.id !== "zoomHighlight"){
+                                                app.map.graphics.remove(graphic);
+                                            }
+                                        });
+                                                  
                                         var feature = response.features[0];                                       
-                                        var selectedSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([150,49,37]), 2);
+                                        var selectedSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([150,49,37]), 2), new Color([150,49,37, 0.33]) );
                                         feature.setSymbol(selectedSymbol);
                                         app.map.graphics.add(feature);
                                     }
-                                } ,
+                                },
                                 click: function(evt){
                                     function switchWhereField(selectedIndex){
                                         switch (selectedIndex){
@@ -1408,7 +1489,20 @@ require([
                                     var queryField = switchWhereField( $('#groupResultsSelect')[0].selectedIndex );
                                     var queryString = queryField + " = " + "'" + this.category + "'";
 
+                                    //clear any zoom graphics
+                                   /* $.each(app.map.graphics.graphics, function(i, graphic){
+                                        if(graphic.symbol.id){
+                                            if ( graphic.symbol.id == "zoomHighlight"){
+                                                app.map.graphics.remove(graphic);
+                                            }
+                                        }
+                                            
+                                    });*/
+                                    app.map.graphics.clear();
+
                                     app.createChartQuery(queryString);
+
+
                                 }
                             }
                         }
@@ -1421,11 +1515,20 @@ require([
                 series: series
             });
             //Custom Reset Button
-            $('#resetButton').click(function() {
+            /*$('#resetButton').click(function() {
                 var chart = $('#chartWindowContainer').highcharts();
                 chart.xAxis[0].setExtremes(null,null);
                 $("#resetButton").prop("disabled", true);
+                 
                 //chart.resetZoomButton.hide();
+            });*/
+
+            $(".highcharts-button-box").click(function(){
+                $.each(app.map.graphics.graphics, function(i, obj){
+                    if (obj.symbol.id == 'zoomhighlight'){
+                        app.map.graphics.remove(obj);
+                    }
+                });
             });
         
         }); //END self-invoking highcharts function
