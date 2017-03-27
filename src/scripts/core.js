@@ -1253,45 +1253,49 @@ require([
                                 console.log(categoryArr);
                             }
 
+                            app.map.graphics.clear();
 
-                            var categoryStr = "";
-                            $.each(categoryArr, function(i, category){
-                                categoryStr += "'" + category + "', "
-                            });  
-                            var queryStr = categoryStr.slice(0, categoryStr.length - 2);
-                            var visibleLayers = app.map.getLayer('SparrowRanking').visibleLayers[0];
-                            var URL = app.map.getLayer('SparrowRanking').url;
-                            var fieldName = switchWhereField( $('#groupResultsSelect')[0].selectedIndex );
+                            if (e.resetSelection != true){
 
-                            var queryTask;
-                            queryTask = new esri.tasks.QueryTask(URL + visibleLayers.toString() );
+                                var categoryStr = "";
+                                $.each(categoryArr, function(i, category){
+                                    categoryStr += "'" + category + "', "
+                                });  
+                                var queryStr = categoryStr.slice(0, categoryStr.length - 2);
+                                var visibleLayers = app.map.getLayer('SparrowRanking').visibleLayers[0];
+                                var URL = app.map.getLayer('SparrowRanking').url;
+                                var fieldName = switchWhereField( $('#groupResultsSelect')[0].selectedIndex );
 
-                            var graphicsQuery = new esri.tasks.Query();
-                            graphicsQuery.returnGeometry = true; //important!
-                            graphicsQuery.outSpatialReference = app.map.spatialReference;  //important!
-                            graphicsQuery.outFields = [fieldName];
-                            graphicsQuery.where = fieldName + " IN (" + queryStr + ")";
+                                var queryTask;
+                                queryTask = new esri.tasks.QueryTask(URL + visibleLayers.toString() );
 
-                                                                
-                            queryTask.execute(graphicsQuery, responseHandler);
+                                var graphicsQuery = new esri.tasks.Query();
+                                graphicsQuery.returnGeometry = true; //important!
+                                graphicsQuery.outSpatialReference = app.map.spatialReference;  //important!
+                                graphicsQuery.outFields = [fieldName];
+                                graphicsQuery.where = fieldName + " IN (" + queryStr + ")";
 
-                            function responseHandler(response){
+                                                                    
+                                queryTask.execute(graphicsQuery, responseHandler);
 
-                                $.each(app.map.graphics.graphics, function(i, obj){
-                                    if (obj.symbol.id == 'zoomhighlight'){
-                                        app.map.graphics.remove(obj);
-                                    }
-                                });
-                                //app.map.graphics.clear();   
-                                //var feature, selectedSymbol;
-                                $.each(response.features, function(i, feature){
-                                    var feature = feature;                                       
-                                    var selectedSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255,255,0]), 1);
-                                    selectedSymbol.id = 'zoomHighlight'
-                                    feature.setSymbol(selectedSymbol);
-                                    app.map.graphics.add(feature);
-                                });                                   
-                                
+                                function responseHandler(response){
+
+                                    $.each(app.map.graphics.graphics, function(i, obj){
+                                        if (obj.symbol.id == 'zoomhighlight'){
+                                            app.map.graphics.remove(obj);
+                                        }
+                                    });
+                                    //app.map.graphics.clear();   
+                                    //var feature, selectedSymbol;
+                                    $.each(response.features, function(i, feature){
+                                        var feature = feature;                                       
+                                        var selectedSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255,255,0]), 1);
+                                        selectedSymbol.id = 'zoomHighlight'
+                                        feature.setSymbol(selectedSymbol);
+                                        app.map.graphics.add(feature);
+                                    });                                   
+                                    
+                                }
                             }
                         }
                     }
