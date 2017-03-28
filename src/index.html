@@ -287,7 +287,7 @@
                         <span class="user-guide-header">Search, and zoom capabilities</span>
                         <div class="user-guide-item">
                             <div class="user-guide-item-image"><img src="images/userguide/search.png"/></div>
-                            <p><b>Searching</b>The search option allows the user to search for a location such as a city, state, zip code, or general place name.</p>
+                            <p><b>Searching</b>In addition to city, state, zip code, or general place names, USGS gaging stations and Hydrologic Unit Codes (HUCs) are also searchable.</p>
                         </div>
                         <div class="user-guide-item">
                             <div class="user-guide-item-image"><img src="images/userguide/zoom.png"/></div>
@@ -299,11 +299,15 @@
                         </div>
                         <div class="user-guide-item">
                             <div class="user-guide-item-image"><img src="images/userguide/mappoints.png"/></div>
-                            <p><b>Opening a chart</b>Clicking on a polygon at a Nutrient Model will bring up a window with a graph of the original data.</p>
+                            <p><b>Opening a chart</b>Clicking on a nutrient model feature will generate a chart showing the individual sources for the selected feature.  The chart also contains a button to switch to a chart of all features currently displayed.</p>
+                        </div>
+                        <div class="user-guide-item">
+                            <div class="user-guide-item-image"><img src="images/userguide/chart.png"/></div>
+                            <p><b>Chart features</b>Clicking on a the chart legend will toggle individual sources on and off.  Mouse over a bar to see its corresponding map feature as well as the exact value for each source.  Dragging within the chart area allows the user to select and magnify specific segments of the chart.  The selected features are also highlighted on the map.  The Chart Options button contains options to download the chart data as well as toggle the background transparency.</p>
                         </div>
                         <div class="user-guide-item">
                             <div class="user-guide-item-image"><img src="images/userguide/siteinfo.png"/></div>
-                            <p><b>Moving graph window</b>Reposition the graph info pop-up window with the mouse see the rest of the underlying map if necessary.</p>
+                            <p><b>Moving chart window</b>The chart window can be repositioned to view underlying map information.</p>
                         </div>
                         <!--<div class="user-guide-item">
                             <div class="user-guide-item-image"><img src="images/userguide/faq.png"/></div>
@@ -314,11 +318,11 @@
                         <span class="user-guide-header">Explanation</span>
                         <div class="user-guide-item">
                             <div class="user-guide-item-image"><img src="images/userguide/legend.png"/></div>
-                            <p><b>Explanation display</b>The Explanation box can be collapsed to display more of the mapped area.</p>
+                            <p><b>Explanation display</b>The Explanation box can be expanded and collapsed</p>
                         </div>
                         <div class="user-guide-item">
                             <div class="user-guide-item-image"><img src="images/userguide/legendfull.png"/></div>
-                            <p><b>Using the Explanation</b>The expanded Explanation box explains the Nutrient Model Results, displaying the yield delivered to the downstream boundary.</p>
+                            <p><b>Using the Explanation</b>The expanded Explanation box contains a legend for the currently selected Nutrient Model Results.  The legend displays class breaks and values for the model results currently visible on the map, and updates dynamically with any change in mapped area.</p>
                         </div>
                         <!--<p>
                           A likelihood-based approach is used to report these trend results. When the trend is "likely up" or "likely down", the trend likelihood value associated with the trend is between 0.85 and 1.0 -- in other words, the chance of the trend occurring in the specified direction is at least an 85 out of 100. When the trend is "somewhat likely up" or "somewhat likely down", the trend likelihood value associated with the trend is between 0.7 and 0.85 -- in other words, the chance of the trend occurring in the specified direction is between 70 and 85 out of 100. When the trend is "about as likely as not", the trend likelihood value associated with the trend is less than 0.7 -- in other words, the chance of the trend being either upward or downward is less than 70 out of 100.
@@ -336,27 +340,27 @@
                         <span class="user-guide-header">Map selection options</span>
                         <div class="user-guide-item">
                             <div class="user-guide-item-image"><img src="images/userguide/basemaps.png"/></div>
-                            <p><b>Changing the basemap style</b>The "Basemaps" sidebar allows a user to show various geographic information or landscape imagery as a background layer beneath the trend results.</p>
+                            <p><b>Changing the basemap style</b>The "Basemaps" panel allows a user to show various geographic information or landscape imagery as a background layer.</p>
                         </div>
                         <div class="user-guide-item">
                             <div class="user-guide-item-image"><img src="images/userguide/maplayers.png"/></div>
-                            <p><b>Changing or adding map layers</b>The "Map Layers" sidebar allows a user to show model calibration sites and auxiliary layers as a background layer on top of the nutrient model.</p>
+                            <p><b>Changing or adding map layers</b>The "Map Layers" sidebar allows a user to add or remove layers as well as control the opacity of each individual layer.</p>
                         </div>
                         <div class="user-guide-item">
                             <div class="user-guide-item-image"><img src="images/userguide/nutrientmodel.png"/></div>
-                            <p><b>Selecting a Nutrient Model</b>The Nutrient Model selection allows a user to choose ....</p>
+                            <p><b>Selecting a Nutrient Model</b>The Nutrient Model can be changed at any time to view total phosphorus or total nitrogen.</p>
                         </div>
                         <div class="user-guide-item">
                             <div class="user-guide-item-image"><img src="images/userguide/areaofinterest.png"/></div>
-                            <p><b>Selecting an Area of Interest</b> ..... </p>
+                            <p><b>Selecting an Area of Interest</b> The Area of Interest dropdown menus can be used to customize the geographic area of the model results.</p>
                         </div>
                         <div class="user-guide-item">
                             <div class="user-guide-item-image"><img src="images/userguide/metricgrouping.png"/></div>
-                            <p><b>Selecting a Displayed Metric and/or Group Results By</b> ..... </p>
+                            <p><b>Selecting a Displayed Metric and Group Results By</b>Yields and loads can be viewed by making changes to the Displayed Metric dropdown.  The area of aggregation is controlled by the Group Results dropdown.</p>
                         </div>
                         <div class="user-guide-item">
                             <div class="user-guide-item-image"><img src="images/userguide/charttable.png"/></div>
-                            <p><b>Show Chart, Show Table</b> ..... </p>
+                            <p><b>Show Chart, Show Table</b>Clicking these buttons will generate a chart or table for all of the features displayed on the map.  Charts and Tables can also be exported and downloaded.</p>
                         </div>
                     </div>
                 </div>
