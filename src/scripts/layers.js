@@ -40,7 +40,7 @@ require([
                         "layerType": "agisDynamic",
                         "includeInLayerList": true,
                         "hasOpacitySlider": true,
-                        "hasZoomto" : true,
+                        "hasZoomto" : false,
                         "includeLegend" : false
                     }
                 }
@@ -65,7 +65,7 @@ require([
                         "includeInLayerList": true,
                         "zoomScale": 144448,
                         "hasOpacitySlider": true,
-                        "hasZoomto" : true,
+                        "hasZoomto" : false,
                         "includeLegend" : true
                     }
                 },
@@ -82,7 +82,7 @@ require([
                         "layerType": "agisDynamic",
                         "includeInLayerList": true,
                         "hasOpacitySlider": true,
-                        "hasZoomto": true,
+                        "hasZoomto": false,
                         "includeLegend" : false
                     }
                 }
@@ -107,7 +107,7 @@ require([
                         "includeInLayerList": true,
                         "zoomScale": 144448,
                         "hasOpacitySlider": true,
-                        "hasZoomto" : true,
+                        "hasZoomto" : false,
                         "includeLegend" : true
                     }
                 },
@@ -124,7 +124,7 @@ require([
                         "layerType": "agisDynamic",
                         "includeInLayerList": true,
                         "hasOpacitySlider": true,
-                        "hasZoomto": true,
+                        "hasZoomto": false,
                         "includeLegend" : false
                     }
                 }

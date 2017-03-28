@@ -32,6 +32,7 @@ require([
     'esri/tasks/GenerateRendererTask',
     'esri/tasks/IdentifyTask',
     'esri/tasks/IdentifyParameters',
+    'esri/tasks/ProjectParameters',
     'esri/geometry/webMercatorUtils',
     'esri/SpatialReference',
     'dojo/parser',
@@ -69,6 +70,7 @@ require([
     GenerateRendererTask,
     IdentifyTask,
     IdentifyParameters,
+    ProjectParameters,
     webMercatorUtils,
     SpatialReference,
     parser,
@@ -185,9 +187,11 @@ require([
     var AllAOIOptions = [];
     var Grp2NamDescArr = [];
 
-
-    //load additional basemap
-    var nationalMapBasemap = new ArcGISTiledMapServiceLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer');
+    //load additional basemap since it isn't really a basemap but a tiled image layer
+   /* var nationalMapBasemap = new ArcGISTiledMapServiceLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer');
+    $('#btnNatlMap').on('click', function () {
+        app.map.addLayer(nationalMapBasemap);
+    });*/
 
     loadEventHandlers();
     setupQueryTask(serviceBaseURL + 1, [ 'GRP_2_NAM', 'GRP_2_DESC' ], '1=1');
@@ -1715,6 +1719,13 @@ require([
             } else if (!layer.visible && wimOptions.hasOpacitySlider !== undefined && wimOptions.hasOpacitySlider == true && wimOptions.hasZoomto !== undefined && wimOptions.hasZoomto == true){
                 //opacity icon and zoomto icon; button not selected
                 var button = $('<div class="btn-group-vertical lyrTogDiv" style="cursor: pointer;" > <button id="' + layer.id + '"type="button" class="btn btn-default" aria-pressed="true" style="font-weight: bold;text-align: left"><i class="glyphspan fa fa-square-o"></i>&nbsp;&nbsp;' + layerName + '<span id="opacity' + camelize(layerName) + '" class="glyphspan glyphicon glyphicon-adjust pull-right opacity"></span><span class="glyphicon glyphicon-search pull-right zoomto"></span></button></div>');
+            } else if (layer.visible && wimOptions.hasOpacitySlider !== undefined && wimOptions.hasOpacitySlider == true && wimOptions.hasZoomto !== undefined && wimOptions.hasZoomto == false){
+                //opacity icon, NO zoomTo icon
+                var button = $('<div class="btn-group-vertical lyrTogDiv" style="cursor: pointer;" > <button id="' + layer.id + '"type="button" class="btn btn-default active" aria-pressed="true" style="font-weight: bold;text-align: left"><i class="glyphspan fa fa-check-square-o"></i>&nbsp;&nbsp;' + layerName + '<span id="opacity' + camelize(layerName) + '" class="glyphspan glyphicon glyphicon-adjust pull-right opacity"></span></button></div>');
+            } 
+            else if (!layer.visible && wimOptions.hasOpacitySlider !== undefined && wimOptions.hasOpacitySlider == true && wimOptions.hasZoomto !== undefined && wimOptions.hasZoomto == false){
+                //opacity icon, NO zoomTo icon
+                var button = $('<div class="btn-group-vertical lyrTogDiv" style="cursor: pointer;" > <button id="' + layer.id + '"type="button" class="btn btn-default active" aria-pressed="true" style="font-weight: bold;text-align: left"><i class="glyphspan fa fa-check-square-o"></i>&nbsp;&nbsp;' + layerName + '<span id="opacity' + camelize(layerName) + '" class="glyphspan glyphicon glyphicon-adjust pull-right opacity"></span></button></div>');
             } 
             //click listener for regular
             button.click(function(e) {
@@ -1736,6 +1747,8 @@ require([
                 }
 
             });
+            
+            
 
             //group heading logic
             if (showGroupHeading) {
@@ -1787,47 +1800,54 @@ require([
                 //end opacity slider logic
 
                 //begin zoomto logic (in progress)
-                $(".zoomto").hover(function (e) {
-                    console.log('here')
+                $(".zoomto").hover(function (event) {
 
+                $(".zoomDialog").remove();
+                //var layerToChange = this.id.replace("zoom", "");
+                var zoomDialogMarkup = $('<div class="zoomDialog"><label class="zoomClose pull-right">X</label><br><div class="list-group"><a href="#" id="zoomscale" class="list-group-item lgi-zoom zoomscale">Zoom to scale</a> <a id="zoomcenter" href="#" class="list-group-item lgi-zoom zoomcenter">Zoom to center</a><a id="zoomextent" href="#" class="list-group-item lgi-zoom zoomextent">Zoom to extent</a></div></div>');
+                $("body").append(zoomDialogMarkup);
+
+                $(".zoomDialog").css('left', event.clientX - 80);
+                $(".zoomDialog").css('top', event.clientY - 5);
+
+                $(".zoomDialog").mouseleave(function () {
                     $(".zoomDialog").remove();
-                    var layerToChange = this.parentNode.id;
-                    var zoomDialog = $('<div class="zoomDialog"><label class="zoomClose pull-right">X</label><br><div class="list-group"><a href="#" id="zoomscale" class="list-group-item lgi-zoom zoomscale">Zoom to scale</a> <a id="zoomcenter" href="#" class="list-group-item lgi-zoom zoomcenter">Zoom to center</a><a id="zoomextent" href="#" class="list-group-item lgi-zoom zoomextent">Zoom to extent</a></div></div>');
-
-                    $("body").append(zoomDialog);
-
-                    $(".zoomDialog").css('left', event.clientX-80);
-                    $(".zoomDialog").css('top', event.clientY-5);
-
-                    $(".zoomDialog").mouseleave(function() {
-                        $(".zoomDialog").remove();
-                    });
-
-                    $(".zoomClose").click(function() {
-                        $(".zoomDialog").remove();
-                    });
-
-                    $('#zoomscale').click(function (e) {
-                        //logic to zoom to layer scale
-                        var layerMinScale = app.map.getLayer(layerToChange).minScale;
-                        app.map.setScale(layerMinScale);
-                    });
-
-                    $("#zoomcenter").click(function (e){
-                        //logic to zoom to layer center
-                        //var layerCenter = app.map.getLayer(layerToChange).fullExtent.getCenter();
-                        //app.map.centerAt(layerCenter);
-                        var dataCenter = new Point(defaultMapCenter, new SpatialReference({wkid:4326}));
-                        app.map.centerAt(dataCenter);
-
-                    });
-
-                    $("#zoomextent").click(function (e){
-                        //logic to zoom to layer extent
-                        var layerExtent = app.map.getLayer(layerToChange).fullExtent;
-                        app.map.setExtent(layerExtent);
-                    });
                 });
+
+                $(".zoomClose").click(function () {
+                    $(".zoomDialog").remove();
+                });
+
+                $('#zoomscale').click(function (e, layerToChange) {
+                    //logic to zoom to layer scale
+                    var layerMinScale = app.map.getLayer("SparrowRanking").minScale;
+                    if (layerMinScale > 0 ){app.map.setScale(layerMinScale);} else {console.log("No minimum scale for layer.")};
+                });
+
+                $("#zoomcenter").click(function (e, layerToChange) {
+                    //logic to zoom to layer center
+                    var layerCenter = app.map.getLayer("SparrowRanking").fullExtent.getCenter();
+                    //app.map.centerAt(layerCenter);
+                    //var dataCenter = new Point(layerCenter, new SpatialReference({wkid: 4326}));
+                    var dataCenter = new Point(layerCenter.x, layerCenter.y, new SpatialReference({wkid: 4326}));
+                    app.map.centerAt(dataCenter);
+                });
+
+                if ( $("#zoomextent") ){
+                    $("#zoomextent").click(function (e, layerToChange) {
+                        //logic to zoom to layer extent
+                        var layerExtent = app.map.getLayer("SparrowRanking").fullExtent;
+                        var extentProjectParams = new ProjectParameters();
+                        extentProjectParams.outSR = new SpatialReference(102100);
+                        extentProjectParams.geometries = [layerExtent];
+                        geomService.project(extentProjectParams, function (projectedExtentObj) {
+                            var projectedExtent = projectedExtentObj[0];
+                            map.setExtent(projectedExtent, new SpatialReference({wkid: 102100}));
+                        });
+                    });
+                }
+                    
+            });
                 //end zoomto logic
             }
         }
