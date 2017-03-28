@@ -319,6 +319,8 @@ function loadEventHandlers() {
         app.executeIdentifyTask(evt) 
     });
 
+    
+
     //on clicks to swap basemap.app.map.removeLayer is required for nat'l map b/c it is not technically a basemap, but a tiled layer.
     $("#btnStreets").on('click', function () {
         app.map.setBasemap('streets');
@@ -352,9 +354,9 @@ function loadEventHandlers() {
         app.map.setBasemap('topo');
         app.map.removeLayer(nationalMapBasemap);
     });
-    $('#btnNatlMap').on('click', function () {
+/*    $('#btnNatlMap').on('click', function () {
         app.map.addLayer(nationalMapBasemap);
-    });
+    });*/
 
 
 
