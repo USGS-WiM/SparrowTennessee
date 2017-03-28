@@ -1647,6 +1647,12 @@ require([
         showAboutModal();
     });
 
+    function showUserGuideModal () {
+        $('#userGuideModal').modal('show');
+    }
+    $('#userGuideNav').click(function(){
+        showUserGuideModal();
+    });
    /* function showTableModal () {
         app.createTableQuery();
         $('#tableModal').modal('show');

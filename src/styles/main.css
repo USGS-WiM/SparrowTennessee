@@ -11,8 +11,60 @@ body {
     background-position: center;
     background-color:#474747;
 }
+#userGuideNav {
+    background-color: transparent!important;
+}
 
-#aboutNav {
+.user-guide-header {
+    display: block;
+    text-align: center;
+    font-size: 16pt;
+    box-sizing: border-box;
+    padding: 10px 0 25px;
+}
+.user-guide-item:nth-child(even) {
+    background-color: rgba(0,0,0,.04);
+}
+.user-guide-item {
+    display: block;
+    box-sizing: border-box;
+    padding: 35px 15px 35px 0;
+    border-bottom: 1px solid rgba(0,0,0,.1);
+}
+.user-guide-item .user-guide-item-image {
+    display: inline-block;
+    width: 100%;
+    height: 100px;
+}
+.user-guide-item img {
+    display: block;
+    height: 100%;
+    margin: 0 auto;
+    width: auto;
+    max-height: 100%;
+    max-width: 100%;
+    border: 4px solid rgba(0,0,0,.15);
+}
+.user-guide-item p {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-flex-grow: 2;
+    flex-grow: 2;
+    padding-left: 15px!important;
+    padding-right: 20px!important;
+    font-size: 12pt;
+}
+.user-guide-item p b {
+    color: rgba(0,0,0,.6);
+    display: block;
+    font-weight: bolder;
+    padding-bottom: 10px;
+}
+#aboutNav, #userGuideNav {
     /*background-color: #474747;*/
 
     background: 0 0;
@@ -29,18 +81,18 @@ body {
 }
 
 
-#aboutNav{
+#aboutNav, #userGuideNav {
     letter-spacing: 2px;
     position: relative; top: 2px;
     transition: 0.2s;
     color: rgba(255,255,255,0.35);
 }
-#aboutNav:hover{
+#aboutNav:hover, #userGuideNav:hover {
     cursor: pointer;
     color: rgba(255,255,255,1);
     transition: 0.2s;
 }
-#aboutNav:focus{
+#aboutNav:focus, #userGuideNav:focus {
     outline: none;
 }
 
