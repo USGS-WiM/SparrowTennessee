@@ -671,7 +671,11 @@ require([
     }//END createTableQuery()
 
     app.createChartQuery = function(optionalWhereClause){
-
+        //if ($('#tableResizable').is(":visible")){
+        //    $('#tableResizable').hide();
+       // }
+        $("#tableButton").prop('disabled', true);
+        
         $('#chartContainer').empty();
         console.log('creating chart query');
         var chartQueryTask;
@@ -1187,7 +1191,7 @@ require([
             $('#chartWindowDiv').css('visibility', 'hidden');
             $('#chartWindowContainer').empty();
             $('#chartWindowPanelTitle').empty();
-            
+            $("#tableButton").prop("disabled", false);
         });
 
         //need listener to resize chart
@@ -1628,11 +1632,11 @@ require([
         });  
         $('#tableBody').html(htmlArr.join(''));
     
-    $('#tableResizable').show();
-    
-    var newWidth = $('#resultsTable').width();
-    $('.ui-widget-header').css('width', newWidth );
-    $('.ui-resizable-handle').css('width', newWidth );
+        $('#tableResizable').show();
+
+        var newWidth = $('#resultsTable').width();
+        $('.ui-widget-header').css('width', newWidth );
+        $('.ui-resizable-handle').css('width', newWidth );
     }//END buildTable
 
 
