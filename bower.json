@@ -10,10 +10,9 @@
     "bootstrap-sidebar": "^0.2.0",
     "bootstrap-map-js": "latest",
     "lobipanel": "^0.7.1",
-    "highcharts": "^5.0.6",
+    "highcharts": "^5.0.11",
     "bootstrap-select": "^1.12.1",
-    "tabletoCSV": "^0.1.0",
-    "highcharts-export-clientside": "^1.1.4"
+    "tabletoCSV": "^0.1.0"
   },
   "resolutions": {
     "bootstrap": "3.3.7"
