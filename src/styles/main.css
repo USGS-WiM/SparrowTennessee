@@ -664,3 +664,10 @@ input[type="checkbox"], input[type="radio"] {
     margin: 3px 0 0 0 !important;
     padding: 0;
 }
+
+.text-list{
+    background: none !important;
+    text-align: left !important;
+    padding-left: 25px !important;
+
+}

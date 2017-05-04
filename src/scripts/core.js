@@ -630,6 +630,7 @@ require([
                         console.log(obj.attribute);
                     });
                     //No infoWindow, just call the chart query
+                    $('#chartWindowContainer').empty();
                     app.createChartQuery(chartQueryArg);
                 }       
             }         
