@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles/vendor.css">
 
     <!-- CSS for the mapping components -->
-    <link rel="stylesheet" href="https://js.arcgis.com/3.20/esri/css/esri.css">
+    <link rel="stylesheet" href="http://js.arcgis.com/3.20/esri/css/esri.css">
 
     <link rel="stylesheet" href="styles/main.css">
     <!-- <link rel="stylesheet" href="styles/base.css"> -->
@@ -17,8 +17,9 @@
     <link rel='icon' href='images/faviconsmall.png' type='image/png'/>
 
     <script src="scripts/vendor.js"></script>
-    <script type="text/javascript" src="https://js.arcgis.com/3.20/"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script type="text/javascript" src="http://js.arcgis.com/3.12/"></script>
+    <script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script type="text/javascript" src="scripts/export-csv.js"></script>
     
     <script src="scripts/combined.js"></script>
 
@@ -178,7 +179,33 @@
                         
                     </div>
                     <div role="tabpanel" class="tab-pane" id="definitionsTabPane"></br>
-                        <p><b>Accumulated Load (often referred to as "Total Load"): </b>The predicted mean annual load of the constituent (kilograms per year) leaving a stream reach that reflects the accumulated mass of the constituent contributed by all sources in the total drainage area upstream of the reach outlet. The accumulated load value includes the effects of in-stream attenuation processes in all upstream reaches. For results grouped by HUC8, tributary outlet, main river basin, or State, accumulated load represents the sum of incremental loads for those areas. Results grouped by State are approximations based on stream reaches that are located entirely or mostly within that State.
+
+                        <p><b>Load from</b> (areal unit such as HUC8, HUC10, Independent Watershed, or State, or fragment of State that overlaps with the other three units) <b> delivered to</b> (target point on the stream network such as downstream model boundary, HUC8 outlet, HUC10 outlet) <b>(lb/yr)</b>: The predicted mean annual load of the constituent that originates within the areal unit and reaches the target point and thus is not attenuated or removed by natural processes during stream transport.</p>
+
+                        <p><b>Yield from</b> (areal unit such as HUC8, HUC10, Independent Watershed, or State, or fragment of State that overlaps with the other three units) <b>delivered to</b> (target point such as downstream model boundary, HUC8 outlet, HUC10 outlet) <b>(lb/yr/acre)</b>: The load (as defined above) divided by the area of the areal unit.</p>
+
+                        <p><b>Accumulated load at HUC10 outlet (lb/yr)</b>: The predicted mean annual load of the constituent at the outlet of the HUC10 that reflects the accumulated mass of the constituent contributed by all sources in the total drainage area upstream of the outlet (including all HUC10s upstream from this HUC10, if any). The accumulated load value includes the effects of in-stream attenuation processes in all upstream reaches.</p>
+
+                        <p><b>Accumulated yield at HUC10 outlet (lb/yr/acre)</b>: The Accumulated Load at HUC10 outlet divided by the total drainage area upstream of the HUC10 outlet.</p>
+
+                         <p><b>Load from</b> (areal unit defined by fragment of State within the model area, or the fragment of State within a HUC10, HUC8, or Independent Watershed) <b>within model area, lb/yr</b>: The sum of predicted mean annual load of the constituent from all model catchments that lie within the areal unit and also that lie within the model area boundary. The summed catchment values are the incremental load for the catchment, and includes the effects of in-stream attenuation processes associated with one half of the incremental reach length.</p>
+
+                         <p><b>Yield from</b> (areal unit defined by fragment of State within the model area, or the fragment of State within a HUC10, HUC8, or Independent Watershed) <b>within model area, lb/yr/acre</b>: The load (as defined above) divided by the area of the areal unit.</p>
+
+                         <p><b>Independent Watersheds</b> are the large (in most cases) subwatersheds that comprise the Tennessee model area. With one exception (the “smaller tributaries to the Mississippi River”), the Independent Watersheds are delineated as the upstream drainage for each of the flow paths that exit the Tennessee SPARROW model area. The Watershed “smaller tributaries to the Mississippi River” does not have a single exit point; rather, multiple exit points where each tributary to the Mississippi River in West Tennessee discharges to the Mississippi River.</p>
+
+                         <p><b>The downstream model boundary</b> is the point where the flow path exits the Tennessee SPARROW model area boundary.
+                             <ul class="text-list">
+                                 <li>For the Cumberland River and Tennessee River Basins this point is the confluence of the Cumberland River or Tennessee River, respectively, with the Ohio River.</li>
+                                 <li>For the Conasauga River basin it is the confluence of the Conasauga River with the Oostanaula River.</li>
+                                 <li>For the Barren River basin it is the confluence of the Barren River with the Green River.</li>
+                                 <li>For the Yellow River diversion to the Tombigbee River it is the point where the Tennessee-Tombigbee canal enters the Mackeys Creek watershed.</li>
+                                 <li>For the smaller tributaries to the Mississippi River it is the multiple points where the tributaries discharge to the Mississippi River.</li>
+                             </ul>
+                         </p>
+
+
+                        <!--<p><b>Accumulated Load (often referred to as "Total Load"): </b>The predicted mean annual load of the constituent (kilograms per year) leaving a stream reach that reflects the accumulated mass of the constituent contributed by all sources in the total drainage area upstream of the reach outlet. The accumulated load value includes the effects of in-stream attenuation processes in all upstream reaches. For results grouped by HUC8, tributary outlet, main river basin, or State, accumulated load represents the sum of incremental loads for those areas. Results grouped by State are approximations based on stream reaches that are located entirely or mostly within that State.
                         Please note: Accumulated load values for stream reaches that include drainage from Canada do not include load from the Canadian portion of those watersheds.</p>
 
                         <p><b>Incremental Load: </b>The predicted mean annual load of the constituent (kilograms per year) leaving a stream reach that reflects only those sources contributed from within the incremental drainage area of that reach. The incremental load value includes the effects of in-stream attenuation processes associated with one half of the incremental reach length. Incremental drainage areas are represented here as “catchments”.</p>
@@ -195,7 +222,7 @@
 
                         <p><b>Delivered Incremental Yield: </b>The Delivered Incremental Load divided by the incremental drainage area of the reach. Units are kilograms per square kilometer per year.</p>
 
-                        <p><b>Delivery Fraction (definition): </b>The fraction of the load leaving a reach that is not attenuated or removed by natural processes during downstream transport to a specified downstream target reach. A delivery fraction of 1 indicates that 100 percent of the load leaving the reach is delivered to the downstream target. Please note: For delivered results shown here, downstream targets represent the outlet reaches of the Mississippi and Atchafalaya Rivers.</p>
+                        <p><b>Delivery Fraction (definition): </b>The fraction of the load leaving a reach that is not attenuated or removed by natural processes during downstream transport to a specified downstream target reach. A delivery fraction of 1 indicates that 100 percent of the load leaving the reach is delivered to the downstream target. Please note: For delivered results shown here, downstream targets represent the outlet reaches of the Mississippi and Atchafalaya Rivers.</p>-->
 
 
 

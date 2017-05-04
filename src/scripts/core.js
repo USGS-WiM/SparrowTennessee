@@ -630,6 +630,7 @@ require([
                         console.log(obj.attribute);
                     });
                     //No infoWindow, just call the chart query
+                    $('#chartWindowContainer').empty();
                     app.createChartQuery(chartQueryArg);
                 }       
             }         
@@ -1336,6 +1337,7 @@ require([
                     text: null
                 },
                 exporting:{
+                    enabled: true,
                     buttons:{
                         contextButton:{
                             text: "Chart Options",
