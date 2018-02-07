@@ -1,0 +1,45 @@
+[
+  {
+    "name": "SparrowTennessee",
+    "organization": "U.S. Geological Survey",
+    "description": "Display Spatially-Referenced Regresson On Watershed Attributes (SPARROW) data in Tennessee",
+    "version": "v0.0.0",
+    "status": "Production"
+
+    "permissions": {
+      "usageType": "openSource",
+      "licenses": [
+        {
+          "name": "Public Domain",
+          "URL": "https://github.com/USGS-WiM/SparrowTennessee/blob/master/LICENSE.md"
+        }
+      ]
+    },
+
+    "homepageURL": "https://wim.usgs.gov/sparrowtennessee/",
+    "downloadURL": "https://github.com/USGS-WiM/SparrowTennessee.git",
+    "disclaimerURL": "https://github.com/USGS-WiM/SparrowTennessee/blob/master/LICENSE.md",
+    "repositoryUrl": "https://github.com/USGS-WiM/SparrowTennessee",
+    "vcs": "git",
+
+    "laborHours": null,
+
+    "tags": [
+      "sparrow",
+      "tennessee"
+    ],
+
+    "languages": [
+      "javascript"
+    ],
+
+    "contact": {
+      "name": "Erik Myers",
+      "email": "emyers@usgs.gov"
+    },
+
+    "date": {
+      "metadataLastUpdated": "2018-02-07"
+    }
+  }
+]
