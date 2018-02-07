@@ -17,7 +17,7 @@
     },
 
     "homepageURL": "https://wim.usgs.gov/sparrowtennessee/",
-    "downloadURL": "https://github.com/USGS-WiM/SparrowTennessee.git",
+    "downloadURL": "https://github.com/USGS-WiM/SparrowTennessee/archive/master.zip",
     "disclaimerURL": "https://github.com/USGS-WiM/SparrowTennessee/blob/master/LICENSE.md",
     "repositoryUrl": "https://github.com/USGS-WiM/SparrowTennessee",
     "vcs": "git",
