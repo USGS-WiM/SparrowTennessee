@@ -345,7 +345,7 @@
                                     var category = this.category;
 
                                         var queryTask;
-                                        queryTask = new esri.tasks.QueryTask('http://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeTest/MapServer/0');
+                                        queryTask = new esri.tasks.QueryTask('https://sparrowtest.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennessee/MapServer/0');
 
                                         var graphicsQuery = new esri.tasks.Query();
                                         graphicsQuery.returnGeometry = true;

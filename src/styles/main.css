@@ -631,9 +631,7 @@ input[type="checkbox"], input[type="radio"] {
 #toggle{
     padding: 25px 0 !important;
 }
-.panel-body{
-   
-} 
+
 .panel-body .btn{
     display: block;
     width: 100%;
@@ -671,3 +669,17 @@ input[type="checkbox"], input[type="radio"] {
     padding-left: 25px !important;
 
 }
+
+/*flashing scrollbar fix */
+.nicescroll-rails-vr {
+    display: block !important;
+}
+    
+.nicescroll-rails-hr{
+    display: block !important;
+}
+.esriMapContainer{
+	width: 100% !important;
+	height: 100% !important;
+} 
+/*END flashing scrollbar fix */
