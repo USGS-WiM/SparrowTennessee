@@ -727,7 +727,7 @@ require([
         query.returnGeometry = false;
         query.outFields = outFieldsArr;
         query.where = whereClause;
-        if(url == "https://gis.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennessee/MapServer/1"){
+        if(url == "https://sparrowtest.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennessee/MapServer/1"){
             queryTask.execute(query, populateGrp2Arr);
         }else{
             queryTask.execute(query, populateAOI);
