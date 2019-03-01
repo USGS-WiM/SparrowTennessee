@@ -273,7 +273,7 @@ require([
                 uniqueArray.push(originalArray[i][prop]);
             }      
         }
-        return uniqueArray;
+        return uniqueArray.sort();
     } 
 
     app.updateAOIs = function(selectedId){
