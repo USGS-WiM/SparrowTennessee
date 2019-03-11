@@ -789,13 +789,13 @@ var Group1_st_tn = [
 
 
 var queryParameters = {
-    grp3: {idField: "GRP_3_NUM",
+    grp3: {idField: "GRP_3_NAM",
         nameField: ["GRP_3_NAM", "GRP_2_NAM", "GRP_1_NAM", "ST"], //actually set in core.js for loop currently
         alias: "HUC10",
         serviceId: 4,
         AOISelect: false
     },
-    grp2: {idField: "GRP_2_NUM",
+    grp2: {idField: "GRP_2_NAM",
         nameField: ["GRP_2_NAM"],
         alias: "HUC8",
         serviceId: 1,

@@ -727,7 +727,7 @@ require([
         query.returnGeometry = false;
         query.outFields = outFieldsArr;
         query.where = whereClause;
-        if(url == "https://sparrowtest.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennessee/MapServer/1"){
+        if (url == "https://sparrowtest.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennessee/MapServer/1"){
             queryTask.execute(query, populateGrp2Arr);
         }else{
             queryTask.execute(query, populateAOI);
@@ -1691,8 +1691,6 @@ require([
     $('#legendCollapse').on('shown.bs.collapse', function () {
         app.maxLegendHeight =  ($('#mapDiv').height()) * 0.90;
         $('#legendElement').css('max-height', app.maxLegendHeight);
-        app.maxLegendDivHeight = ($('#legendElement').height()) - parseInt($('#legendHeading').css("height").replace('px',''));
-        $('#legendDiv').css('max-height', app.maxLegendDivHeight);
     });
 
     $('#legendCollapse').on('hide.bs.collapse', function () {
