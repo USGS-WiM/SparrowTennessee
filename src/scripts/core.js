@@ -194,7 +194,7 @@ require([
     });*/
 
     loadEventHandlers();
-    setupQueryTask(serviceBaseURL + 1, [ 'GRP_2_NAM', 'GRP_2_DESC' ], '1=1');
+    //setupQueryTask(serviceBaseURL + 1, [ 'GRP_2_NAM', 'GRP_2_DESC' ], '1=1');
     //TODO: FIGURE OUT HOW TO USE THE QUERY WHERECLAUSE     Call setupQueryTask for every layer inqueryParameters
     setupQueryTask(serviceBaseURL + 4, ['ST', 'GRP_3_NAM', 'GRP_2_NAM', 'GRP_1_NAM' ], '1=1');
 
@@ -354,9 +354,9 @@ require([
                 
                 //set group2 AOI options
                 $.each(grp2Options, function(index, option){
-                    var grp2Desc = Grp2NamDescArr.filter(function(s){ return s.GRP_2_NAM === option; })[0].GRP_2_DESC;
-                    //$('#grp2-select').append(new Option(option));
-                    $('#grp2-select').append('<option value="' + option + '">' + option + ' - ' + grp2Desc + '</option>');
+                    //var grp2Desc = Grp2NamDescArr.filter(function(s){ return s.GRP_2_NAM === option; })[0].GRP_2_DESC;
+                    $('#grp2-select').append(new Option(option));
+                    //$('#grp2-select').append('<option value="' + option + '">' + option + ' - ' + grp2Desc + '</option>');
                 });
                 $('#grp2-select').selectpicker('refresh');
                 
@@ -421,9 +421,9 @@ require([
                 
                 //set the filtered options
                 $.each(grp2Options, function(index, option){
-                    var grp2Desc = Grp2NamDescArr.filter(function(s){ return s.GRP_2_NAM === option; })[0].GRP_2_DESC;
-                    //$('#grp2-select').append(new Option(option));
-                    $('#grp2-select').append('<option value="' + option + '">' + option + ' - ' + grp2Desc + '</option>');
+                    //var grp2Desc = Grp2NamDescArr.filter(function(s){ return s.GRP_2_NAM === option; })[0].GRP_2_DESC;
+                    $('#grp2-select').append(new Option(option));
+                    //$('#grp2-select').append('<option value="' + option + '">' + option + ' - ' + grp2Desc + '</option>');
                 });
                 $('#grp2-select').selectpicker('refresh');
                 
@@ -727,7 +727,7 @@ require([
         query.returnGeometry = false;
         query.outFields = outFieldsArr;
         query.where = whereClause;
-        if (url == "https://sparrowtest.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennessee/MapServer/1"){
+        if (url == "https://sparrowtest.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeTest/MapServer/1"){
             queryTask.execute(query, populateGrp2Arr);
         }else{
             queryTask.execute(query, populateAOI);
@@ -770,9 +770,9 @@ require([
         
         
         $.each(grp2Options, function(index, option){
-            var grp2Desc = Grp2NamDescArr.filter(function(s){ return s.GRP_2_NAM === option; })[0].GRP_2_DESC;
-            //$('#grp2-select').append(new Option(option));
-            $('#grp2-select').append('<option value="' + option + '">' + option + ' - ' + grp2Desc + '</option>');
+            //var grp2Desc = Grp2NamDescArr.filter(function(s){ return s.GRP_2_NAM === option; })[0].GRP_2_DESC;
+            $('#grp2-select').append(new Option(option));
+            //$('#grp2-select').append('<option value="' + option + '">' + option + ' - ' + grp2Desc + '</option>');
         });
         $.each(grp1Options, function(index, option){
             $('#grp1-select').append(new Option(option));

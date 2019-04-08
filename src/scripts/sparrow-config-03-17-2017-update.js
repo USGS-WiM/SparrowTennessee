@@ -4,7 +4,7 @@ Use this with SPARROW TENNESSEE DEV rest services
 prior to data update on 3/17/2017
 */
 
-var serviceBaseURL = "https://sparrowtest.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennessee/MapServer/";
+var serviceBaseURL = "https://sparrowtest.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeTest/MapServer/";
 var chartUnits = " (lb./yr.)"
 
 var splitLayers = [4,5,6,11,12,13]; //important! UPDATE layer Ids of all state split layers
