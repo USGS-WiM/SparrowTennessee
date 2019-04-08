@@ -4,7 +4,7 @@ Use this with SPARROW TENNESSEE DEV rest services
 prior to data update on 3/17/2017
 */
 
-var serviceBaseURL = "https://sparrowtest.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennessee/MapServer/";
+var serviceBaseURL = "https://sparrowtest.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeTest/MapServer/";
 var chartUnits = " (lb./yr.)"
 
 var splitLayers = [4,5,6,11,12,13]; //important! UPDATE layer Ids of all state split layers
@@ -789,13 +789,13 @@ var Group1_st_tn = [
 
 
 var queryParameters = {
-    grp3: {idField: "GRP_3_NUM",
+    grp3: {idField: "GRP_3_NAM",
         nameField: ["GRP_3_NAM", "GRP_2_NAM", "GRP_1_NAM", "ST"], //actually set in core.js for loop currently
         alias: "HUC10",
         serviceId: 4,
         AOISelect: false
     },
-    grp2: {idField: "GRP_2_NUM",
+    grp2: {idField: "GRP_2_NAM",
         nameField: ["GRP_2_NAM"],
         alias: "HUC8",
         serviceId: 1,
