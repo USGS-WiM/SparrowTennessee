@@ -143,7 +143,6 @@ require([
 
         if (isItUP) {
             showModal();
-            console.log("init");
             search_api.create("geosearch_usgs", {
                 on_result: function (o) {
                     // what to do when a location is found
@@ -382,7 +381,7 @@ require([
 
                 //get unique group 1 values
                 grp1Options = getUniqueArray(filteredAOIOptions, "GRP_1_NAM"); // [...new Set(filteredAOIOptions.map(item => item.GRP_1_NAM))];
-                console.log("newWay: " + grp1Options);
+                //console.log("newWay: " + grp1Options);
 
                 //set group1 AOI options
                 $.each(grp1Options, function (index, option) {
@@ -649,7 +648,7 @@ require([
     };
 
     app.executeIdentifyTask = function (evt) {
-        console.log(evt);
+        //console.log(evt);
         var sparrowLayer = app.map.getLayer("SparrowRanking").visibleLayers[0];
 
         app.identifyParams.layerIds = [sparrowLayer];
@@ -787,7 +786,7 @@ require([
                             response[0].value +
                             "'";
                         $.each(fields, function (index, obj) {
-                            console.log(obj.attribute);
+                            //console.log(obj.attribute);
                         });
                         //No infoWindow, just call the chart query
                         $("#chartWindowContainer").empty();
@@ -838,7 +837,7 @@ require([
         $("#tableButton").prop("disabled", true);
 
         $("#chartContainer").empty();
-        console.log("creating chart query");
+        //console.log("creating chart query");
         var chartQueryTask;
         var sparrowLayerId = app.map.getLayer("SparrowRanking")
             .visibleLayers[0];
@@ -920,9 +919,9 @@ require([
         var grp1Options = getUniqueArray(AllAOIOptions, "GRP_1_NAM"); //[...new Set(AllAOIOptions.map(item => item.GRP_1_NAM))];
         var STOptions = getUniqueArray(AllAOIOptions, "ST"); //[...new Set(AllAOIOptions.map(item => item.ST))];
 
-        console.log("ST options: " + STOptions);
+        /*  console.log("ST options: " + STOptions);
         console.log("grp1 options: " + grp1Options);
-        console.log("grp1 options: " + grp2Options);
+        console.log("grp1 options: " + grp2Options); */
 
         $.each(grp2Options, function (index, option) {
             //var grp2Desc = Grp2NamDescArr.filter(function(s){ return s.GRP_2_NAM === option; })[0].GRP_2_DESC;
@@ -1471,7 +1470,7 @@ require([
                                         );
                                     });
                                 }
-                                console.log(categoryArr);
+                                //console.log(categoryArr);
                             }
 
                             app.map.graphics.clear();
@@ -2156,7 +2155,7 @@ require([
                         $("#slider").change(function (event) {
                             //get the value of the slider with this call
                             var o = $("#slider")[0].value / 100;
-                            console.log("o: " + o);
+                            //console.log("o: " + o);
                             $("#opacityValue").html("Opacity: " + o);
                             app.map.getLayer(options.id).setOpacity(o);
                             //here I am just specifying the element to change with a "made up" attribute (but don't worry, this is in the HTML specs and supported by all browsers).

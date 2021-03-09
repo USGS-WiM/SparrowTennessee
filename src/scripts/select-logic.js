@@ -271,9 +271,9 @@ function updateAOI(layerDefs, selectId) {
         "dojo/domReady!",
     ], function (FindTask, FindParameters, dom, domClass, on) {
         //var layerDefs = "GRP_1_NAM in ('Cumberland River')"
-        console.log("in updateAOI()");
+        /*         console.log("in updateAOI()");
         console.log("layerDefs = " + layerDefs);
-        console.log("selectId = " + selectId);
+        console.log("selectId = " + selectId); */
 
         switch (selectId) {
             case "st-select":
@@ -328,7 +328,7 @@ function updateAOI(layerDefs, selectId) {
                 switch (feature.layerId) {
                     case 1:
                         var item = feature.feature.attributes.GRP_2_NAM;
-                        console.log("huc8 " + item);
+                        //console.log("huc8 " + item);
                         $("#grp2-select")
                             .append(
                                 '<option value="item">' + item + "</option>"
@@ -337,15 +337,15 @@ function updateAOI(layerDefs, selectId) {
                         break;
                     case 2:
                         var item = feature.feature.attributes.GRP_1_NAM;
-                        console.log("independent watershed " + item);
+                        //console.log("independent watershed " + item);
                         break;
                     case 5:
                         var item = feature.feature.attributes.GRP_1_NAM;
-                        console.log("IND watershed " + item);
+                        //console.log("IND watershed " + item);
                         break;
                     case 6:
                         var item = feature.feature.attributes.GRP_2_NAM;
-                        console.log("Huc8 " + item);
+                        //console.log("Huc8 " + item);
                         break;
                 }
             });
@@ -423,10 +423,10 @@ function getTableFields(headerKeysArr, sparrowLayerId) {
 
     htmlHeaderArr.push("<tr>");
     $.each(headerKeysArr, function (index, key) {
-        console.log(key);
+        //console.log(key);
         $.each(flatArr, function (index, obj) {
             if (key == obj.field) {
-                console.log(obj.field);
+                //console.log(obj.field);
                 htmlHeaderArr.push("<th>" + obj.name + "</th>");
                 return false; //escape the each loop?
             }
@@ -574,7 +574,7 @@ function getLegendLabels(sparrowLayerId) {
 
 function getChartOutfields(sparrowLayerId) {
     var chartFieldsArr = [];
-    console.log("in GetChartOutfields()");
+    //console.log("in GetChartOutfields()");
     //var chartLabelsArr = [];
     //chartFieldsArr.push( $("#displayedMetricSelect").val() );
     switch (sparrowLayerId) {
@@ -770,7 +770,7 @@ function generateRenderer() {
         domClass,
         on
     ) {
-        console.log("in generateRenderer()");
+        //console.log("in generateRenderer()");
 
         var sparrowId = app.map.getLayer("SparrowRanking").visibleLayers[0];
         //apply layer defs to renderer if they exist
@@ -837,10 +837,10 @@ function generateRenderer() {
 
         function applyRenderer(renderer) {
             var sparrowId = app.map.getLayer("SparrowRanking").visibleLayers[0];
-            console.log("sparrowId: ", sparrowId);
+            //console.log("sparrowId: ", sparrowId);
 
             var layer = app.map.getLayer("SparrowRanking");
-            console.log("in applyRenderer() ", layer);
+            //console.log("in applyRenderer() ", layer);
 
             // dynamic layer stuff
             var optionsArray = [];
@@ -849,7 +849,7 @@ function generateRenderer() {
             // set the drawing options for the relevant layer
             // optionsArray index corresponds to layer index in the map service
             optionsArray[sparrowId] = drawingOptions;
-            console.log(optionsArray);
+            //console.log(optionsArray);
 
             layer.setLayerDrawingOptions(optionsArray);
 
