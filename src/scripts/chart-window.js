@@ -358,7 +358,7 @@ function showChart(response) {
 
                                     var queryTask;
                                     queryTask = new esri.tasks.QueryTask(
-                                        "https://sparrowtest.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeTest/MapServer/0"
+                                        "https://gis1.wim.usgs.gov/server/rest/services/Sparrow/SparrowTennessee/MapServer/0"
                                     );
 
                                     var graphicsQuery = new esri.tasks.Query();

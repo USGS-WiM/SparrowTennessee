@@ -784,7 +784,7 @@ function generateRenderer() {
         }
 
         app.Url =
-            "https://sparrowtest.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeTest/MapServer/" +
+            "https://gis1.wim.usgs.gov/server/rest/services/Sparrow/SparrowTennessee/MapServer/" +
             sparrowId;
 
         var selectedMetric = $("#displayedMetricSelect")[0].value;
