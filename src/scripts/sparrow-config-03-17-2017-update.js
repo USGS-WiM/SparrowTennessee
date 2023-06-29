@@ -5,7 +5,7 @@ prior to data update on 3/17/2017
 */
 
 var serviceBaseURL =
-    "https://sparrowtest.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeTest/MapServer/";
+    "https://gis1.wim.usgs.gov/server/rest/services/Sparrow/SparrowTennessee/MapServer/";
 var chartUnits = " (lb./yr.)";
 
 var splitLayers = [4, 5, 6, 11, 12, 13]; //important! UPDATE layer Ids of all state split layers

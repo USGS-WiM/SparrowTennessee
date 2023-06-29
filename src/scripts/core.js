@@ -887,7 +887,7 @@ require([
         query.where = whereClause;
         if (
             url ==
-            "https://sparrowtest.wim.usgs.gov/arcgis/rest/services/SparrowTennessee/SparrowTennesseeTest/MapServer/1"
+            "https://gis1.wim.usgs.gov/server/rest/services/Sparrow/SparrowTennessee/MapServer/1"
         ) {
             queryTask.execute(query, populateGrp2Arr);
         } else {
